@@ -6,7 +6,7 @@ import os
 # When a file is uploaded through the FileField, Django stores the file with its original name in 
 # the name attribute of the file object.
 
-def upload_to_author(instance, filename):
+def upload_to_author_dir(instance, filename):
     return os.path.join('uploads',instance.author,filename)
 
 # Create your models here.
@@ -15,4 +15,4 @@ class FileNest(models.Model):
     author = models.CharField(max_length=100) # to store the username
     docType = models.CharField(max_length=100) # to store type of documentation to be generated
     dateTime = models.DateTimeField(default=timezone.now) # to store the time of upload
-    file = models.FileField(upload_to=upload_to_author)
+    file = models.FileField(upload_to=upload_to_author_dir)
