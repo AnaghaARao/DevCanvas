@@ -23,7 +23,7 @@ from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserVe
 
 # Create your views here.
 
-class UsernameValidationView(View):
+class UsernameValidationView(APIView):
     def post(self, request):
         data = json.loads(request.body)  # data contains everything sent by the user
         username = data.get('username', '')
@@ -35,7 +35,7 @@ class UsernameValidationView(View):
             return Response({'username_error': 'sorry! username in use, choose another'}, status=status.HTTP_409_CONFLICT)
         return Response({'username_valid': True}, status=status.HTTP_200_OK)
 
-class EmailValidationView(View):
+class EmailValidationView(APIView):
     def post(self, request):
         data = json.loads(request.body)  # data contains everything sent by the user
         email = data.get('email', '')
@@ -47,7 +47,7 @@ class EmailValidationView(View):
             return Response({'email_error': 'sorry! email in use, choose another'}, status=status.HTTP_409_CONFLICT)
         return Response({'email_valid': True}, status=status.HTTP_200_OK)
 
-class RegistrationView(View):
+class RegistrationView(APIView):
     def post(self, request):
         # **Use the serializer for registration**
         data = json.loads(request.body)
@@ -67,9 +67,14 @@ class RegistrationView(View):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class VerificationView(View):
+class VerificationView(APIView):
     def get(self, request, uidb64, token):
         # **Use the serializer for verification**
+        serializer = UserVerificationSerializer(data={'uidb64': uidb64, 'token': token})
+
+        if serializer.is_valid():
+            uidb64 = serializer.validated_data['uidb64']
+            token = serializer.validated_data['token']
         try:
             id = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=id)
@@ -86,7 +91,7 @@ class VerificationView(View):
         except Exception as ex:
             return Response({'error': 'Activation Failed'}, status=status.HTTP_400_BAD_REQUEST)
 
-class LoginView(View):
+class LoginView(APIView):
     def post(self, request):
         # **Use the serializer for login**
         data = json.loads(request.body)
@@ -106,7 +111,7 @@ class LoginView(View):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutView(View):
+class LogoutView(APIView):
     def post(self, request):
         auth.logout(request)
         return Response({'message': 'You have been logged out'}, status=status.HTTP_200_OK)
