@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import json
-from django.http import Response
+from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User
 from validate_email import validate_email
