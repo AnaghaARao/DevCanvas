@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import json
-from django.http import JsonResponse
+from django.http import Response
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import Response
 from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
@@ -15,7 +15,9 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import token_generator
 from django.contrib import auth
-
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 # Create your views here.
@@ -27,11 +29,11 @@ class UsernameValidationView(View):
         username = data.get('username','')
         # checking for alnum only username
         if not username.isalnum():
-            return JsonResponse({'username_error':'username should only contain alpha-numeric characters'}, status=400)
+            return Response({'username_error':'username should only contain alpha-numeric characters'}, status = status.HTTP_400_BAD_REQUEST)
         # checking if username is already in use
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'username_error':'sorry! username in use, choose another'}, status=409)
-        return JsonResponse({'username_valid': True}, status=200)
+            return Response({'username_error':'sorry! username in use, choose another'}, status=status.HTTP_409_CONFLICT)
+        return Response({'username_valid': True}, status=status.HTTP_200_OK)
     
 
 class EmailValidationView(View):
@@ -40,11 +42,11 @@ class EmailValidationView(View):
         email = data.get('email','')
         # checking for valid email
         if not validate_email(email):
-            return JsonResponse({'email_error':'Email is invalid'}, status=400)
+            return Response({'email_error':'Email is invalid'}, status = status.HTTP_400_BAD_REQUEST)
         # checking if username is already in use
         if User.objects.filter(email=email).exists():
-            return JsonResponse({'email_error':'sorry! email in use, choose another'}, status=409)
-        return JsonResponse({'email_valid': True}, status=200)
+            return Response({'email_error':'sorry! email in use, choose another'}, status=status.HTTP_409_CONFLICT)
+        return Response({'email_valid': True}, status=status.HTTP_200_OK)
 
     
 class RegistrationView(View):
@@ -59,13 +61,13 @@ class RegistrationView(View):
         password = data.get('password','')
 
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error':'Username already in use'}, status=409)
+            return Response({'error':'Username already in use'}, status=status.HTTP_409_CONFLICT)
         
         if User.objects.filter(email=email).exists():
-            return JsonResponse({'error':'Email already in use'}, status=409)
+            return Response({'error':'Email already in use'}, status=status.HTTP_409_CONFLICT)
         
         if len(password) < 6:
-            return JsonResponse({'error':'Password too short'}, status=400)
+            return Response({'error':'Password too short'}, status = status.HTTP_400_BAD_REQUEST)
         
         user = User.objects.create_user(username=username, email=email)
         user.set_password(password)
@@ -81,7 +83,7 @@ class RegistrationView(View):
         email_message = EmailMessage(email_subject, email_body, to=[email])
         email_message.send(fail_silently=False)
 
-        return JsonResponse({'message': 'Account created. Please verify your email to activate'}, status=201)
+        return Response({'message': 'Account created. Please verify your email to activate'}, status=status.HTTP_201_CREATED)
 
 
 
@@ -131,19 +133,19 @@ class VerificationView(View):
 
             if not token_generator.check_token(user, token):
                 # return redirect('login'+'?message='+'User already activated')
-                return JsonResponse({'error':'User already activated'}, status=400)
+                return Response({'error':'User already activated'}, status = status.HTTP_400_BAD_REQUEST)
             
             if user.is_active:
                 # return redirect('login')
-                return JsonResponse({'message':'Account already active'}, status=200)
+                return Response({'message':'Account already active'}, status=status.HTTP_200_OK)
             
             user.is_active = True
             user.save()
-            return JsonResponse({'message':'Account activated successfully'}, status=200)
+            return Response({'message':'Account activated successfully'}, status=status.HTTP_200_OK)
             # messages.success(request, 'Account activated successfully')
             # return redirect('login')
         except Exception as ex:
-            return JsonResponse({'error':'Activation Failed'}, status=400)
+            return Response({'error':'Activation Failed'}, status = status.HTTP_400_BAD_REQUEST)
         #     pass        
         # return redirect('login')
 
@@ -161,12 +163,12 @@ class LoginView(View):
                 auth.login(request, user)
                 # messages.success(request, 'Welcome, ' + 
                 #                     user.username + 'You are now logged in')
-                return JsonResponse({'message': f'Welcome {user.username}, you are now logged in'}, status=200)
+                return Response({'message': f'Welcome {user.username}, you are now logged in'}, status=status.HTTP_200_OK)
             
-            return JsonResponse({'error':'Account is not active. Please check your registered email'}, status=403)
+            return Response({'error':'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
             # messages.error(request, 'Account is not active. Please check your registered email') 
             # return render(request, 'authentication/login.html')
-        return JsonResponse({'error':'Invalid Credentials! Try again'}, status=400)
+        return Response({'error':'Invalid Credentials! Try again'}, status = status.HTTP_400_BAD_REQUEST)
         # messages.error(request, 'Invalid Credentials! Try again') 
         # return render(request, 'authentication/login.html')
     
@@ -177,6 +179,6 @@ class LoginView(View):
 class LogoutView(View):
     def post(self, request):
         auth.logout(request)
-        return JsonResponse({'message':'You have been logged out'}, status=200)
+        return Response({'message':'You have been logged out'}, status=status.HTTP_200_OK)
         # messages.success(request, 'You have been logged out')
         # return redirect('login')
