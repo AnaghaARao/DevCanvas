@@ -1,5 +1,3 @@
-// src/components/Form.jsx
-
 import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +38,6 @@ function Form({ route, method }) {
     e.preventDefault();
     setLoading(true);
 
-    // Prevent submission if there are validation errors
     if (errors.username || (method === "register" && errors.email)) {
       alert("Please fix the validation errors before submitting.");
       setLoading(false);
@@ -60,7 +57,7 @@ function Form({ route, method }) {
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         navigate("/");
       } else {
-        navigate("/login");
+        navigate("/authentication/login/");
       }
     } catch (error) {
       if (error.response && error.response.data) {

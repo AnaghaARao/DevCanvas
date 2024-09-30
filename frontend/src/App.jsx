@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home";
+import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
@@ -27,13 +27,13 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Home />
+                <Upload />
               </ProtectedRoute>
             }
           />
-          <Route path="/authentication/login" element={<Login />} />
-          <Route path="/authentication/register" element={<Register />} />
-          <Route path="/authentication/logout" element={<Logout />} />
+          <Route path="/authentication/login/" element={<Login />} />
+          <Route path="/authentication/register/" element={<Register />} />
+          <Route path="/authentication/logout/" element={<Logout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
