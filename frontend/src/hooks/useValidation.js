@@ -6,7 +6,7 @@ export function useValidation() {
 
   const validateUsername = useCallback(async (username) => {
     try {
-      const res = await api.get(`/authentication/validate-username/`, {
+      const res = await api.post(`/authentication/validate-username/`, {
         params: { username },
       });
       if (!res.data.username_valid) {
@@ -27,7 +27,7 @@ export function useValidation() {
 
   const validateEmail = useCallback(async (email) => {
     try {
-      const res = await api.get(`/authentication/validate-email/`, {
+      const res = await api.post(`/authentication/validate-email/`, {
         params: { email },
       });
       if (!res.data.email_valid) {
