@@ -1,7 +1,8 @@
 import React from "react";
+import Form from "../components/Form";
 
 function Register() {
-  return <div>Register</div>;
+  return <Form route="/authentication/register" method="register" />;
 }
 
 export default Register;
