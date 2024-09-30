@@ -145,5 +145,5 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # react stuff
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    'http://localhost:5173',
 ]
