@@ -47,11 +47,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication',
     'uploadMate',
-    'corsheaders',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +144,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # react stuff
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:5173',
+# ]
