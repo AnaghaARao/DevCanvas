@@ -48,7 +48,7 @@ function ProtectedRoute({ children }) {
     if (tokenExpiration < now) {
       await refreshToken();
     } else {
-      setIsAuthorized = true;
+      setIsAuthorized(true);
     }
   };
 
