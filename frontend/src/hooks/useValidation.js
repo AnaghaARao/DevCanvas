@@ -7,14 +7,14 @@ export function useValidation() {
   const validateUsername = useCallback(async (username) => {
     try {
       const res = await api.post(`/authentication/validate-username/`, {
-        params: { username },
+        username,
       });
-      if (!res.data.username_valid) {
+      if (res.data.username_error) {
         setErrors((prev) => ({
           ...prev,
-          username: "Username is already taken.",
+          username: res.data.username_error,
         }));
-      } else {
+      } else if (res.data.username_valid) {
         setErrors((prev) => ({ ...prev, username: null }));
       }
     } catch (error) {
@@ -27,12 +27,10 @@ export function useValidation() {
 
   const validateEmail = useCallback(async (email) => {
     try {
-      const res = await api.post(`/authentication/validate-email/`, {
-        params: { email },
-      });
-      if (!res.data.email_valid) {
-        setErrors((prev) => ({ ...prev, email: "Email is already in use." }));
-      } else {
+      const res = await api.post(`/authentication/validate-email/`, { email });
+      if (res.data.email_error) {
+        setErrors((prev) => ({ ...prev, email: res.data.email_error }));
+      } else if (res.data.email_valid) {
         setErrors((prev) => ({ ...prev, email: null }));
       }
     } catch (error) {

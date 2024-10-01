@@ -13,6 +13,7 @@ function Form({ route, method }) {
   const navigate = useNavigate();
   const name = method === "login" ? "Login" : "Register";
   const { errors, validateUsername, validateEmail } = useValidation();
+  const [passwordError, setPasswordError] = useState(null);
 
   useEffect(() => {
     if (username) {
@@ -34,11 +35,38 @@ function Form({ route, method }) {
     }
   }, [email, method, validateEmail]);
 
+  const validatePassword = (password) => {
+    const errors = [];
+    if (password.length < 8) {
+      errors.push("Password must be at least 8 characters long.");
+    }
+    if (!/\d/.test(password)) {
+      errors.push("Password must contain at least one number.");
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push("Password must contain at least one special character.");
+    }
+    return errors.length > 0 ? errors.join(" ") : null;
+  };
+
+  useEffect(() => {
+    if (password) {
+      const error = validatePassword(password);
+      setPasswordError(error);
+    } else {
+      setPasswordError(null);
+    }
+  }, [password]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (errors.username || (method === "register" && errors.email)) {
+    if (
+      errors.username ||
+      (method === "register" && errors.email) ||
+      passwordError
+    ) {
       alert("Please fix the validation errors before submitting.");
       setLoading(false);
       return;
@@ -53,15 +81,31 @@ function Form({ route, method }) {
       const res = await api.post(route, data);
 
       if (method === "login") {
-        localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/");
+        if (res.data.access && res.data.refresh) {
+          localStorage.setItem(ACCESS_TOKEN, res.data.access);
+          localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+          navigate("/");
+        } else if (res.data.message) {
+          alert(res.data.message);
+        }
       } else {
+        alert(res.data.message);
         navigate("/authentication/login/");
       }
     } catch (error) {
       if (error.response && error.response.data) {
-        const messages = Object.values(error.response.data).flat();
+        const responseData = error.response.data;
+        const messages = [];
+
+        // Collect all error messages from the response
+        Object.keys(responseData).forEach((key) => {
+          if (Array.isArray(responseData[key])) {
+            messages.push(...responseData[key]);
+          } else if (typeof responseData[key] === "string") {
+            messages.push(responseData[key]);
+          }
+        });
+
         alert(messages.join("\n"));
       } else {
         alert("An unexpected error occurred. Please try again.");
@@ -100,7 +144,7 @@ function Form({ route, method }) {
       )}
 
       <input
-        className="form-input"
+        className={`form-input ${passwordError ? "input-error" : ""}`}
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
