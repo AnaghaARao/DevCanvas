@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #161616;
+  color: white;
+  font-family: "Source Sans 3", system-ui;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.navbar {
+  background: linear-gradient(to right, #252525, #3c3c3c, #252525);
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 15px;
+}
+
+.navbar-logo {
+  background-color: inherit;
+  margin: 0 10px;
+}

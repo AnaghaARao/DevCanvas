@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css";
+import "../styles/general.css";
+import "../styles/form.css";
 import { useValidation } from "../hooks/useValidation";
+import { toast } from "react-toastify";
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
@@ -11,8 +13,9 @@ function Form({ route, method }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const name = method === "login" ? "Login" : "Register";
-  const { errors, validateUsername, validateEmail } = useValidation();
+  const name = method === "login" ? "Sign In" : "Sign Up";
+  const { errors, successMessages, validateUsername, validateEmail } =
+    useValidation();
   const [passwordError, setPasswordError] = useState(null);
 
   useEffect(() => {
@@ -67,7 +70,7 @@ function Form({ route, method }) {
       (method === "register" && errors.email) ||
       passwordError
     ) {
-      alert("Please fix the validation errors before submitting.");
+      toast.error("Please fix the validation errors before submitting.");
       setLoading(false);
       return;
     }
@@ -84,31 +87,36 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+          toast.success(`Welcome ${username}, you are now logged in`);
           navigate("/");
         } else if (res.data.message) {
-          alert(res.data.message);
+          toast.info(res.data.message);
         }
       } else {
-        alert(res.data.message);
+        toast.success(res.data.message);
         navigate("/authentication/login/");
       }
     } catch (error) {
-      if (error.response && error.response.data) {
-        const responseData = error.response.data;
-        const messages = [];
+      if (error.response) {
+        const { status, data } = error.response;
 
-        // Collect all error messages from the response
-        Object.keys(responseData).forEach((key) => {
-          if (Array.isArray(responseData[key])) {
-            messages.push(...responseData[key]);
-          } else if (typeof responseData[key] === "string") {
-            messages.push(responseData[key]);
-          }
-        });
-
-        alert(messages.join("\n"));
+        if (status === 400) {
+          const messages = Object.values(data).flat();
+          messages.forEach((msg) => toast.error(msg));
+        } else if (status === 409) {
+          const messages = Object.values(data).flat();
+          messages.forEach((msg) => toast.error(msg));
+        } else if (status === 500) {
+          toast.error(
+            "An internal server error occurred. Please try again later."
+          );
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       } else {
-        alert("An unexpected error occurred. Please try again.");
+        toast.error(
+          "Unable to connect to the server. Please check your internet connection and try again."
+        );
       }
     } finally {
       setLoading(false);
@@ -116,45 +124,75 @@ function Form({ route, method }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
-      <h1>{name}</h1>
+    <form onSubmit={handleSubmit}>
+      <div className="form-info">
+        <h2 className="form-name">{name}</h2>
+        {method === "register" && (
+          <p className="form-desc">Welcome! Let's get you started.</p>
+        )}
+        {method === "login" && (
+          <p className="form-desc">Welcome back, you've been missed!</p>
+        )}
+      </div>
 
-      <input
-        className={`form-input ${errors.username ? "input-error" : ""}`}
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-        required
-      />
-      {errors.username && <span className="error-text">{errors.username}</span>}
+      <div className="form-container">
+        <input
+          className={`form-input ${
+            errors.username
+              ? "input-error"
+              : successMessages.username
+              ? "input-success"
+              : ""
+          }`}
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+          required
+        />
+        {errors.username && (
+          <span className="error-text">{errors.username}</span>
+        )}
+        {successMessages.username && (
+          <span className="success-text">{successMessages.username}</span>
+        )}
 
-      {method === "register" && (
-        <>
-          <input
-            className={`form-input ${errors.email ? "input-error" : ""}`}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-          {errors.email && <span className="error-text">{errors.email}</span>}
-        </>
-      )}
+        {method === "register" && (
+          <>
+            <input
+              className={`form-input ${
+                errors.email
+                  ? "input-error"
+                  : successMessages.email
+                  ? "input-success"
+                  : ""
+              }`}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+            {errors.email && <span className="error-text">{errors.email}</span>}
+            {successMessages.email && (
+              <span className="success-text">{successMessages.email}</span>
+            )}
+          </>
+        )}
 
-      <input
-        className={`form-input ${passwordError ? "input-error" : ""}`}
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
+        <input
+          className={`form-input ${passwordError ? "input-error" : ""}`}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+        />
 
-      <button className="form-button" type="submit" disabled={loading}>
-        {loading ? "Processing..." : name}
-      </button>
+        <button className="form-button" type="submit" disabled={loading}>
+          {loading ? "Processing..." : name}
+        </button>
+      </div>
     </form>
   );
 }

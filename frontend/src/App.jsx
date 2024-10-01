@@ -1,12 +1,12 @@
-import { React, useState } from "react";
+import { React } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoutes";
-
-// import "./App.css";
+import Navbar from "./components/Navbar";
+import "./styles/general.css";
 
 function Logout() {
   localStorage.clear();
@@ -21,6 +21,7 @@ function RegisterAndLogout() {
 function App() {
   return (
     <div>
+      <Navbar />
       <BrowserRouter>
         <Routes>
           <Route
