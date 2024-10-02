@@ -12,12 +12,7 @@ function ActivateAccount() {
       .get(`${BACKEND_URL}/activate/${uidb64}/${token}/`)
       .then((response) => {
         setActivationMessage(response.data.message);
-<<<<<<< HEAD
         navigate("/authentication/login"); // Redirect to login page after successful activation
-=======
-        alert(response.data.message);
-        navigate("/authentication/login");
->>>>>>> 5a6c1ae8c0423e92cf950e7c207d13586d7fd08e
       })
       .catch((error) => {
         setActivationMessage(
