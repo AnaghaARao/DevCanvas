@@ -90,7 +90,7 @@ function Form({ route, method }) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
           toast.success(`Welcome ${username}, you are now logged in`);
-          navigate("/");
+          navigate("/main");
         } else if (res.data.message) {
           toast.info(res.data.message);
         }

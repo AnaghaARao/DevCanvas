@@ -14,7 +14,7 @@ function ActivateAccount() {
       .then((response) => {
         // Handle success response
         setActivationMessage(response.data.message);
-        navigate("/login"); // Redirect to login page after successful activation
+        navigate("/authentication/login"); // Redirect to login page after successful activation
       })
       .catch((error) => {
         // Handle error response
