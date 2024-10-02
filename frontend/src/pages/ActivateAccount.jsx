@@ -3,22 +3,23 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 function ActivateAccount() {
-  const { uidb64, token } = useParams(); // Extract uidb64 and token from URL
+  const { uidb64, token } = useParams();
   const navigate = useNavigate();
   const [activationMessage, setActivationMessage] = useState("");
 
   useEffect(() => {
-    // Send request to the backend with uidb64 and token
     axios
-      .get(`/activate/${uidb64}/${token}`)
+      .get(`${BACKEND_URL}/activate/${uidb64}/${token}/`)
       .then((response) => {
-        // Handle success response
         setActivationMessage(response.data.message);
-        navigate("/login"); // Redirect to login page after successful activation
+        alert(response.data.message);
+        navigate("/authentication/login");
       })
       .catch((error) => {
-        // Handle error response
-        setActivationMessage(error.response.data.error || "Activation failed");
+        setActivationMessage(
+          error.response?.data?.error || "Activation failed"
+        );
+        alert(error.response?.data?.error || "Activation failed");
       });
   }, [uidb64, token, navigate]);
 
