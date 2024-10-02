@@ -189,7 +189,7 @@ function Form({ route, method }) {
           required
         />
 
-        <button className="form-button" type="submit" disabled={loading}>
+        <button className="btn form-button" type="submit" disabled={loading}>
           {loading ? "Processing..." : name}
         </button>
       </div>
