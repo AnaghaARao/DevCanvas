@@ -5,8 +5,11 @@ import Register from "./pages/Register";
 import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import "./styles/general.css";
+import "./styles/landing.css";
+import ActivateAccount from "./pages/ActivateAccount";
 
 function Logout() {
   localStorage.clear();
@@ -20,18 +23,23 @@ function RegisterAndLogout() {
 
 function App() {
   return (
-    <div>
+    <div className="maindiv">
       <Navbar />
       <BrowserRouter>
         <Routes>
-          <Route
+          {/* <Route
             path="/"
             element={
               <ProtectedRoute>
                 <Upload />
               </ProtectedRoute>
             }
+          /> */}
+          <Route
+            path="/activate/:uidb64/:token"
+            element={<ActivateAccount />}
           />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/authentication/login/" element={<Login />} />
           <Route path="/authentication/register/" element={<Register />} />
           <Route path="/authentication/logout/" element={<Logout />} />

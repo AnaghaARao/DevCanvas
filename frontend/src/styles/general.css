@@ -11,6 +11,12 @@
   font-style: normal;
 }
 
+.maindiv {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .navbar {
   background: linear-gradient(to right, #252525, #3c3c3c, #252525);
   height: 10vh;
@@ -18,11 +24,70 @@
   align-items: center;
   justify-content: left;
   border-radius: 5px;
-  padding: 5px 10px;
+  padding: 20px;
   margin: 15px;
 }
 
 .navbar-logo {
   background-color: inherit;
   margin: 0 10px;
+}
+
+.btn {
+  background-color: #83158b;
+  color: #eddfdf;
+  padding: 10px 30px;
+  font-size: large;
+  cursor: pointer;
+  margin: 5px 0;
+  width: 50%;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #9f16a9;
+}
+
+@media only screen and (max-width: 600px) {
+  .maindiv {
+    width: 100vw; /* Full viewport width */
+  }
+
+  .navbar {
+    height: auto; /* Adjust height for smaller screens */
+    padding: 10px;
+    width: 100vw; /* Full viewport width */
+    margin: 1rem; /* Remove margins on mobile */
+    font-size: 0.7rem;
+  }
+
+  .btn {
+    width: 100%; /* Make the button take full width on mobile */
+    padding: 8px 20px; /* Reduce padding for better fit */
+    font-size: medium; /* Adjust font size for readability on small screens */
+  }
+
+  h1,
+  p {
+    font-size: 1.2rem; /* Scale down text for smaller screens */
+    text-align: center; /* Center text for a cleaner look on mobile */
+  }
+
+  .lp-sec1 {
+    flex-direction: column; /* Stack the content vertically */
+    gap: 1rem; /* Reduce gap between elements for mobile */
+    width: 100vw; /* Ensure full width */
+  }
+
+  .lp-img {
+    width: 80%; /* Adjust image width for mobile */
+    margin: 0 auto; /* Center image */
+  }
+
+  .lp-content {
+    padding: 0 10px; /* Add some padding around text */
+    width: 100vw; /* Ensure full width */
+  }
 }

@@ -41,16 +41,5 @@
 
 .form-button {
   width: 95%;
-  padding: 10px;
   margin: 20px 0;
-  background-color: #83158b;
-  color: #eddfdf;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.form-button:hover {
-  background-color: #9f16a9;
 }

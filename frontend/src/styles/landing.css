@@ -1,0 +1,92 @@
+.lp-container {
+  background-color: #292929;
+  margin: 0 15px 15px 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+.lp-sec1 {
+  background-color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  margin: 3rem 0;
+}
+
+.lp-content {
+  background-color: inherit;
+  flex: 0.7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.lp-content h1 {
+  background-color: inherit;
+  font-weight: bold;
+  font-size: 2.5rem;
+}
+
+.lp-content p {
+  background-color: inherit;
+  font-weight: lighter;
+  font-size: larger;
+  margin-bottom: 10px;
+}
+
+.lp-img {
+  background-color: inherit;
+  flex: 0.3;
+  width: 10rem;
+}
+
+.divider {
+  border: none;
+  height: 2px;
+  background-color: #3a3a3a;
+  margin: 2px 0;
+  width: 80%;
+}
+
+.lp-sec2 {
+  margin: 3rem 0;
+}
+
+.item-group {
+  background-color: #292929;
+  display: flex;
+  gap: 5rem;
+}
+
+.item {
+  background-color: #292929;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.item-circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: #373737;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b2b0b0;
+  font-size: 1.8rem;
+}
+
+.item-title {
+  font-size: large;
+  background-color: #292929;
+  color: #c2c0c0;
+  font-size: 1.2rem;
+}
