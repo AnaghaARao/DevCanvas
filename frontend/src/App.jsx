@@ -27,13 +27,6 @@ function App() {
       <Navbar />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/authentication/register" element={<Register />} />
-          <Route path="/authentication/login" element={<Login />} />
-          <Route
-            path="/authentication/activate/:uidb64/:token"
-            element={<ActivateAccount />}
-          />
           <Route
             path="/main"
             element={
@@ -41,6 +34,10 @@ function App() {
                 <Upload />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/authentication/activate/:uidb64/:token"
+            element={<ActivateAccount />}
           />
           <Route path="/authentication/logout/" element={<Logout />} />
           <Route path="*" element={<NotFound />} />

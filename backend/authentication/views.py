@@ -57,8 +57,9 @@ class RegistrationView(APIView):
             user = serializer.save()
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             domain = get_current_site(request).domain
+            frontend_domain = 'localhost:5173'
             link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
-            activate_url = 'http://' + domain + link
+            activate_url = 'http://' + frontend_domain + link
             email_subject = 'DevCanvas Account Activation'
             email_body = f'Hi {user.username}, please use this link to verify your account: {activate_url}'
             email_message = EmailMessage(email_subject, email_body, to=[serializer.validated_data['email']])  # **Use validated email**

@@ -85,8 +85,8 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-          alert(`Welcome ${username}, you are now logged in`);
-          navigate("/");
+          toast.success(`Welcome ${username}, you are now logged in`);
+          navigate("/main");
         } else if (res.data.message) {
           alert(res.data.message);
         }
