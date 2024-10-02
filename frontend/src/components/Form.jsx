@@ -85,7 +85,9 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-          toast.success(`Welcome ${username}, you are now logged in`);
+          console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
+          console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
+          alert(`Welcome ${username}, you are now logged in`);
           navigate("/main");
         } else if (res.data.message) {
           alert(res.data.message);
@@ -134,7 +136,7 @@ function Form({ route, method }) {
 
       <div className="form-container">
         <input
-          className={`form-input ${
+          className={`input-div ${
             errors.username
               ? "input-error"
               : successMessages.username
@@ -157,7 +159,7 @@ function Form({ route, method }) {
         {method === "register" && (
           <>
             <input
-              className={`form-input ${
+              className={`input-div ${
                 errors.email
                   ? "input-error"
                   : successMessages.email
@@ -178,7 +180,7 @@ function Form({ route, method }) {
         )}
 
         <input
-          className={`form-input ${passwordError ? "input-error" : ""}`}
+          className={`input-div ${passwordError ? "input-error" : ""}`}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
