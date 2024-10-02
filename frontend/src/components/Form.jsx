@@ -18,16 +18,18 @@ function Form({ route, method }) {
     useValidation();
   const [passwordError, setPasswordError] = useState(null);
 
+  // Username validation should only happen for registration
   useEffect(() => {
-    if (username) {
+    if (method === "register" && username) {
       const delayDebounceFn = setTimeout(() => {
         validateUsername(username);
       }, 500);
 
       return () => clearTimeout(delayDebounceFn);
     }
-  }, [username, validateUsername]);
+  }, [username, validateUsername, method]);
 
+  // Email validation should only happen for registration
   useEffect(() => {
     if (method === "register" && email) {
       const delayDebounceFn = setTimeout(() => {
@@ -65,9 +67,9 @@ function Form({ route, method }) {
     e.preventDefault();
     setLoading(true);
 
+    // Validate only for register. Skip validation checks for login except passwordError.
     if (
-      errors.username ||
-      (method === "register" && errors.email) ||
+      (method === "register" && (errors.username || errors.email)) ||
       passwordError
     ) {
       toast.error("Please fix the validation errors before submitting.");
