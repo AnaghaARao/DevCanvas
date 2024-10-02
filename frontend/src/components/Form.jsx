@@ -5,7 +5,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/general.css";
 import "../styles/form.css";
 import { useValidation } from "../hooks/useValidation";
-import { toast } from "react-toastify";
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
@@ -18,7 +17,6 @@ function Form({ route, method }) {
     useValidation();
   const [passwordError, setPasswordError] = useState(null);
 
-  // Username validation should only happen for registration
   useEffect(() => {
     if (method === "register" && username) {
       const delayDebounceFn = setTimeout(() => {
@@ -29,7 +27,6 @@ function Form({ route, method }) {
     }
   }, [username, validateUsername, method]);
 
-  // Email validation should only happen for registration
   useEffect(() => {
     if (method === "register" && email) {
       const delayDebounceFn = setTimeout(() => {
@@ -67,12 +64,11 @@ function Form({ route, method }) {
     e.preventDefault();
     setLoading(true);
 
-    // Validate only for register. Skip validation checks for login except passwordError.
     if (
       (method === "register" && (errors.username || errors.email)) ||
       passwordError
     ) {
-      toast.error("Please fix the validation errors before submitting.");
+      alert("Please fix the validation errors before submitting.");
       setLoading(false);
       return;
     }
@@ -89,14 +85,20 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+<<<<<<< HEAD
           toast.success(`Welcome ${username}, you are now logged in`);
           navigate("/main");
+=======
+          alert(`Welcome ${username}, you are now logged in`);
+          navigate("/");
+>>>>>>> 5a6c1ae8c0423e92cf950e7c207d13586d7fd08e
         } else if (res.data.message) {
-          toast.info(res.data.message);
+          alert(res.data.message);
         }
       } else {
-        toast.success(res.data.message);
-        navigate("/authentication/login/");
+        alert(res.data.message);
+        console.log(res.data.message);
+        navigate("/main");
       }
     } catch (error) {
       if (error.response) {
@@ -104,19 +106,17 @@ function Form({ route, method }) {
 
         if (status === 400) {
           const messages = Object.values(data).flat();
-          messages.forEach((msg) => toast.error(msg));
+          messages.forEach((msg) => alert(msg));
         } else if (status === 409) {
           const messages = Object.values(data).flat();
-          messages.forEach((msg) => toast.error(msg));
+          messages.forEach((msg) => alert(msg));
         } else if (status === 500) {
-          toast.error(
-            "An internal server error occurred. Please try again later."
-          );
+          alert("An internal server error occurred. Please try again later.");
         } else {
-          toast.error("An unexpected error occurred. Please try again.");
+          alert("An unexpected error occurred. Please try again.");
         }
       } else {
-        toast.error(
+        alert(
           "Unable to connect to the server. Please check your internet connection and try again."
         );
       }
