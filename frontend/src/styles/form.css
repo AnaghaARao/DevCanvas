@@ -30,7 +30,37 @@
   margin-top: 5px;
 }
 
+.input-div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-div input {
+  border: 0;
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+}
+
+.input-div:has(input:focus) {
+  outline: 2px solid #ffffff;
+}
+
+.input-div input:active {
+  border: none;
+}
+
+.input-div span {
+  display: flex;
+  align-items: center;
+}
+
 .form-button {
   width: 95%;
   margin: 20px 0;
+}
+
+.mui-icons {
+  background-color: #797979;
 }
