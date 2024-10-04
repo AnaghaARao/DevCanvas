@@ -30,9 +30,9 @@ function App() {
           <Route
             path="/main"
             element={
-              <ProtectedRoute>
-                <Upload />
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              <Upload />
+              // </ProtectedRoute>
             }
           />
           <Route
