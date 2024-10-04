@@ -31,8 +31,10 @@ def upload_codebase(request):
             # send response based on docType
             if doc_upload.docType == 'summary':
                 return Response({'redirect':'summary_app', 'doc_id':doc_upload.id}, status=201)
-            elif doc_upload.docType == 'UML diagram':
-                return Response({'redirect':'uml_app', 'doc_id':doc_upload.id}, status=201)
+            elif doc_upload.docType == 'class diagram':
+                return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=201)
+            elif doc_upload.docType == 'sequence diagram':
+                return Response({'redirect':'sequenceDiagram', 'doc_id':doc_upload.id}, status=201)
             else:
                 return Response({'message':'Upload Successful, no specific route'}, status=201)
             
