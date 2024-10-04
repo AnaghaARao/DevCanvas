@@ -5,11 +5,19 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/general.css";
 import "../styles/form.css";
 import { useValidation } from "../hooks/useValidation";
+import PersonIcon from "@mui/icons-material/Person";
+import LockIcon from "@mui/icons-material/Lock";
+import EmailIcon from "@mui/icons-material/Email";
+import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
+import CancelSharpIcon from "@mui/icons-material/CancelSharp";
+import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
+import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const name = method === "login" ? "Sign In" : "Sign Up";
@@ -36,6 +44,10 @@ function Form({ route, method }) {
       return () => clearTimeout(delayDebounceFn);
     }
   }, [email, method, validateEmail]);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   const validatePassword = (password) => {
     const errors = [];
@@ -85,7 +97,9 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-          toast.success(`Welcome ${username}, you are now logged in`);
+          console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
+          console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
+          alert(`Welcome ${username}, you are now logged in`);
           navigate("/main");
         } else if (res.data.message) {
           alert(res.data.message);
@@ -133,31 +147,41 @@ function Form({ route, method }) {
       </div>
 
       <div className="form-container">
-        <input
-          className={`form-input ${
-            errors.username
-              ? "input-error"
-              : successMessages.username
-              ? "input-success"
-              : ""
-          }`}
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          required
-        />
-        {errors.username && (
-          <span className="error-text">{errors.username}</span>
-        )}
-        {successMessages.username && (
-          <span className="success-text">{successMessages.username}</span>
-        )}
+        <div className="input-div">
+          <PersonIcon />
+          <input
+            className={`${
+              errors.username
+                ? "input-error"
+                : successMessages.username
+                ? "input-success"
+                : ""
+            }`}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            required
+          />
+
+          {errors.username && (
+            <span title={errors.username}>
+              <CancelSharpIcon />
+            </span>
+          )}
+
+          {successMessages.username && (
+            <span title={successMessages.username}>
+              <CheckCircleSharpIcon />
+            </span>
+          )}
+        </div>
 
         {method === "register" && (
-          <>
+          <div className="input-div">
+            <EmailIcon />
             <input
-              className={`form-input ${
+              className={`${
                 errors.email
                   ? "input-error"
                   : successMessages.email
@@ -170,21 +194,39 @@ function Form({ route, method }) {
               placeholder="Email"
               required
             />
-            {errors.email && <span className="error-text">{errors.email}</span>}
-            {successMessages.email && (
-              <span className="success-text">{successMessages.email}</span>
+            {errors.email && (
+              <span title={errors.email}>
+                <CancelSharpIcon />
+              </span>
             )}
-          </>
+            {successMessages.email && (
+              <span title={successMessages.email}>
+                <CheckCircleSharpIcon />
+              </span>
+            )}
+          </div>
         )}
-
-        <input
-          className={`form-input ${passwordError ? "input-error" : ""}`}
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
+        <div className="input-div">
+          <LockIcon />
+          <input
+            className={`${passwordError ? "input-error" : ""}`}
+            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+          />
+          <span
+            onClick={togglePasswordVisibility}
+            style={{ cursor: "pointer" }}
+          >
+            {showPassword ? (
+              <VisibilityOffSharpIcon style={{ color: "red" }} />
+            ) : (
+              <VisibilitySharpIcon style={{ color: "red" }} />
+            )}
+          </span>
+        </div>
 
         <button className="btn form-button" type="submit" disabled={loading}>
           {loading ? "Processing..." : name}

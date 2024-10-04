@@ -3,23 +3,33 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 function ActivateAccount() {
+  const base_url = import.meta.env.VITE_API_URL;
   const { uidb64, token } = useParams();
   const navigate = useNavigate();
   const [activationMessage, setActivationMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/activate/${uidb64}/${token}/`)
-      .then((response) => {
-        setActivationMessage(response.data.message);
-        navigate("/authentication/login"); // Redirect to login page after successful activation
-      })
-      .catch((error) => {
-        setActivationMessage(
-          error.response?.data?.error || "Activation failed"
+    const verifyAccount = async () => {
+      try {
+        const response = await axios.get(
+          `${base_url}/authentication/activate/${uidb64}/${token}/`
         );
-        alert(error.response?.data?.error || "Activation failed");
-      });
+        setActivationMessage(response.data.message);
+        alert(response.data.message);
+        navigate("/authentication/login");
+      } catch (error) {
+        const errorMessage = error.response?.data?.error || "Activation failed";
+        setActivationMessage(errorMessage);
+        alert(errorMessage);
+      }
+    };
+
+    if (uidb64 && token) {
+      verifyAccount();
+    } else {
+      alert("Invalid activation link.");
+      navigate("/authentication/login");
+    }
   }, [uidb64, token, navigate]);
 
   return (

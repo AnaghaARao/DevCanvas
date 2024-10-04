@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import "../styles/general.css";
+import "../styles/upload.css";
+import BoltIcon from "@mui/icons-material/Bolt";
 
 const Upload = () => {
   const [file, setFile] = useState(null);
@@ -58,56 +61,65 @@ const Upload = () => {
 
   return (
     <form onSubmit={handleSubmit} className="upload-form">
-      <div>
-        <label htmlFor="fileInput">Upload File:</label>
-        <input
-          type="file"
-          id="fileInput"
-          onChange={handleFileChange}
-          accept=".txt, .docx, .pdf, .cpp, .java, .py" // Adjust as per allowed file types
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="languageInput">Programming Language:</label>
-        <input
-          type="text"
-          id="languageInput"
-          value={language}
-          onChange={handleLanguageChange}
-          placeholder="Enter programming language"
-          required
-        />
-      </div>
-
-      <div>
-        <label>Documentation Type:</label>
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              name="umlDiagrams"
-              checked={docTypes.umlDiagrams}
-              onChange={handleCheckboxChange}
-            />
-            UML Diagrams
-          </label>
+      <h2>Upload Files</h2>
+      <hr className="divider" />
+      <div className="upload-section">
+        <div className="upload-files">
+          <label htmlFor="fileInput">Upload File:</label>
+          <input
+            type="file"
+            id="fileInput"
+            onChange={handleFileChange}
+            className="input-div"
+            accept=".txt, .docx, .pdf, .cpp, .java, .py" // Adjust as per allowed file types
+            required
+          />
         </div>
-        <div>
-          <label>
+        <div className="upload-info">
+          <div className="language">
+            <label htmlFor="languageInput" className="label-head">
+              Programming Language:
+            </label>
             <input
-              type="checkbox"
-              name="codeSummary"
-              checked={docTypes.codeSummary}
-              onChange={handleCheckboxChange}
+              type="text"
+              id="languageInput"
+              value={language}
+              onChange={handleLanguageChange}
+              placeholder="Enter programming language"
+              className="input-div"
+              required
             />
-            Code Summary
-          </label>
+          </div>
+
+          <div className="documentation">
+            <label className="label-head">Documentation Type:</label>
+            <div className="checkbox-inp">
+              <input
+                type="checkbox"
+                name="umlDiagrams"
+                checked={docTypes.umlDiagrams}
+                onChange={handleCheckboxChange}
+                className="checkbox"
+              />
+              <p>UML Digrams</p>
+            </div>
+            <div className="checkbox-inp">
+              <input
+                type="checkbox"
+                name="codeSummary"
+                checked={docTypes.codeSummary}
+                onChange={handleCheckboxChange}
+                className="checkbox"
+              />
+              <p>Code Summary</p>
+            </div>
+          </div>
+
+          <button type="submit" className="btn">
+            Generate Now <BoltIcon />
+          </button>
         </div>
       </div>
-
-      <button type="submit">Generate Now</button>
     </form>
   );
 };

@@ -50,6 +50,23 @@
   background-color: #9f16a9;
 }
 
+.divider {
+  border: none;
+  height: 2px;
+  background-color: #3a3a3a;
+  margin: 2px 0;
+  width: 80%;
+}
+
+.input-div {
+  width: 95%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #5b5b5b;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 @media only screen and (max-width: 600px) {
   .maindiv {
     width: 100vw; /* Full viewport width */
