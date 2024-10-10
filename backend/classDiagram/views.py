@@ -28,6 +28,7 @@ def generate_class_diagram(request):
         uploaded_file_path = file_nest.file.path  # Full path to the uploaded file
         author = file_nest.author
         language = file_nest.language
+        original_file_name = os.path.basename(uploaded_file_path)
 
         # Generate the class diagram
         class_output_path = generate_class_diagram(uploaded_file_path)  # Pass the uploaded file path to the Class generator
@@ -35,6 +36,11 @@ def generate_class_diagram(request):
         # Create a path to store the class diagram at uploads/<author>/
         class_storage_dir = os.path.join(settings.MEDIA_ROOT, 'uploads', author)
         os.makedirs(class_storage_dir, exist_ok=True)
+
+        # Create the new filename using the desired format
+        doc_type = "class_diagram"  # or whatever the documentation type is
+        new_file_name = f"{original_file_name}_{doc_type}_{doc_id}.pdf"  # Use the appropriate file extension
+        class_output_file_path = os.path.join(class_storage_dir, new_file_name)
         class_output_file_path = os.path.join(class_storage_dir, os.path.basename(class_output_path))
 
         # Open the generated diagram as a file

@@ -14,4 +14,4 @@ class ClassDiagram(models.Model):
     generated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'UML Diagram for {self.language} by {self.author}'
+        return f'Class Diagram for {self.language} by {self.author}'
