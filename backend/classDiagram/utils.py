@@ -1,12 +1,12 @@
 import os
-import javalang
 import pydot
+import javalang
 
-
+# Function to analyze Java file and extract classes and methods
 def analyze_java_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
-    
+
     try:
         tree = javalang.parse.parse(content)
     except javalang.parser.JavaSyntaxError:
@@ -15,7 +15,7 @@ def analyze_java_file(file_path):
 
     classes = {}
     methods = {}
-    
+
     for path, node in tree.filter(javalang.tree.ClassDeclaration):
         class_name = node.name
         class_methods = [m.name for m in node.methods]
@@ -26,12 +26,13 @@ def analyze_java_file(file_path):
             'base_class': base_class,
             'interfaces': interfaces
         }
-        
+
         for method in node.methods:
             methods[f"{class_name}.{method.name}"] = analyze_method_flow(method)
-    
+
     return classes, methods
 
+# Function to analyze method flow for flowchart
 def analyze_method_flow(method):
     flow = []
     for path, node in method.filter(javalang.tree.Statement):
@@ -53,34 +54,36 @@ def analyze_method_flow(method):
             flow.append(('loop', f'do while ({node.condition})'))
     return flow
 
-def generate_java_class_diagram(all_classes):
+# Function to generate class diagram using pydot
+def generate_class_diagram(all_classes):
     graph = pydot.Dot(graph_type='digraph')
     graph.set_rankdir('TB')
     graph.set_size('12,12')
-    
+
     for file_name, classes in all_classes.items():
         for class_name, class_info in classes.items():
             methods = class_info['methods']
             method_str = '\\n'.join(methods)
             node = pydot.Node(class_name, label=f'{{{class_name}|{method_str}}}', shape='record')
             graph.add_node(node)
-    
+
     for file_name, classes in all_classes.items():
         for class_name, class_info in classes.items():
             if class_info['base_class']:
                 edge = pydot.Edge(class_info['base_class'], class_name, label='extends')
                 graph.add_edge(edge)
-    
+
     return graph
 
+# Function to generate flowchart using pydot
 def generate_flowchart(method_name, flow):
     graph = pydot.Dot(graph_type='digraph')
     graph.set_rankdir('TB')
     graph.set_size('12,12')
-    
+
     graph.add_node(pydot.Node('start', label='Start', shape='ellipse'))
     prev_node = 'start'
-    stack = []  # Stack to handle nested structures
+    stack = []
 
     for i, (step_type, step_info) in enumerate(flow):
         node_id = f'node_{i}'
@@ -113,31 +116,41 @@ def generate_flowchart(method_name, flow):
 
     return graph
 
-def safe_write_png(graph, filename):
+# Utility function to generate unique filenames and handle file paths
+def safe_write_png(graph, output_dir, file_name):
     try:
-        graph.write_png(filename)
-        print(f"Generated: {filename}")
+        output_path = os.path.join(output_dir, file_name)
+        graph.write_png(output_path)
+        print(f"Generated: {output_path}")
+        return output_path
     except Exception as e:
-        print(f"Error writing {filename}: {str(e)}")
-        print(f"Make sure you have write permissions in the output directory")
-
-def process_file(file_path, language):
-    if language.lower() == 'java':
-        classes, methods = analyze_java_file(file_path)
-        if classes:
-            # Generate class diagram
-            class_diagram = generate_java_class_diagram({os.path.basename(file_path): classes})
-            class_output_path = 'Java_class_diagram.png'
-            safe_write_png(class_diagram, class_output_path)
-        
-        if methods:
-            # Generate flowcharts for each method
-            for method_name, flow in methods.items():
-                chart = generate_flowchart(method_name, flow)
-                chart_output_path = f'Java_flowchart_{method_name}.png'
-                safe_write_png(chart, chart_output_path)
-                
-        return class_output_path  # Return the path of the generated class diagram
-    else:
-        print(f"Unsupported language: {language}")
+        print(f"Error writing {output_path}: {str(e)}")
         return None
+
+# Main process function for file handling, class diagram, and flowchart generation
+def process_file(file_path, language, author, doc_id):
+    if language.lower() != 'java':
+        return None  # If not Java, exit early
+    
+    # Analyze Java file for classes and methods
+    classes, methods = analyze_java_file(file_path)
+
+    if not classes:
+        return None
+
+    # Create output directory based on the author
+    output_dir = os.path.join('uploads', author)
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Generate class diagram and save it
+    class_diagram_graph = generate_class_diagram({os.path.basename(file_path): classes})
+    class_file_name = f"{os.path.basename(file_path)}_class_diagram_{doc_id}.png"
+    class_diagram_path = safe_write_png(class_diagram_graph, output_dir, class_file_name)
+
+    # Generate flowcharts for each method and save them
+    for method_name, flow in methods.items():
+        flowchart_graph = generate_flowchart(method_name, flow)
+        flowchart_file_name = f"{os.path.basename(file_path)}_flowchart_{method_name}_{doc_id}.png"
+        safe_write_png(flowchart_graph, output_dir, flowchart_file_name)
+
+    return class_diagram_path  # Returning class diagram path for further processing
