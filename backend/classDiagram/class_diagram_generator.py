@@ -1,5 +1,6 @@
 import os
 import pydot
+import ast
 import esprima
 import javalang
 
@@ -305,3 +306,60 @@ class JavaScriptDiagramGenerator:
                 return [{'error': f"Error writing flowchart for {method_name}", 'details': str(e)}]
 
         return flowchart_paths
+    
+# class to generate python codebase class diagram and flow charts
+class PythonDiagramGenerator:
+    def __init__(self, file_path, author, doc_id):
+        self.file_path = file_path
+        self.author = author
+        self.doc_id = doc_id
+
+    def analyze_file(self):
+        if not os.path.exists(self.file_path):
+            return [{'error': f"Cannot find {self.file_path}", 'details': 'File not found'}], None
+
+        try:
+            with open(self.file_path, 'r', encoding='utf-8') as file:
+                tree = ast.parse(file.read())
+        except Exception as e:
+            return [{'error': f"Syntax error in file: {self.file_path}", 'details': str(e)}], None
+
+        classes = self.analyze_classes(tree)
+        return classes, {}
+
+    def analyze_classes(self, tree):
+        classes = {}
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                class_name = node.name
+                methods = [m.name for m in node.body if isinstance(m, ast.FunctionDef)]
+                base_classes = [b.id for b in node.bases if isinstance(b, ast.Name)]
+                classes[class_name] = {'methods': methods, 'base_classes': base_classes}
+        return classes
+
+    def save_diagrams(self, classes, _methods):
+        class_diagram_path = self.generate_class_diagram(classes)
+        return class_diagram_path, []  # No flowchart generation for now
+
+    def generate_class_diagram(self, classes):
+        graph = pydot.Dot(graph_type='digraph')
+        graph.set_rankdir('TB')
+        graph.set_size('8,8')
+
+        for class_name, class_info in classes.items():
+            methods = class_info['methods']
+            method_str = '\\n'.join(methods)
+            node = pydot.Node(class_name, label=f'{{{class_name}|{method_str}}}', shape='record')
+            graph.add_node(node)
+
+            for base_class in class_info['base_classes']:
+                if base_class in classes:
+                    edge = pydot.Edge(base_class, class_name, label='inherits')
+                    graph.add_edge(edge)
+
+        output_path = f"{self.author}_{self.doc_id}_python_class_diagram.png"
+        try:
+            graph.write_png(output_path)
+            return output_path
+        except Exception as e:
+            return [{'error': 'Error writing class diagram', 'details': str(e)}]
