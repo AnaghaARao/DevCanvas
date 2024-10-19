@@ -32,7 +32,7 @@ def generate_class_diagram_view(request):
             class_diagram_path = process_file(uploaded_file_path, language, author, doc_id)
 
             if class_diagram_path is None:
-                return Response({'error': f'Class diagram generation failed for {language}'}, status=500)
+                return Response({'error': f'Class diagram generation failed for {doc_id}'}, status=500)
 
             # Store the class diagram in the database
             with open(class_diagram_path, 'rb') as generated_file:

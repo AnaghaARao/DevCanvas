@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication',
     'uploadMate',
+    'summaryGen',
+    'classDiagram',
     'corsheaders',
 ]
 
