@@ -67,10 +67,15 @@
 
 @media only screen and (max-width: 600px) {
   .form-container {
-    margin: 30px;
+    margin: 20px 30px;
+    padding: 15px 20px;
   }
 
   .input-div input {
     font-size: 0.8rem;
+  }
+
+  .form-button {
+    margin: 10px;
   }
 }
