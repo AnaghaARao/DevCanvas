@@ -7,6 +7,8 @@ from .serializers import DocumentUploadSerializer
 from django.http import JsonResponse
 import os
 
+from summaryGen.views import generate_summary_view
+
 # Create your views here.
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -41,8 +43,7 @@ def upload_codebase(request):
                 return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
             elif doc_upload.docType == 'sequence diagram':
                 return Response({'redirect':'sequenceDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({'message':'Upload Successful, no specific route'}, status=status.HTTP_201_CREATED)
-            
+            elif doc_upload.docType == 'flowchart':
+                return Response({'redirect':'flowchart', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
