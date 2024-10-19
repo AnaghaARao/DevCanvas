@@ -155,3 +155,7 @@ from decouple import config
 
 # Example of using .env variables
 GENERATIVE_AI_API_KEY = config('GENERATIVE_AI_API_KEY')
+
+# authentication token storage stuff:
+AUTH_USER_MODEL = 'authentication.CustomUser'
+
