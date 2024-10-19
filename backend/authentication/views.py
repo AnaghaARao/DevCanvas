@@ -115,11 +115,12 @@ class LoginView(APIView):
                         'access': str(refresh.access_token),  # Include access token
                         'refresh': str(refresh),  # Include refresh token
                     }, status=status.HTTP_200_OK)
-
-                return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
-            return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
