@@ -59,7 +59,6 @@ const Upload = () => {
           alert("File uploaded successfully.");
         }
       } else {
-        // Handle error responses from the backend
         if (data.error) {
           if (data.error === "No file uploaded") {
             alert("Error: No file uploaded. Please try again.");
@@ -71,7 +70,6 @@ const Upload = () => {
             alert(`Error: ${data.error}`);
           }
         } else if (data.errors) {
-          // Handle validation errors
           console.error(data.errors);
           alert("Validation errors occurred. Please check the form data.");
         }
