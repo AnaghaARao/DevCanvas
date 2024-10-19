@@ -13,3 +13,5 @@ pydot
 javalang
 esprima
 python-decouple
+reportlab
+google.generativeai
