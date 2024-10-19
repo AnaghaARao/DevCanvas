@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'authentication',
-    # 'uploadMate',
+    'uploadMate',
     # 'summaryGen',
     # 'classDiagram',
     'corsheaders',
