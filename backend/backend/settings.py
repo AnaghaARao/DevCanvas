@@ -149,3 +149,9 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
 ]
+
+# GEN AI API KEY STUFF
+from decouple import config
+
+# Example of using .env variables
+GENERATIVE_AI_API_KEY = config('GENERATIVE_AI_API_KEY')
