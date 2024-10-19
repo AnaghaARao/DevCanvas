@@ -50,6 +50,7 @@ const Upload = () => {
       const data = await response.json();
 
       if (response.ok) {
+        console.log(data.doc_id);
         if (data.redirect) {
           if (data.redirect === "summaryGen") {
             alert("Summary generated successfully!");
