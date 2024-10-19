@@ -1,9 +1,10 @@
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from django.conf import settings
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyA10A05Rg49QOjQXTClE0m-82jNnMudh7k")
+genai.configure(api_key=settings.GENERATIVE_AI_API_KEY)
 
 # Read the additional code file content
 def read_code_file(file_path):

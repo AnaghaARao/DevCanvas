@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 import json
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-from django.contrib.auth.models import User
+from .models import CustomUser as User
 from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -70,7 +69,6 @@ class RegistrationView(APIView):
 
 class VerificationView(APIView):
     def get(self, request, uidb64, token):
-        # **Use the serializer for verification**
         serializer = UserVerificationSerializer(data={'uidb64': uidb64, 'token': token})
 
         if serializer.is_valid():
@@ -87,30 +85,36 @@ class VerificationView(APIView):
                 return Response({'message': 'Account already active'}, status=status.HTTP_200_OK)
 
             user.is_active = True
+            user.auth_token = token  # Save the token in the user model
             user.save()
+
             return Response({'message': 'Account activated successfully'}, status=status.HTTP_200_OK)
         except Exception as ex:
             return Response({'error': 'Activation Failed'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     def post(self, request):
-        # **Use the serializer for login**
         data = json.loads(request.body)
-        serializer = UserLoginSerializer(data=data)  # **Serializer for login**
+        serializer = UserLoginSerializer(data=data)
 
         if serializer.is_valid():
-            username = serializer.validated_data['username']  # **Use validated username**
-            password = serializer.validated_data['password']  # **Use validated password**
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
             user = auth.authenticate(username=username, password=password)
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return Response({'message': f'Welcome {user.username}, you are now logged in'}, status=status.HTTP_200_OK)
+                    token = user.auth_token  # Retrieve the stored token
+                    return Response({
+                        'message': f'Welcome {user.username}, you are now logged in',
+                        'token': token  # Include the token in the response
+                    }, status=status.HTTP_200_OK)
 
                 return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
             return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LogoutView(APIView):
     def post(self, request):
