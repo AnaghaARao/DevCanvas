@@ -4,4 +4,4 @@ from .models import FileNest
 class DocumentUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileNest
-        fields = ['language','docType', 'file', 'author']
+        fields = ['language','docType', 'file']
