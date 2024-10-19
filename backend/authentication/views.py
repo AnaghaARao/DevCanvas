@@ -116,8 +116,10 @@ class LoginView(APIView):
                         'refresh': str(refresh),  # Include refresh token
                     }, status=status.HTTP_200_OK)
                 else:
+                    print("Account is not active. Please check your registered email")
                     return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
             else:
+                print("Invalid Credentials! Try again")
                 return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
