@@ -146,8 +146,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # react stuff
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Add your frontend URL here
+    # Add any other allowed origins as needed
 ]
 
 # GEN AI API KEY STUFF
