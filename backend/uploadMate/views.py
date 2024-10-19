@@ -30,7 +30,7 @@ def upload_codebase(request):
             
             # send response based on docType
             if doc_upload.docType == 'summary':
-                return Response({'redirect':'summary_app', 'doc_id':doc_upload.id}, status=201)
+                return Response({'redirect':'summaryGen', 'doc_id':doc_upload.id}, status=201)
             elif doc_upload.docType == 'class diagram':
                 return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=201)
             elif doc_upload.docType == 'sequence diagram':
