@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.views import View
 import json
 from rest_framework.response import Response
-from .models import CustomUser as User
+# from .models import CustomUser as User
+from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -16,6 +17,8 @@ from django.contrib import auth
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 # **Import the serializers**
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserVerificationSerializer
@@ -85,7 +88,7 @@ class VerificationView(APIView):
                 return Response({'message': 'Account already active'}, status=status.HTTP_200_OK)
 
             user.is_active = True
-            user.auth_token = token  # Save the token in the user model
+            # user.auth_token = token  # Save the token in the user model
             user.save()
 
             return Response({'message': 'Account activated successfully'}, status=status.HTTP_200_OK)
@@ -104,10 +107,13 @@ class LoginView(APIView):
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    token = user.auth_token  # Retrieve the stored token
+                    refresh = RefreshToken.for_user(user)
+                    # token = user.auth_token  # Retrieve the stored token
                     return Response({
                         'message': f'Welcome {user.username}, you are now logged in',
-                        'token': token  # Include the token in the response
+                        # 'token': token  # Include the token in the response
+                        'access': str(refresh.access_token),  # Include access token
+                        'refresh': str(refresh),  # Include refresh token
                     }, status=status.HTTP_200_OK)
 
                 return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
