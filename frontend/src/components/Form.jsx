@@ -113,10 +113,7 @@ function Form({ route, method }) {
       if (error.response) {
         const { status, data } = error.response;
 
-        if (status === 400) {
-          const messages = Object.values(data).flat();
-          messages.forEach((msg) => alert(msg));
-        } else if (status === 409) {
+        if (status === 400 || status === 403 || status === 409) {
           const messages = Object.values(data).flat();
           messages.forEach((msg) => alert(msg));
         } else if (status === 500) {
