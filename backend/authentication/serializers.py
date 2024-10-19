@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from .models import CustomUser
 import re
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser  # Use CustomUser instead of User
         fields = ['username', 'email', 'password']
 
     def validate_password(self, value):
@@ -28,7 +29,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = User(
+        user = CustomUser(
             username=validated_data['username'],
             email=validated_data['email'],
         )
