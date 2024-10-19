@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/general.css";
 import "../styles/upload.css";
 import BoltIcon from "@mui/icons-material/Bolt";
@@ -6,10 +7,8 @@ import BoltIcon from "@mui/icons-material/Bolt";
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [language, setLanguage] = useState("");
-  const [docTypes, setDocTypes] = useState({
-    umlDiagrams: false,
-    codeSummary: false,
-  });
+  const [docType, setDocType] = useState("");
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -19,17 +18,13 @@ const Upload = () => {
     setLanguage(e.target.value);
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setDocTypes((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
+  const handleDocTypeChange = (e) => {
+    setDocType(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file || !language) {
+    if (!file || !language || !docType) {
       alert("Please fill all fields and upload a file");
       return;
     }
@@ -37,25 +32,53 @@ const Upload = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("language", language);
-    formData.append("umlDiagrams", docTypes.umlDiagrams);
-    formData.append("codeSummary", docTypes.codeSummary);
-    formData.append("dateTime", new Date().toISOString());
-    formData.append("author", "Anjali Uday Bhatkal"); // Assuming author is hardcoded, you can make this dynamic if needed.
+    formData.append("docType", docType);
 
     try {
-      const response = await fetch("/uploadmate/upload/", {
+      const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {
         method: "POST",
         body: formData,
       });
+
       const data = await response.json();
 
       if (response.ok) {
-        console.log("File uploaded successfully");
+        if (data.redirect) {
+          if (data.redirect === "summaryGen") {
+            alert("Summary generated successfully!");
+          } else if (data.redirect === "classDiagram") {
+            alert("Class Diagram generated successfully!");
+          } else if (data.redirect === "sequenceDiagram") {
+            alert("Sequence Diagram generated successfully!");
+          } else if (data.redirect === "flowchart") {
+            alert("Flowchart generated successfully!");
+          } else {
+            alert("File uploaded successfully, no specific route to redirect.");
+          }
+        } else {
+          alert("File uploaded successfully.");
+        }
       } else {
-        console.error(data.error);
+        // Handle error responses from the backend
+        if (data.error) {
+          if (data.error === "No file uploaded") {
+            alert("Error: No file uploaded. Please try again.");
+          } else if (data.error === "Unsupported file type") {
+            alert(
+              "Error: Unsupported file type. Please upload a supported file."
+            );
+          } else {
+            alert(`Error: ${data.error}`);
+          }
+        } else if (data.errors) {
+          // Handle validation errors
+          console.error(data.errors);
+          alert("Validation errors occurred. Please check the form data.");
+        }
       }
     } catch (error) {
       console.error("Error during file upload:", error);
+      alert("Error during file upload, please try again.");
     }
   };
 
@@ -92,8 +115,10 @@ const Upload = () => {
           </div>
 
           <div className="documentation">
-            <label className="label-head">Documentation Type:</label>
-            <div className="checkbox-inp">
+            <label htmlFor="docTypeSelect" className="label-head">
+              Documentation Type:
+            </label>
+            {/* <div className="checkbox-inp">
               <input
                 type="checkbox"
                 name="umlDiagrams"
@@ -112,7 +137,20 @@ const Upload = () => {
                 className="checkbox"
               />
               <p>Code Summary</p>
-            </div>
+            </div> */}
+            <select
+              id="docTypeSelect"
+              value={docType}
+              onChange={handleDocTypeChange}
+              className="input-div"
+              required
+            >
+              <option value="">Select documentation type</option>
+              <option value="summary">Summary</option>
+              <option value="class diagram">Class Diagram</option>
+              <option value="sequence diagram">Sequence Diagram</option>
+              <option value="flowchart">Flowchart</option>
+            </select>
           </div>
 
           <button type="submit" className="btn">
