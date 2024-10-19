@@ -3,12 +3,18 @@ import { useNavigate } from "react-router-dom";
 import "../styles/general.css";
 import "../styles/upload.css";
 import BoltIcon from "@mui/icons-material/Bolt";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../store/actions";
 
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [language, setLanguage] = useState("");
   const [docType, setDocType] = useState("");
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  console.log("Current user from Redux:", user);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -33,6 +39,7 @@ const Upload = () => {
     formData.append("file", file);
     formData.append("language", language);
     formData.append("docType", docType);
+    formData.append("author", user);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {

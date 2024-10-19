@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/general.css";
-import "../styles/form.css";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/actions";
 import { useValidation } from "../hooks/useValidation";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
@@ -12,6 +12,8 @@ import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
 import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
 import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
+import "../styles/general.css";
+import "../styles/form.css";
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
@@ -19,11 +21,14 @@ function Form({ route, method }) {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState(null);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const name = method === "login" ? "Sign In" : "Sign Up";
   const { errors, successMessages, validateUsername, validateEmail } =
     useValidation();
-  const [passwordError, setPasswordError] = useState(null);
 
   useEffect(() => {
     if (method === "register" && username) {
@@ -99,12 +104,15 @@ function Form({ route, method }) {
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
           console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
           console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
+
+          dispatch(setUser(username));
           alert(`Welcome ${username}, you are now logged in`);
           navigate("/main");
         } else if (res.data.message) {
           alert(res.data.message);
         }
       } else {
+        // dispatch(setUser(username));
         alert(res.data.message);
         console.log(res.data.message);
         navigate("/main");
