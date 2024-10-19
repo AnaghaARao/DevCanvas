@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'authentication',
     'uploadMate',
     'summaryGen',
-    # 'classDiagram',
+    'classDiagram',
     'corsheaders',
 ]
 
