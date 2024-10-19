@@ -67,6 +67,10 @@
   box-sizing: border-box;
 }
 
+.mui-icons {
+  background-color: #161616;
+}
+
 @media only screen and (max-width: 600px) {
   .maindiv {
     width: 100vw; /* Full viewport width */
@@ -75,7 +79,7 @@
   .navbar {
     height: auto; /* Adjust height for smaller screens */
     padding: 10px;
-    width: 100vw; /* Full viewport width */
+    width: 90vw; /* Full viewport width */
     margin: 1rem; /* Remove margins on mobile */
     font-size: 0.7rem;
   }
@@ -83,12 +87,16 @@
   .btn {
     width: 100%; /* Make the button take full width on mobile */
     padding: 8px 20px; /* Reduce padding for better fit */
-    font-size: medium; /* Adjust font size for readability on small screens */
+    font-size: 0.8rem; /* Adjust font size for readability on small screens */
+  }
+
+  h2 {
+    font-size: 1rem;
   }
 
   h1,
   p {
-    font-size: 1.2rem; /* Scale down text for smaller screens */
+    font-size: 0.8rem; /* Scale down text for smaller screens */
     text-align: center; /* Center text for a cleaner look on mobile */
   }
 

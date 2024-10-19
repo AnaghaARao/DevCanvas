@@ -64,3 +64,13 @@
 .mui-icons {
   background-color: #797979;
 }
+
+@media only screen and (max-width: 600px) {
+  .form-container {
+    margin: 30px;
+  }
+
+  .input-div input {
+    font-size: 0.8rem;
+  }
+}
