@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import json
+from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import check_password
 from rest_framework.response import Response
 # from .models import CustomUser as User
 from django.contrib.auth.models import User
@@ -103,26 +105,38 @@ class LoginView(APIView):
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
-            user = auth.authenticate(username=username, password=password)
-            if user:
-                if user.is_active:
-                    auth.login(request, user)
-                    refresh = RefreshToken.for_user(user)
-                    # token = user.auth_token  # Retrieve the stored token
-                    return Response({
-                        'message': f'Welcome {user.username}, you are now logged in',
-                        # 'token': token  # Include the token in the response
-                        'access': str(refresh.access_token),  # Include access token
-                        'refresh': str(refresh),  # Include refresh token
-                    }, status=status.HTTP_200_OK)
+
+            try:
+                # First, check if the user with the given username exists
+                user = User.objects.get(username=username)
+
+                # Check if the password is correct
+                if check_password(password, user.password):
+                    if user.is_active:
+                        # If user is active, log them in and generate tokens
+                        auth.login(request, user)
+                        refresh = RefreshToken.for_user(user)
+                        return Response({
+                            'message': f'Welcome {user.username}, you are now logged in',
+                            'access': str(refresh.access_token),  # Include access token
+                            'refresh': str(refresh),  # Include refresh token
+                        }, status=status.HTTP_200_OK)
+                    else:
+                        # If user is inactive, send a message to activate the account
+                        return Response(
+                            {'error': 'Account is not active. Please check your registered email to activate your account.'},
+                            status=status.HTTP_403_FORBIDDEN
+                        )
                 else:
-                    print("Account is not active. Please check your registered email")
-                    return Response({'error': 'Account is not active. Please check your registered email'}, status=status.HTTP_403_FORBIDDEN)
-            else:
-                print("Invalid Credentials! Try again")
+                    # If password is incorrect, return an invalid credentials message
+                    return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
+
+            except User.DoesNotExist:
+                # If the user doesn't exist, return an invalid credentials message
                 return Response({'error': 'Invalid Credentials! Try again'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # If serializer is invalid, return validation errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
