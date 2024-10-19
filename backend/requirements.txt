@@ -12,3 +12,4 @@ validate-email
 pydot
 javalang
 esprima
+python-decouple
