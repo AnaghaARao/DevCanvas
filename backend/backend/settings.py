@@ -147,7 +147,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # react stuff
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Add your frontend URL here
+    "http://localhost:5175",  # Add your frontend URL here
     # Add any other allowed origins as needed
 ]
 
