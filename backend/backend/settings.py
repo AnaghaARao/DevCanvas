@@ -158,5 +158,5 @@ from decouple import config
 GENERATIVE_AI_API_KEY = config('GENERATIVE_AI_API_KEY')
 
 # authentication token storage stuff:
-AUTH_USER_MODEL = 'authentication.CustomUser'
+# AUTH_USER_MODEL = 'authentication.CustomUser'
 
