@@ -71,9 +71,7 @@ const Upload = () => {
           if (data.error === "No file uploaded") {
             alert("Error: No file uploaded. Please try again.");
           } else if (data.error === "Unsupported file type") {
-            alert(
-              "Error: Unsupported file type. Please upload a supported file."
-            );
+            alert("Unsupported file type. Please upload a supported file.");
           } else {
             alert(`Error: ${data.error}`);
           }

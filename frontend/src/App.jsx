@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import "./styles/general.css";
 import "./styles/landing.css";
 import ActivateAccount from "./pages/ActivateAccount";
+import OutputPage from "./pages/OutputPage";
 
 function Logout() {
   localStorage.clear();
@@ -36,6 +37,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/output" element={<OutputPage />} />
           <Route
             path="/authentication/activate/:uidb64/:token"
             element={<ActivateAccount />}

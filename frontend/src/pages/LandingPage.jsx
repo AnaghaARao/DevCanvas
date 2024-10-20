@@ -1,15 +1,25 @@
 import React from "react";
-import "../styles/landing.css";
+import { useNavigate } from "react-router-dom";
 import lp from "../../src/landing.png";
+import "../styles/landing.css";
 
 function LandingPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="lp-container">
       <div className="lp-sec1">
         <div className="lp-content">
           <h1>Organize your code and visualize its structure!</h1>
           <p>Generate UML diagrams and summary for code files.</p>
-          <button className="btn">Start Now</button>
+          <button
+            className="btn"
+            onClick={() => {
+              navigate("/authentication/register");
+            }}
+          >
+            Start Now
+          </button>
         </div>
         <img src={lp} alt="Landing page" className="lp-img" />
       </div>

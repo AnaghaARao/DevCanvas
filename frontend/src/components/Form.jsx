@@ -102,8 +102,8 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-          console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
-          console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
+          // console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
+          // console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
 
           dispatch(setUser(username));
           alert(`Welcome ${username}, you are now logged in`);
