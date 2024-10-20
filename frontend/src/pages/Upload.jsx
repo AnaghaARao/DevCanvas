@@ -66,6 +66,7 @@ const Upload = () => {
         } else {
           alert("File uploaded successfully.");
         }
+        navigate("/output");
       } else {
         if (data.error) {
           if (data.error === "No file uploaded") {
