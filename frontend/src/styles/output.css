@@ -104,8 +104,40 @@ span {
   margin: 2rem 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .feedback-container h3 {
   font-weight: lighter;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.feedback-container button {
+  margin-top: 5px;
+  font-size: 1rem;
+  background-color: #83158b;
+  width: 30%;
+}
+
+.star-icons {
+  fill: #f3bf03 !important;
+}
+
+.toolbar-icons {
+  fill: #eddfdf !important;
+}
+
+.toolbar-icons:hover {
+  fill: #9f16a9 !important;
+}
+
+.toolbar-icon button:hover {
+  background-color: unset !important;
 }
