@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { getFilePlugin } from "@react-pdf-viewer/get-file";
@@ -15,8 +15,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
 
 const Output = () => {
+  const location = useLocation();
   const { docType, docId } = useParams();
-  const [fileUrl, setFileUrl] = useState("/Class_Diagram_Report.pdf");
+  const [fileUrl, setFileUrl] = useState("");
   const [rating, setRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const getFilePluginInstance = getFilePlugin();
@@ -37,26 +38,14 @@ const Output = () => {
   };
 
   useEffect(() => {
-    // const fetchFile = async () => {
-    //   try {
-    //     const response = await fetch(
-    //       `http://127.0.0.1:8000/uploadmate/download/${docId}/`
-    //     );
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //       setFileUrl(data.file_url);
-    //     } else {
-    //       console.error("Failed to fetch file:", data);
-    //       alert("Failed to fetch file");
-    //     }
-    //   } catch (error) {
-    //     alert("Error fetching file");
-    //     console.error("Error fetching file:", error);
-    //   }
-    // };
-    // fetchFile();
+    const fileURLFromState = location.state?.fileUrl || "";
+    if (fileURLFromState) {
+      setFileUrl(fileURLFromState);
+    } else {
+      console.error("No file URL provided in state");
+    }
     console.log("File URL:", fileUrl);
-  }, [docId]);
+  }, [location.state]);
 
   return (
     <div className="output-container">

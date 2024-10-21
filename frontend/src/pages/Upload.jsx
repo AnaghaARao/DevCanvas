@@ -14,8 +14,6 @@ const Upload = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("Current user from Redux:", user);
-
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -50,10 +48,11 @@ const Upload = () => {
       const data = await response.json();
       if (response.ok) {
         if (data.message) {
-          console.log("Summary Path: ", data.summary_path);
           alert(data.message);
           if (data.summary_path) {
-            console.log("Summary Path: ", data.summary_path);
+            navigate("/documentation", {
+              state: { fileUrl: data.summary_path },
+            });
           }
         } else {
           alert("File Upload successfully");
@@ -92,7 +91,7 @@ const Upload = () => {
             id="fileInput"
             onChange={handleFileChange}
             className="input-div"
-            accept=".txt, .docx, .pdf, .cpp, .java, .py" // Adjust as per allowed file types
+            accept=".txt, .docx, .pdf, .cpp, .java, .py"
             required
           />
         </div>
