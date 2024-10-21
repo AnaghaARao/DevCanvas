@@ -99,6 +99,7 @@ function Form({ route, method }) {
       const res = await api.post(route, data);
 
       if (method === "login") {
+        // login logic
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
@@ -112,10 +113,10 @@ function Form({ route, method }) {
           alert(res.data.message);
         }
       } else {
-        // dispatch(setUser(username));
+        // register logic
+        localStorage.setItem("pendingVerification", true);
         alert(res.data.message);
         console.log(res.data.message);
-        navigate("/main");
       }
     } catch (error) {
       if (error.response) {

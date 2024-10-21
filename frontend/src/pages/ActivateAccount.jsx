@@ -16,7 +16,15 @@ function ActivateAccount() {
         );
         setActivationMessage(response.data.message);
         alert(response.data.message);
-        navigate("/authentication/login");
+        const isPendingVerification = localStorage.getItem(
+          "pendingVerification"
+        );
+
+        if (isPendingVerification) {
+          window.close();
+        }
+
+        window.location.href = "/authentication/login";
       } catch (error) {
         const errorMessage = error.response?.data?.error || "Activation failed";
         setActivationMessage(errorMessage);
