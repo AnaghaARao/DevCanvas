@@ -57,5 +57,5 @@ def generate_summary_view(request, doc_id):
     print('summary generated successfully')
     return Response({
         'message': 'Summary generated successfully',
-        'summary_paths': summary_path
+        'summary_path': summary_path
     }, status=status.HTTP_201_CREATED)
