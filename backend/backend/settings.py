@@ -160,3 +160,6 @@ GENERATIVE_AI_API_KEY = config('GENERATIVE_AI_API_KEY')
 # authentication token storage stuff:
 # AUTH_USER_MODEL = 'authentication.CustomUser'
 
+# to access the stored files:
+MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')

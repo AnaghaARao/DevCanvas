@@ -70,7 +70,7 @@ def generate_summary(file_path, author, doc_id):
 
             # Save the summary to the PDF file
             generate_pdf(response.text, summary_file_path)
-            return summary_file_path
+            return summary_file_path, summary_file_name
         else:
             print("Response does not have text attribute")
             return None
@@ -107,10 +107,11 @@ def generate_summary(file_path, author, doc_id):
 # Process file for summary generation
 def process_file(file_path, language, author, doc_id):
     """Process the file and generate a summary."""
-    summary_pdf_path = generate_summary(file_path, author, doc_id)
+    summary_pdf_path, summary_file_name = generate_summary(file_path, author, doc_id)
     
     if summary_pdf_path:
-        return {'summary_path':summary_pdf_path}
+        return {'summary_path':summary_pdf_path,
+                'summary_file_name': summary_file_name}
     else:
         return {
             'error': f"Failed to generate summary for {doc_id}"

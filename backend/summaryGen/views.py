@@ -54,8 +54,12 @@ def generate_summary_view(request, doc_id):
 
     # summary_path.append(summary_path) # for multiple files
 
+    # Return the file path or URL in the response
+    file_name = summary_result['summary_file_name']
+    file_url = f"{settings.MEDIA_URL}uploads/{author}/{file_name}"
+
     print('summary generated successfully')
     return Response({
         'message': 'Summary generated successfully',
-        'summary_path': summary_path
+        'file_url': file_url
     }, status=status.HTTP_201_CREATED)
