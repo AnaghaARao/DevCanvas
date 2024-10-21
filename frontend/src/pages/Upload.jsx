@@ -49,11 +49,12 @@ const Upload = () => {
       if (response.ok) {
         if (data.message) {
           alert(data.message);
-          if (data.summary_path) {
-            navigate("/documentation", {
-              state: { fileUrl: data.summary_path },
-            });
-          }
+          const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
+          console.log(fileUrl);
+
+          navigate("/documentation", {
+            state: { fileUrl },
+          });
         } else {
           alert("File Upload successfully");
         }
