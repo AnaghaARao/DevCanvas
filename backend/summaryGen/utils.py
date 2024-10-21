@@ -47,7 +47,7 @@ def generate_pdf(content, output_file):
     c.save()
 
 # Generate a summary for any programming language
-def generate_summary(file_path, doc_id):
+def generate_summary(file_path, author, doc_id):
     """Generate a summary based on the file content and language."""
     # Reading the file contents
     code_content = read_code_file(file_path)
@@ -60,11 +60,15 @@ def generate_summary(file_path, doc_id):
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(combined_prompt)
 
-        # Save the summary to a PDF file
-        output_file = f"summary_{os.path.basename(file_path)}.pdf"
-        generate_pdf(response.text, output_file)
+        # Get the directory of the uploaded file and set the summary file path
+        summary_dir = os.path.dirname(file_path)
+        summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+        summary_file_path = os.path.join(summary_dir, summary_file_name)
+
+        # Save the summary to the PDF file
+        generate_pdf(response.text, summary_file_path)
         
-        return output_file
+        return summary_file_path
     except Exception as e:
         print(f"Error generating summary for {doc_id}: {str(e)}")
         return None
@@ -72,7 +76,7 @@ def generate_summary(file_path, doc_id):
 # Process file for summary generation
 def process_file(file_path, language, author, doc_id):
     """Process the file and generate a summary."""
-    summary_pdf_path = generate_summary(file_path, doc_id)
+    summary_pdf_path = generate_summary(file_path, author, doc_id)
     
     if summary_pdf_path:
         return {
