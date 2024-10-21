@@ -7,7 +7,10 @@ from .serializers import DocumentUploadSerializer
 from django.http import JsonResponse
 import os
 
-from summaryGen.views import generate_summary_view
+from django.test import Client
+from django.urls import reverse
+
+# from summaryGen.views import generate_summary_view
 
 # Create your views here.
 @api_view(['POST'])
@@ -38,8 +41,12 @@ def upload_codebase(request):
             
             # send response based on docType
             if doc_upload.docType == 'summary':
-                response = generate_summary_view(request, doc_id = doc_upload.id)
-                return response
+                # to call django.http response object instead of rest_framework response object
+                # response = generate_summary_view(request, doc_id = doc_upload.id)
+                client = Client()
+                summary_url = client.post(reverse('summary-gen', kwargs={'doc_id':doc_upload.id})) # reverse url for summary generation
+                response = client.post(summary_url, data={}) # make internal post request
+                return Response(response.json, status = response.status_code) # return response from summary generator
             elif doc_upload.docType == 'class diagram':
                 return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
             elif doc_upload.docType == 'sequence diagram':

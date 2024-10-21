@@ -10,7 +10,7 @@ import os
 from .utils import process_file
 
 
-@api_view['POST']
+@api_view(['POST'])
 def generate_summary_view(request, doc_id):
     # doc_ids = request.data.getlist('doc_ids')
     if not doc_id:
