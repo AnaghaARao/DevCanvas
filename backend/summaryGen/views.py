@@ -39,8 +39,11 @@ def generate_summary_view(request, doc_id):
     # if summary_path is None:
     #     return Response({'error': f'Summary generation failed for {doc_id}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    summary_path = summary_result['summary_pdf'] # to get the path where summary pdf is stored
+    summary_path = summary_result['summary_path'] # to get the path where summary pdf is stored
 
+    if not isinstance(summary_path, str):
+        return Response({'error': 'Summary path is not valid'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     # Store the class diagram in the database
     with open(summary_path, 'rb') as generated_file:
         summary = SummaryDoc.objects.create(

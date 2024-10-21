@@ -49,29 +49,57 @@ def generate_pdf(content, output_file):
 # Generate a summary for any programming language
 def generate_summary(file_path, author, doc_id):
     """Generate a summary based on the file content and language."""
-    # Reading the file contents
-    code_content = read_code_file(file_path)
-    
-    # Generating summary based on the programming language
-    original_prompt = f"Summarize the code:"
-    combined_prompt = f"{original_prompt}\n\n{code_content}"
-    
     try:
+        code_content = read_code_file(file_path)
+        
+        # Generating summary based on the programming language
+        original_prompt = f"Summarize the code:"
+        combined_prompt = f"{original_prompt}\n\n{code_content}"
+        
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(combined_prompt)
 
-        # Get the directory of the uploaded file and set the summary file path
-        summary_dir = os.path.dirname(file_path)
-        summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
-        summary_file_path = os.path.join(summary_dir, summary_file_name)
+        # Ensure response has text content
+        if hasattr(response, 'text'):
+            summary_dir = os.path.dirname(file_path)
+            summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+            summary_file_path = os.path.join(summary_dir, summary_file_name)
 
-        # Save the summary to the PDF file
-        generate_pdf(response.text, summary_file_path)
-        
-        return summary_file_path
+            # Save the summary to the PDF file
+            generate_pdf(response.text, summary_file_path)
+            return summary_file_path
+        else:
+            print("Response does not have text attribute")
+            return None
     except Exception as e:
         print(f"Error generating summary for {doc_id}: {str(e)}")
         return None
+
+# def generate_summary(file_path, author, doc_id):
+#     """Generate a summary based on the file content and language."""
+#     # Reading the file contents
+#     code_content = read_code_file(file_path)
+    
+#     # Generating summary based on the programming language
+#     original_prompt = f"Summarize the code:"
+#     combined_prompt = f"{original_prompt}\n\n{code_content}"
+    
+#     try:
+#         model = genai.GenerativeModel("gemini-1.5-flash")
+#         response = model.generate_content(combined_prompt)
+
+#         # Get the directory of the uploaded file and set the summary file path
+#         summary_dir = os.path.dirname(file_path)
+#         summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+#         summary_file_path = os.path.join(summary_dir, summary_file_name)
+
+#         # Save the summary to the PDF file
+#         generate_pdf(response.text, summary_file_path)
+        
+#         return summary_file_path
+#     except Exception as e:
+#         print(f"Error generating summary for {doc_id}: {str(e)}")
+#         return None
 
 # Process file for summary generation
 def process_file(file_path, language, author, doc_id):
@@ -79,12 +107,7 @@ def process_file(file_path, language, author, doc_id):
     summary_pdf_path = generate_summary(file_path, author, doc_id)
     
     if summary_pdf_path:
-        return {
-            'summary_pdf': summary_pdf_path,
-            'doc_id': doc_id,
-            'author': author,
-            'language': language
-        }
+        return {'summary_path':summary_pdf_path}
     else:
         return {
             'error': f"Failed to generate summary for {doc_id}"
