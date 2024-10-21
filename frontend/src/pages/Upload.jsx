@@ -48,42 +48,35 @@ const Upload = () => {
       });
 
       const data = await response.json();
-
       if (response.ok) {
-        console.log(data.doc_id);
-        if (data.redirect) {
-          if (data.redirect === "summaryGen") {
-            alert("Summary generated successfully!");
-          } else if (data.redirect === "classDiagram") {
-            alert("Class Diagram generated successfully!");
-          } else if (data.redirect === "sequenceDiagram") {
-            alert("Sequence Diagram generated successfully!");
-          } else if (data.redirect === "flowchart") {
-            alert("Flowchart generated successfully!");
-          } else {
-            alert("File uploaded successfully, no specific route to redirect.");
+        if (data.message) {
+          console.log("Summary Path: ", data.summary_path);
+          alert(data.message);
+          if (data.summary_path) {
+            console.log("Summary Path: ", data.summary_path);
           }
         } else {
-          alert("File uploaded successfully.");
+          alert("File Upload successfully");
         }
-        navigate("/output");
       } else {
-        if (data.error) {
-          if (data.error === "No file uploaded") {
-            alert("Error: No file uploaded. Please try again.");
-          } else if (data.error === "Unsupported file type") {
-            alert("Unsupported file type. Please upload a supported file.");
-          } else {
-            alert(`Error: ${data.error}`);
-          }
-        } else if (data.errors) {
-          console.error(data.errors);
-          alert("Validation errors occurred. Please check the form data.");
+        switch (response.status) {
+          case 400:
+            alert(`Error: ${data.error || "Bad Request"}`);
+            break;
+          case 404:
+            alert(`Error: ${data.error || "File not found"}`);
+            break;
+          case 500:
+            alert(`Error: ${data.error || "Internal server error"}`);
+            break;
+          default:
+            alert(`Error: ${data.error || "Unexpected error"}`);
+            break;
         }
       }
     } catch (error) {
       console.error("Error during file upload:", error);
-      alert("Error during file upload, please try again.");
+      alert("Error during file upload, please try again");
     }
   };
 

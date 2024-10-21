@@ -45,7 +45,7 @@ function App() {
               </ProtectedRoute>
             }
           /> */}
-          <Route path="/output" element={<OutputPage />} />
+          <Route path="/documentation" element={<OutputPage />} />
           <Route
             path="/authentication/activate/:uidb64/:token"
             element={<ActivateAccount />}
