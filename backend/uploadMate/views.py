@@ -41,6 +41,11 @@ def upload_codebase(request):
             
             # send response based on docType
             if doc_upload.docType == 'summary':
+                raw_request = HttpRequest()
+                raw_request.method = request.method
+                raw_request.POST = request.data
+                response = generate_summary_view(raw_request, doc_upload.id)
+                return Response(response.data, status=response.status_code)
                 # to call django.http response object instead of rest_framework response object
                 # response = generate_summary_view(request, doc_id = doc_upload.id)
                 # client = Client()
@@ -48,13 +53,7 @@ def upload_codebase(request):
                 # response = client.post(summary_url, data={}) # make internal post request
                 # return Response(response.json(), status = response.status_code) # return response from summary generator
                 # response = generate_summary_view(request, doc_upload.id)
-                # return Response(response.data, status=response.status_code)
-                raw_request = HttpRequest()
-                raw_request.method = request.method
-                raw_request.POST = request.data
-                # Pass the necessary attributes from the DRF request to the raw request
-                response = generate_summary_view(raw_request, doc_upload.id)
-                return Response(response.data, status=response.status_code)
+                # return Response(response.data, status=response.status_code)                
             elif doc_upload.docType == 'class diagram':
                 return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
             elif doc_upload.docType == 'sequence diagram':
