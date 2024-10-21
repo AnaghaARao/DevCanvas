@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/actions";
@@ -240,6 +240,21 @@ function Form({ route, method }) {
         <button className="btn form-button" type="submit" disabled={loading}>
           {loading ? "Processing..." : name}
         </button>
+        {method === "login" ? (
+          <p className="switch-page">
+            Don’t have an account?{" "}
+            <Link to="/authentication/register" className="switch-link">
+              Sign Up
+            </Link>
+          </p>
+        ) : (
+          <p className="switch-page">
+            Already have an account?{" "}
+            <Link to="/authentication/login" className="switch-link">
+              Sign In
+            </Link>
+          </p>
+        )}
       </div>
       <ToastContainer
         position="top-right"
