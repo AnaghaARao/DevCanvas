@@ -6,7 +6,7 @@ from .models import FileNest
 from .serializers import DocumentUploadSerializer
 from django.http import JsonResponse
 import os
-
+from django.http import HttpRequest
 from django.test import Client
 from django.urls import reverse
 
@@ -47,7 +47,13 @@ def upload_codebase(request):
                 # summary_url = client.post(reverse('summary-gen', kwargs={'doc_id':doc_upload.id})) # reverse url for summary generation
                 # response = client.post(summary_url, data={}) # make internal post request
                 # return Response(response.json(), status = response.status_code) # return response from summary generator
-                response = generate_summary_view(request, doc_upload.id)
+                # response = generate_summary_view(request, doc_upload.id)
+                # return Response(response.data, status=response.status_code)
+                raw_request = HttpRequest()
+                raw_request.method = request.method
+                raw_request.POST = request.data
+                # Pass the necessary attributes from the DRF request to the raw request
+                response = generate_summary_view(raw_request, doc_upload.id)
                 return Response(response.data, status=response.status_code)
             elif doc_upload.docType == 'class diagram':
                 return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
