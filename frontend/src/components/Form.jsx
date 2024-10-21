@@ -12,6 +12,9 @@ import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
 import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
 import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
+import { ToastContainer, Zoom } from "react-toastify";
+
+import { showAlert, showError, showSuccess } from "../hooks/toastUtils.js";
 import "../styles/general.css";
 import "../styles/form.css";
 
@@ -85,7 +88,7 @@ function Form({ route, method }) {
       (method === "register" && (errors.username || errors.email)) ||
       passwordError
     ) {
-      alert("Please fix the validation errors before submitting.");
+      showError("Please fix the validation errors before submitting.");
       setLoading(false);
       return;
     }
@@ -103,19 +106,17 @@ function Form({ route, method }) {
         if (res.data.access && res.data.refresh) {
           localStorage.setItem(ACCESS_TOKEN, res.data.access);
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-          // console.log("Access Token:", localStorage.getItem(ACCESS_TOKEN));
-          // console.log("Refresh Token:", localStorage.getItem(REFRESH_TOKEN));
 
           dispatch(setUser(username));
-          alert(`Welcome ${username}, you are now logged in`);
+          showSuccess(`Welcome ${username}, you are now logged in`);
           navigate("/main");
         } else if (res.data.message) {
-          alert(res.data.message);
+          showSuccess(res.data.message);
         }
       } else {
         // register logic
         localStorage.setItem("pendingVerification", true);
-        alert(res.data.message);
+        showSuccess(res.data.message);
         console.log(res.data.message);
       }
     } catch (error) {
@@ -124,14 +125,16 @@ function Form({ route, method }) {
 
         if (status === 400 || status === 403 || status === 409) {
           const messages = Object.values(data).flat();
-          messages.forEach((msg) => alert(msg));
+          messages.forEach((msg) => showError(msg));
         } else if (status === 500) {
-          alert("An internal server error occurred. Please try again later.");
+          showError(
+            "An internal server error occurred. Please try again later."
+          );
         } else {
-          alert("An unexpected error occurred. Please try again.");
+          showError("An unexpected error occurred. Please try again.");
         }
       } else {
-        alert(
+        showError(
           "Unable to connect to the server. Please check your internet connection and try again."
         );
       }
@@ -216,7 +219,7 @@ function Form({ route, method }) {
           <LockIcon />
           <input
             className={`${passwordError ? "input-error" : ""}`}
-            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
@@ -238,6 +241,20 @@ function Form({ route, method }) {
           {loading ? "Processing..." : name}
         </button>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        transition={Zoom}
+        closeOnClick={true}
+        limit={2}
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "#161616",
+        }}
+        style={{
+          backgroundColor: "transparent",
+        }}
+      />
     </form>
   );
 }

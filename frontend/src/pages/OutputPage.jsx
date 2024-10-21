@@ -13,6 +13,7 @@ import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
+import { showSuccess } from "../hooks/toastUtils";
 
 const Output = () => {
   const location = useLocation();
@@ -35,6 +36,7 @@ const Output = () => {
 
   const handleSubmit = () => {
     setSubmitted(true);
+    showSuccess("Thank you for the feedback!");
   };
 
   useEffect(() => {
