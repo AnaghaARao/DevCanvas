@@ -44,16 +44,17 @@ def generate_summary_view(request, doc_id):
     if not isinstance(summary_path, str):
         return Response({'error': 'Summary path is not valid'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    # Store the class diagram in the database
-    with open(summary_path, 'rb') as generated_file:
-        summary = SummaryDoc.objects.create(
-            language=language,
-            author=author
-        )
-        summary.file.save(os.path.basename(summary_path), File(generated_file), save=True)
+    # # Store the class diagram in the database
+    # with open(summary_path, 'rb') as generated_file:
+    #     summary = SummaryDoc.objects.create(
+    #         language=language,
+    #         author=author
+    #     )
+    #     summary.file.save(os.path.basename(summary_path), File(generated_file), save=True)
 
     # summary_path.append(summary_path) # for multiple files
 
+    print('summary generated successfully')
     return Response({
         'message': 'Summary generated successfully',
         'summary_paths': summary_path

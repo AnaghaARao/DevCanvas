@@ -62,7 +62,10 @@ def generate_summary(file_path, author, doc_id):
         # Ensure response has text content
         if hasattr(response, 'text'):
             summary_dir = os.path.dirname(file_path)
-            summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+            # summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+            # Get the base filename without the extension
+            base_name = os.path.splitext(os.path.basename(file_path))[0]
+            summary_file_name = f"summary_{base_name}.pdf"
             summary_file_path = os.path.join(summary_dir, summary_file_name)
 
             # Save the summary to the PDF file
