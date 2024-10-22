@@ -28,7 +28,8 @@ def generate_class_diagram_view(request, doc_id):
     # class_diagram_Result returns file_path and file_name
     class_diagram_result = process_file(uploaded_file_path, language, author, doc_id)
 
-    if class_diagram_result['file_path'] is None:
+    class_diagram_path = class_diagram_result['file_path']
+    if not isinstance(class_diagram_path, str):
         return Response({'error': f'Class diagram generation failed for {doc_id}'}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # # Store the class diagram in the database
@@ -42,7 +43,7 @@ def generate_class_diagram_view(request, doc_id):
     # class_diagram_paths.append(class_diagram_path)
 
     file_name = class_diagram_result['file_name']
-    file_url = f"{settings.MEDIA_URL}/{author}/{file_name}"
+    file_url = f"{settings.MEDIA_URL}{author}/{file_name}"
 
     return Response({
         'message': 'Class diagrams generated successfully',

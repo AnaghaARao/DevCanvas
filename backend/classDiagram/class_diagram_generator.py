@@ -63,20 +63,65 @@ class PythonDiagramGenerator:
         return classes
 
     def save_diagrams(self, classes):
-        """Generates a PDF with class information and saves it."""
-        original_file_name = os.path.basename(self.file_path).replace('.py', '')  # Extract the file name without extension
-        output_dir = os.path.join('path_to_store_files', self.author)  # Replace with actual path
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-            logging.info(f"Created directory: {output_dir}")
+        # Specify the author directory
+        author_dir = os.path.join('uploads', self.author)  # This is correct
         
-        pdf_file_name = f"class_diagram_{original_file_name}.pdf"
-        pdf_path = os.path.join(output_dir, pdf_file_name)
+        # Ensure the directory exists
+        if not os.path.exists(author_dir):
+            os.makedirs(author_dir)
 
-        logging.info(f"Saving Python class diagram as PDF: {pdf_file_name} in {output_dir}")
-        self.generate_pdf(classes, pdf_path)
+        # Extract the original file name without the extension
+        original_file_name = os.path.splitext(os.path.basename(self.file_path))[0]  # Get the base file name without extension
 
-        return pdf_path, pdf_file_name
+        # Construct the new file name
+        file_name = f'class_diagram_{original_file_name}.pdf'
+        
+        # Correct file path construction
+        file_path = os.path.join(author_dir, file_name)
+
+        return file_path, file_name
+
+    # def save_diagrams(self, classes):
+    #     # Specify the author directory
+    #     author_dir = os.path.join('uploads', self.author)  # This is correct
+        
+    #     # Ensure the directory exists
+    #     if not os.path.exists(author_dir):
+    #         os.makedirs(author_dir)
+
+    #     # Construct the file name
+    #     file_name = f'class_diagram_{self.doc_id}.pdf'
+        
+    #     # Correct file path construction
+    #     file_path = os.path.join(author_dir, file_name)
+
+    #     return file_path, file_name
+        # """Generates a PDF with class information and saves it."""
+        # original_file_name = os.path.basename(self.file_path).replace('.py', '')  # Extract the file name without extension
+        # output_dir = os.path.join('path_to_store_files', self.author)  # Replace with actual path
+        # if not os.path.exists(output_dir):
+        #     os.makedirs(output_dir)
+        #     logging.info(f"Created directory: {output_dir}")
+        
+        # pdf_file_name = f"class_diagram_{original_file_name}.pdf"
+        # pdf_path = os.path.join(output_dir, pdf_file_name)
+
+        # logging.info(f"Saving Python class diagram as PDF: {pdf_file_name} in {output_dir}")
+        # self.generate_pdf(classes, pdf_path)
+
+        # return pdf_path, pdf_file_name
+        # Ensure proper path construction with os.path.join
+        # author_dir = os.path.join('uploads', self.author)
+        
+        # # Ensure the directory exists
+        # if not os.path.exists(author_dir):
+        #     os.makedirs(author_dir)
+
+        # # Construct the file name
+        # file_name = f'class_diagram_{self.doc_id}.pdf'
+        # file_path = os.path.join(author_dir, file_name)
+
+        # return file_path, file_name
 
     def generate_pdf(self, classes, output_path):
         """Generates a PDF file with the class diagram details."""
@@ -158,20 +203,66 @@ class JavaDiagramGenerator:
         return classes
 
     def save_diagrams(self, classes):
-        """Generates a PDF with class information and saves it."""
-        original_file_name = os.path.basename(self.file_path).replace('.java', '')  # Extract the file name without extension
-        output_dir = os.path.join('path_to_store_files', self.author)  # Replace with actual path
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-            logging.info(f"Created directory: {output_dir}")
+        # Specify the author directory
+        author_dir = os.path.join('uploads', self.author)  # This is correct
         
-        pdf_file_name = f"class_diagram_{original_file_name}.pdf"
-        pdf_path = os.path.join(output_dir, pdf_file_name)
+        # Ensure the directory exists
+        if not os.path.exists(author_dir):
+            os.makedirs(author_dir)
 
-        logging.info(f"Saving Java class diagram as PDF: {pdf_file_name} in {output_dir}")
-        self.generate_pdf(classes, pdf_path)
+        # Extract the original file name without the extension
+        original_file_name = os.path.splitext(os.path.basename(self.file_path))[0]  # Get the base file name without extension
 
-        return pdf_path, pdf_file_name
+        # Construct the new file name
+        file_name = f'class_diagram_{original_file_name}.pdf'
+        
+        # Correct file path construction
+        file_path = os.path.join(author_dir, file_name)
+
+        return file_path, file_name
+
+    # def save_diagrams(self, classes):
+    #     # Specify the author directory
+    #     author_dir = os.path.join('uploads', self.author)  # This is correct
+        
+    #     # Ensure the directory exists
+    #     if not os.path.exists(author_dir):
+    #         os.makedirs(author_dir)
+
+    #     # Construct the file name
+    #     file_name = f'class_diagram_{self.doc_id}.pdf'
+        
+    #     # Correct file path construction
+    #     file_path = os.path.join(author_dir, file_name)
+
+    #     return file_path, file_name
+    
+        # author_dir = os.path.join('uploads', self.author)
+        
+        # # Ensure the directory exists
+        # if not os.path.exists(author_dir):
+        #     os.makedirs(author_dir)
+
+        # # Construct the file name
+        # file_name = f'class_diagram_{self.doc_id}.pdf'
+        # file_path = os.path.join(author_dir, file_name)
+
+        # return file_path, file_name
+    
+        # """Generates a PDF with class information and saves it."""
+        # original_file_name = os.path.basename(self.file_path).replace('.java', '')  # Extract the file name without extension
+        # output_dir = os.path.join('path_to_store_files', self.author)  # Replace with actual path
+        # if not os.path.exists(output_dir):
+        #     os.makedirs(output_dir)
+        #     logging.info(f"Created directory: {output_dir}")
+        
+        # pdf_file_name = f"class_diagram_{original_file_name}.pdf"
+        # pdf_path = os.path.join(output_dir, pdf_file_name)
+
+        # logging.info(f"Saving Java class diagram as PDF: {pdf_file_name} in {output_dir}")
+        # self.generate_pdf(classes, pdf_path)
+
+        # return pdf_path, pdf_file_name
 
     def generate_pdf(self, classes, output_path):
         """Generates a PDF file with the class diagram details."""

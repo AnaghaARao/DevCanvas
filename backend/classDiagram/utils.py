@@ -14,7 +14,7 @@ def process_file(file_path, language, author, doc_id):
     result = processor.analyze_file()
 
     # If there's an error in file analysis, return the error
-    if 'error' in result[0]:
+    if 'error' in result:
         return {
             'error': result[0]['error'],
             'details': result[0]['details']
