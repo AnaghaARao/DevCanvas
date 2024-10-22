@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import ClassDiagram
 from uploadMate.models import FileNest  # Import FileNest model to fetch uploaded code file
 from django.conf import settings
+from rest_framework import status
 from django.core.files import File  # Import Django's File object
 import os
 
@@ -12,14 +13,12 @@ from .utils import process_file
 @api_view(['POST'])
 def generate_class_diagram_view(request, doc_id):
     if not doc_id:
-        return Response({'error': 'doc_id are required to fetch the uploaded files'}, status=400)
-    
-    class_diagram_paths = []
+        return Response({'error': 'doc_id are required to fetch the uploaded files'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         file_nest = FileNest.objects.get(id=doc_id)
     except FileNest.DoesNotExist:
-        return Response({'error': f'Uploaded file with id {doc_id} not found'}, status=404)
+        return Response({'error': f'Uploaded file with id {doc_id} not found'}, status=status.HTTP_404_NOT_FOUND)
 
     uploaded_file_path = file_nest.file.path
     author = file_nest.author
@@ -30,7 +29,7 @@ def generate_class_diagram_view(request, doc_id):
     class_diagram_result = process_file(uploaded_file_path, language, author, doc_id)
 
     if class_diagram_result['file_path'] is None:
-        return Response({'error': f'Class diagram generation failed for {doc_id}'}, status=500)
+        return Response({'error': f'Class diagram generation failed for {doc_id}'}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # # Store the class diagram in the database
     # with open(class_diagram_path, 'rb') as generated_file:
@@ -48,5 +47,5 @@ def generate_class_diagram_view(request, doc_id):
     return Response({
         'message': 'Class diagrams generated successfully',
         'file_url': file_url
-    }, status=201)
+    }, status=status.HTTP_201_CREATED)
 
