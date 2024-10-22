@@ -11,6 +11,7 @@ from django.test import Client
 from django.urls import reverse
 
 from summaryGen.views import generate_summary_view
+from classDiagram.views import generate_class_diagram_view
 
 # Create your views here.
 @api_view(['POST'])
@@ -39,11 +40,11 @@ def upload_codebase(request):
             if file_extension not in allowed_extensions:
                 return Response({'error': 'Unsupported file type'}, status=status.HTTP_400_BAD_REQUEST)
             
+            raw_request = HttpRequest()
+            raw_request.method = request.method
+            raw_request.POST = request.data
             # send response based on docType
             if doc_upload.docType == 'summary':
-                raw_request = HttpRequest()
-                raw_request.method = request.method
-                raw_request.POST = request.data
                 response = generate_summary_view(raw_request, doc_upload.id)
                 print(response.data['file_url'])
                 return Response(response.data, status=response.status_code)
@@ -56,7 +57,9 @@ def upload_codebase(request):
                 # response = generate_summary_view(request, doc_upload.id)
                 # return Response(response.data, status=response.status_code)                
             elif doc_upload.docType == 'class diagram':
-                return Response({'redirect':'classDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
+                response = generate_class_diagram_view(raw_request, doc_upload.id)
+                print(response.data['file_url'])
+                return Response(response.data, status=response.status_code)
             elif doc_upload.docType == 'sequence diagram':
                 return Response({'redirect':'sequenceDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
             elif doc_upload.docType == 'flowchart':

@@ -24,6 +24,7 @@ urlpatterns = [
     path('authentication/',include('authentication.urls')),
     path('uploadmate/', include('uploadMate.urls')),
     path('summary/', include('summaryGen.urls')),
+    path('classdiagram/', include('classDiagram.urls')),
 ]
 
 # Serve media files during development
