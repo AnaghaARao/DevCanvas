@@ -6,7 +6,19 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Common Class to Hold Class Information
+class ClassInfo:
+    def __init__(self, name: str):
+        self.name = name
+        self.methods = []
+        self.attributes = []
+        self.base_classes = []
+
+    def __str__(self):
+        return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_classes={self.base_classes})"
 
 
 # Python Diagram Generator
