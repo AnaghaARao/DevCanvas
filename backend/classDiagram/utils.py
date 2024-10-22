@@ -22,12 +22,12 @@ def process_file(file_path, language, author, doc_id):
     classes, methods = result
 
     # Call diagram generation methods as usual
-    class_diagram_path, flowchart_paths = processor.save_diagrams(classes, methods)
+    class_diagram_file_path, class_diagram_file_name = processor.save_diagrams(classes, methods)
     
     # Check if flowcharts were generated, or set to None if not applicable
     response = {
-        'class_diagram': class_diagram_path,
-        'flowcharts': flowchart_paths if flowchart_paths else None  # Flowchart paths could be an empty list for Python
+        'file_path': class_diagram_file_path,
+        'file_name': class_diagram_file_name
     }
 
     return response
