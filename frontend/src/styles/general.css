@@ -1,11 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
 
+:root {
+  --toastify-color-error: #ff5f5f;
+  --toastify-color-success: #4cd964;
+  --toastify-color-info: #5ac8fa;
+  --toastify-color-warning: #ffa500;
+  --toastify-text-color-light: white;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   background-color: #161616;
-  color: white;
+  color: #eddfdf;
   font-family: "Source Sans 3", system-ui;
   font-optical-sizing: auto;
   font-style: normal;

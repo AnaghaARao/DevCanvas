@@ -5,6 +5,7 @@ import "../styles/upload.css";
 import BoltIcon from "@mui/icons-material/Bolt";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/actions";
+import { showAlert, showError, showSuccess } from "../hooks/toastUtils";
 
 const Upload = () => {
   const [file, setFile] = useState(null);
@@ -29,7 +30,7 @@ const Upload = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file || !language || !docType) {
-      alert("Please fill all fields and upload a file");
+      showAlert("Please fill all fields and upload a file");
       return;
     }
 
@@ -48,34 +49,35 @@ const Upload = () => {
       const data = await response.json();
       if (response.ok) {
         if (data.message) {
-          alert(data.message);
-          if (data.summary_path) {
-            navigate("/documentation", {
-              state: { fileUrl: data.summary_path },
-            });
-          }
+          showSuccess(data.message);
+          const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
+          console.log(fileUrl);
+
+          navigate("/documentation", {
+            state: { fileUrl },
+          });
         } else {
-          alert("File Upload successfully");
+          showSuccess("File Upload successfully");
         }
       } else {
         switch (response.status) {
           case 400:
-            alert(`Error: ${data.error || "Bad Request"}`);
+            showError(`Error: ${data.error || "Bad Request"}`);
             break;
           case 404:
-            alert(`Error: ${data.error || "File not found"}`);
+            showError(`Error: ${data.error || "File not found"}`);
             break;
           case 500:
-            alert(`Error: ${data.error || "Internal server error"}`);
+            showError(`Error: ${data.error || "Internal server error"}`);
             break;
           default:
-            alert(`Error: ${data.error || "Unexpected error"}`);
+            showError(`Error: ${data.error || "Unexpected error"}`);
             break;
         }
       }
     } catch (error) {
       console.error("Error during file upload:", error);
-      alert("Error during file upload, please try again");
+      showError("Error during file upload, please try again");
     }
   };
 

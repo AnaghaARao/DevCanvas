@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { showError, showSuccess } from "../hooks/toastUtils";
 
 function ActivateAccount() {
   const base_url = import.meta.env.VITE_API_URL;
@@ -15,7 +16,7 @@ function ActivateAccount() {
           `${base_url}/authentication/activate/${uidb64}/${token}/`
         );
         setActivationMessage(response.data.message);
-        alert(response.data.message);
+        showSuccess(response.data.message);
         const isPendingVerification = localStorage.getItem(
           "pendingVerification"
         );
@@ -28,14 +29,14 @@ function ActivateAccount() {
       } catch (error) {
         const errorMessage = error.response?.data?.error || "Activation failed";
         setActivationMessage(errorMessage);
-        alert(errorMessage);
+        showError(errorMessage);
       }
     };
 
     if (uidb64 && token) {
       verifyAccount();
     } else {
-      alert("Invalid activation link.");
+      showError("Invalid activation link.");
       navigate("/authentication/login");
     }
   }, [uidb64, token, navigate]);
