@@ -45,6 +45,7 @@ def upload_codebase(request):
                 raw_request.method = request.method
                 raw_request.POST = request.data
                 response = generate_summary_view(raw_request, doc_upload.id)
+                print(response.data['file_url'])
                 return Response(response.data, status=response.status_code)
                 # to call django.http response object instead of rest_framework response object
                 # response = generate_summary_view(request, doc_id = doc_upload.id)
