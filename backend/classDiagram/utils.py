@@ -4,8 +4,6 @@ from .class_diagram_generator import JavaDiagramGenerator, JavaScriptDiagramGene
 def process_file(file_path, language, author, doc_id):
     if language == 'java':
         processor = JavaDiagramGenerator(file_path, author, doc_id)
-    elif language == 'javascript':
-        processor = JavaScriptDiagramGenerator(file_path, author, doc_id)
     elif language == 'python':
         processor = PythonDiagramGenerator(file_path, author, doc_id)
     else:
