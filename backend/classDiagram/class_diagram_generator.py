@@ -62,24 +62,16 @@ class PythonDiagramGenerator:
         logging.info(f"Classes found in Python: {list(classes.keys())}")
         return classes
 
-    def save_diagrams(self, classes):
-        # Specify the author directory
-        author_dir = os.path.join('uploads', self.author)  # This is correct
-        
-        # Ensure the directory exists
-        if not os.path.exists(author_dir):
-            os.makedirs(author_dir)
-
-        # Extract the original file name without the extension
-        original_file_name = os.path.splitext(os.path.basename(self.file_path))[0]  # Get the base file name without extension
-
-        # Construct the new file name
-        file_name = f'class_diagram_{original_file_name}.pdf'
-        
-        # Correct file path construction
-        file_path = os.path.join(author_dir, file_name)
-
-        return file_path, file_name
+    def save_diagrams(self, classes, file_path):
+        class_dia_dir = os.path.dirname(file_path)
+        # summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+        # Get the base filename without the extension
+        base_name = os.path.splitext(os.path.basename(file_path))[0]
+        class_dia_file_name = f"class_diagram_{base_name}.pdf"
+        class_dia_file_path = os.path.join(class_dia_dir, class_dia_file_name)
+        # Save the summary to the PDF file
+        self.generate_pdf(classes, class_dia_file_path)
+        return class_dia_file_path, class_dia_file_name
 
     # def save_diagrams(self, classes):
     #     # Specify the author directory
@@ -202,24 +194,17 @@ class JavaDiagramGenerator:
         logging.info(f"Classes found in Java: {list(classes.keys())}")
         return classes
 
-    def save_diagrams(self, classes):
-        # Specify the author directory
-        author_dir = os.path.join('uploads', self.author)  # This is correct
-        
-        # Ensure the directory exists
-        if not os.path.exists(author_dir):
-            os.makedirs(author_dir)
+    def save_diagrams(self, classes, file_path):
+        class_dia_dir = os.path.dirname(file_path)
+        # summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
+        # Get the base filename without the extension
+        base_name = os.path.splitext(os.path.basename(file_path))[0]
+        class_dia_file_name = f"class_diagram_{base_name}.pdf"
+        class_dia_file_path = os.path.join(class_dia_dir, class_dia_file_name)
+        # Save the summary to the PDF file
+        self.generate_pdf(classes, class_dia_file_path)
+        return class_dia_file_path, class_dia_file_name
 
-        # Extract the original file name without the extension
-        original_file_name = os.path.splitext(os.path.basename(self.file_path))[0]  # Get the base file name without extension
-
-        # Construct the new file name
-        file_name = f'class_diagram_{original_file_name}.pdf'
-        
-        # Correct file path construction
-        file_path = os.path.join(author_dir, file_name)
-
-        return file_path, file_name
 
     # def save_diagrams(self, classes):
     #     # Specify the author directory

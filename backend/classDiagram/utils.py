@@ -24,7 +24,7 @@ def process_file(file_path, language, author, doc_id):
     classes = result  # Only classes are relevant, the second value is ignored
 
     # Generate and save the class diagram as a PDF
-    class_diagram_file_path, class_diagram_file_name = processor.save_diagrams(classes)
+    class_diagram_file_path, class_diagram_file_name = processor.save_diagrams(classes, file_path)
 
     # Prepare the response to be sent to the frontend
     response = {
