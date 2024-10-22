@@ -60,7 +60,7 @@ class PythonDiagramGenerator:
             return [{'error': 'No classes found', 'details': 'No class definitions were detected in the provided file.'}], []
         
         logging.info(f"Classes found in Python: {list(classes.keys())}")
-        return classes, []
+        return classes
 
     def save_diagrams(self, classes):
         """Generates a PDF with class information and saves it."""
@@ -155,7 +155,7 @@ class JavaDiagramGenerator:
             return [{'error': 'No classes found', 'details': 'No class definitions were detected in the provided file.'}], []
         
         logging.info(f"Classes found in Java: {list(classes.keys())}")
-        return classes, []
+        return classes
 
     def save_diagrams(self, classes):
         """Generates a PDF with class information and saves it."""
