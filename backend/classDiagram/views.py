@@ -42,7 +42,7 @@ def generate_class_diagram_view(request, doc_id):
 
     # class_diagram_paths.append(class_diagram_path)
 
-    file_name = class_diagram_result['class_diagram_file_name']
+    file_name = class_diagram_result['file_name']
     file_url = f"{settings.MEDIA_URL}/{author}/{file_name}"
 
     return Response({
