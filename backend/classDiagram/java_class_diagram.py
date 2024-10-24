@@ -42,7 +42,7 @@ class JavaClassDiagramGenerator:
             tree = javalang.parse.parse(content)
         except javalang.parser.JavaSyntaxError:
             logging.error(f"Syntax error in file: {uploaded_file_path}")
-            return {}
+            return {'error':f'syntax error in file {uploaded_file_path}'}
 
         for path, node in tree.filter(javalang.tree.ClassDeclaration):
             class_name = node.name
@@ -90,7 +90,8 @@ class JavaClassDiagramGenerator:
         uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
 
         file_name = f"class_diagram_{uploaded_file_name}"
-        self.safe_write_png(graph, file_name)
+        result = self.safe_write_png(graph, file_name)
+        return result
 
     def safe_write_png(self, graph, filename):
         output_path = os.path.join(media_url, filename)
@@ -105,47 +106,51 @@ class JavaClassDiagramGenerator:
         
 
     def generate_pdf(self, diagram_path: str, output_path: str, classes: Dict[str, ClassInfo]):
-        doc = SimpleDocTemplate(output_path, pagesize=letter)
-        styles = getSampleStyleSheet()
-        story = []
+        try:
+            doc = SimpleDocTemplate(output_path, pagesize=letter)
+            styles = getSampleStyleSheet()
+            story = []
 
-        # Add title
-        title = Paragraph("Java Class Diagram", styles['Title'])
-        story.append(title)
-        story.append(Spacer(1, 12))
-
-        # Add description
-        description = Paragraph("This is a UML class diagram representing the structure of the analyzed Java code. "
-                                "It shows classes, their attributes, methods, and relationships.", styles['Normal'])
-        story.append(description)
-        story.append(Spacer(1, 12))
-
-        # Add the diagram image
-        img = Image(diagram_path, width=500, height=500)
-        story.append(img)
-        story.append(Spacer(1, 12))
-
-        # Add class information
-        for class_name, class_info in classes.items():
-            class_title = Paragraph(f"Class: {class_name}", styles['Heading2'])
-            story.append(class_title)
-            
-            if class_info.attributes:
-                attributes = Paragraph(f"Attributes: {', '.join(class_info.attributes)}", styles['Normal'])
-                story.append(attributes)
-            
-            if class_info.methods:
-                methods = Paragraph(f"Methods: {', '.join(class_info.methods)}", styles['Normal'])
-                story.append(methods)
-            
-            if class_info.base_class:
-                base_class = Paragraph(f"Base Class: {class_info.base_class}", styles['Normal'])
-                story.append(base_class)
-            
-            if class_info.interfaces:
-                interfaces = Paragraph(f"Interfaces: {', '.join(class_info.interfaces)}", styles['Normal'])
-                story.append(interfaces)
-            
+            # Add title
+            title = Paragraph("Java Class Diagram", styles['Title'])
+            story.append(title)
             story.append(Spacer(1, 12))
 
-        doc.build(story)
+            # Add description
+            description = Paragraph("This is a UML class diagram representing the structure of the analyzed Java code. "
+                                    "It shows classes, their attributes, methods, and relationships.", styles['Normal'])
+            story.append(description)
+            story.append(Spacer(1, 12))
+
+            # Add the diagram image
+            img = Image(diagram_path, width=500, height=500)
+            story.append(img)
+            story.append(Spacer(1, 12))
+
+            # Add class information
+            for class_name, class_info in classes.items():
+                class_title = Paragraph(f"Class: {class_name}", styles['Heading2'])
+                story.append(class_title)
+                
+                if class_info.attributes:
+                    attributes = Paragraph(f"Attributes: {', '.join(class_info.attributes)}", styles['Normal'])
+                    story.append(attributes)
+                
+                if class_info.methods:
+                    methods = Paragraph(f"Methods: {', '.join(class_info.methods)}", styles['Normal'])
+                    story.append(methods)
+                
+                if class_info.base_class:
+                    base_class = Paragraph(f"Base Class: {class_info.base_class}", styles['Normal'])
+                    story.append(base_class)
+                
+                if class_info.interfaces:
+                    interfaces = Paragraph(f"Interfaces: {', '.join(class_info.interfaces)}", styles['Normal'])
+                    story.append(interfaces)
+                
+                story.append(Spacer(1, 12))
+
+            doc.build(story)
+            return {'message':'pdf successfully generated'}
+        except Exception as e:
+            return {'error':'error in generating pdf'}
