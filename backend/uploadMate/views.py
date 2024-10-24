@@ -46,7 +46,10 @@ def upload_codebase(request):
             # send response based on docType
             if doc_upload.docType == 'summary':
                 response = generate_summary_view(raw_request, doc_upload.id)
-                print(response.data['file_url'])
+                if 'file_url' in response.data:
+                    print(response.data['file_url'])
+                else:
+                    print("file_url not found in response:", response.data)
                 return Response(response.data, status=response.status_code)
                 # to call django.http response object instead of rest_framework response object
                 # response = generate_summary_view(request, doc_id = doc_upload.id)
@@ -58,7 +61,10 @@ def upload_codebase(request):
                 # return Response(response.data, status=response.status_code)                
             elif doc_upload.docType == 'class diagram':
                 response = generate_class_diagram_view(raw_request, doc_upload.id)
-                print(response.data['file_url'])
+                if 'file_url' in response.data:
+                    print(response.data['file_url'])
+                else:
+                    print("file_url not found in response:", response.data)
                 return Response(response.data, status=response.status_code)
             elif doc_upload.docType == 'sequence diagram':
                 return Response({'redirect':'sequenceDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
