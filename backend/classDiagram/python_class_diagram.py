@@ -1,7 +1,7 @@
+import ast
+import pydot
 import os
 import sys
-import javalang
-import pydot
 import logging
 import multiprocessing
 from typing import Dict, List, Tuple
@@ -10,54 +10,66 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
 from django.conf import settings
 
-media_url = settings.MEDIA_URL
-
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class ClassInfo:
     def __init__(self, name: str):
         self.name = name
         self.methods: List[str] = []
         self.attributes: List[str] = []
-        self.base_class: str = None
-        self.interfaces: List[str] = []
+        self.base_classes: List[str] = []
+        self.compositions: List[Tuple[str, str]] = []  # (attribute_name, class_name)
 
     def __str__(self):
-        return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_class={self.base_class}, interfaces={self.interfaces})"
+        return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_classes={self.base_classes}, compositions={self.compositions})"
     
-class JavaClassDiagramGenerator:
+class PythonDiagramGenerator:
     def __init__(self, file_path, author, doc_id):
         self.file_path = file_path
         self.author = author
         self.doc_id = doc_id
 
     def analyze_file(self):
-        uploaded_file_path = self.file_path
         classes = {}
-        with open(uploaded_file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-        
-        try:
-            tree = javalang.parse.parse(content)
-        except javalang.parser.JavaSyntaxError:
-            logging.error(f"Syntax error in file: {uploaded_file_path}")
-            return {'error':f'syntax error in file {uploaded_file_path}'}
+        uploaded_file_path = self.file_path
+        with open(uploaded_file_path, 'r') as file:
+            try:
+                tree = ast.parse(file.read(), filename=uploaded_file_path)
+            except SyntaxError as e:
+                logging.error(f"Syntax error in {uploaded_file_path}: {e}")
+                return {'error':f'syntax error in {uploaded_file_path}: {e}'}
 
-        for path, node in tree.filter(javalang.tree.ClassDeclaration):
-            class_name = node.name
-            class_info = ClassInfo(class_name)
-            
-            class_info.methods = [m.name for m in node.methods]
-            class_info.base_class = node.extends.name if node.extends else None
-            class_info.interfaces = [i.name for i in node.implements] if node.implements else []
-            
-            for field in node.fields:
-                for declarator in field.declarators:
-                    class_info.attributes.append(f"{field.type.name} {declarator.name}")
-            
-            classes[class_name] = class_info
-        
+            for node in ast.walk(tree):
+                if isinstance(node, ast.ClassDef):
+                    class_name = node.name
+                    class_info = ClassInfo(class_name)
+                    
+                    for item in node.body:
+                        if isinstance(item, ast.FunctionDef):
+                            class_info.methods.append(item.name)
+                        elif isinstance(item, ast.Assign):
+                            for target in item.targets:
+                                if isinstance(target, ast.Name):
+                                    class_info.attributes.append(target.id)
+                    
+                    # Handle base classes
+                    class_info.base_classes = [
+                        base.id if isinstance(base, ast.Name) else ast.unparse(base) 
+                        for base in node.bases
+                    ]
+                    
+                    # Detect composition relationships
+                    for item in node.body:
+                        if isinstance(item, ast.Assign):
+                            for target in item.targets:
+                                if isinstance(target, ast.Name) and isinstance(item.value, ast.Call):
+                                    if isinstance(item.value.func, ast.Name):
+                                        class_info.compositions.append((target.id, item.value.func.id))
+                    
+                    classes[class_name] = class_info
+
         return classes
     
     def generate_class_diagram(self, classes):
@@ -79,31 +91,31 @@ class JavaClassDiagramGenerator:
             node = pydot.Node(class_name, label=label, shape='record')
             graph.add_node(node)
 
-            if class_info.base_class:
-                edge = pydot.Edge(class_info.base_class, class_name, label='extends')
-                graph.add_edge(edge)
+            for base_class in class_info.base_classes:
+                if base_class in classes:
+                    edge = pydot.Edge(base_class, class_name, label='inherits')
+                    graph.add_edge(edge)
 
-            for interface in class_info.interfaces:
-                edge = pydot.Edge(interface, class_name, label='implements', style='dashed')
-                graph.add_edge(edge)
+            for attr, comp_class in class_info.compositions:
+                if comp_class in classes:
+                    edge = pydot.Edge(class_name, comp_class, label=f'has {attr}', style='dashed')
+                    graph.add_edge(edge)
 
         uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
-
         file_name = f"class_diagram_{uploaded_file_name}"
         result = self.safe_write_png(graph, file_name)
         return result
-
+    
     def safe_write_png(self, graph, filename):
-        output_path = os.path.join(media_url, filename)
+        output_path = os.path.join(settings.MEDIA_URL, filename)
         try:
             graph.write_png(output_path)
             logging.info(f"Generated: {output_path}")
             return {'img_path':output_path}
         except Exception as e:
             logging.error(f"Error writing {filename}: {str(e)}")
-            logging.error(f"Make sure you have write permissions in {media_url}") 
+            logging.error(f"Make sure you have write permissions in {settings.MEDIA_URL}")
             return {'error':f'Error writing {filename}: {str(e)}'}
-        
 
     def generate_pdf(self, diagram_path: str, output_path: str, classes: Dict[str, ClassInfo]):
         try:
@@ -112,12 +124,12 @@ class JavaClassDiagramGenerator:
             story = []
 
             # Add title
-            title = Paragraph("Java Class Diagram", styles['Title'])
+            title = Paragraph("Python Class Diagram", styles['Title'])
             story.append(title)
             story.append(Spacer(1, 12))
 
             # Add description
-            description = Paragraph("This is a UML class diagram representing the structure of the analyzed Java code. "
+            description = Paragraph("This is a UML class diagram representing the structure of the analyzed Python code. "
                                     "It shows classes, their attributes, methods, and relationships.", styles['Normal'])
             story.append(description)
             story.append(Spacer(1, 12))
@@ -140,13 +152,13 @@ class JavaClassDiagramGenerator:
                     methods = Paragraph(f"Methods: {', '.join(class_info.methods)}", styles['Normal'])
                     story.append(methods)
                 
-                if class_info.base_class:
-                    base_class = Paragraph(f"Base Class: {class_info.base_class}", styles['Normal'])
-                    story.append(base_class)
+                if class_info.base_classes:
+                    base_classes = Paragraph(f"Base Classes: {', '.join(class_info.base_classes)}", styles['Normal'])
+                    story.append(base_classes)
                 
-                if class_info.interfaces:
-                    interfaces = Paragraph(f"Interfaces: {', '.join(class_info.interfaces)}", styles['Normal'])
-                    story.append(interfaces)
+                if class_info.compositions:
+                    compositions = Paragraph(f"Compositions: {', '.join([f'{attr} ({comp_class})' for attr, comp_class in class_info.compositions])}", styles['Normal'])
+                    story.append(compositions)
                 
                 story.append(Spacer(1, 12))
 

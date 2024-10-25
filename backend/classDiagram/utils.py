@@ -1,18 +1,21 @@
 import os
 from django.conf import settings
 from .java_class_diagram import JavaClassDiagramGenerator
+from .python_class_diagram import PythonDiagramGenerator
 
 def process_file(file_path, author, language, doc_id):
     # Validate the language
     if language == 'java':
         process = JavaClassDiagramGenerator(file_path, author, doc_id)
     elif language == 'python':  # Fix typo
-        pass  # Add logic for python if needed
+        process = PythonDiagramGenerator(file_path, author, doc_id)
     else:
         return {'error': f"{language} not supported for class diagram generation"}
 
-    # Analyze the Java file
-    analysis_result = process.analyze_java_file()
+    # Analyze the file
+    analysis_result = process.analyze_file()
+    if analysis_result.get('error'):
+        return analysis_result
     
     # Process the results
     classes = analysis_result
@@ -39,5 +42,5 @@ def process_file(file_path, author, language, doc_id):
     # Return the success response with file name and path
     return {
         'file_name': file_name,
-        'file_path': os.path.join(settings.MEDIA_URL, author, file_name)  # Return URL for access
+        'file_path': output_path
     }
