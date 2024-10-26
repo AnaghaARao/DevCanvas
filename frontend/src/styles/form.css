@@ -98,4 +98,8 @@
   .form-button {
     margin: 10px;
   }
+
+  .switch-page {
+    font-size: x-small;
+  }
 }
