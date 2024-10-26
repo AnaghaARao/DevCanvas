@@ -88,3 +88,24 @@
 .checkbox:hover {
   accent-color: #9f16a9;
 }
+
+@media only screen and (max-width: 600px) {
+  .upload-form {
+    margin: 0 10px 10px 10px;
+    width: 93vw;
+    padding: 20px;
+  }
+
+  .upload-form h2 {
+    font-size: medium;
+  }
+
+  .divider {
+    margin: 0;
+  }
+
+  .upload-section {
+    flex-direction: column;
+    margin: 1rem auto;
+  }
+}

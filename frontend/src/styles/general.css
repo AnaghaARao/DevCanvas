@@ -81,21 +81,26 @@
 
 @media only screen and (max-width: 600px) {
   .maindiv {
-    width: 100vw; /* Full viewport width */
+    width: 100vw;
   }
 
   .navbar {
-    height: auto; /* Adjust height for smaller screens */
+    height: auto;
     padding: 10px;
-    width: 90vw; /* Full viewport width */
-    margin: 1rem; /* Remove margins on mobile */
+    width: 94vw;
+    margin: 10px;
     font-size: 0.7rem;
   }
 
+  .navbar-logo {
+    font-size: medium;
+    margin: 0 5px;
+  }
+
   .btn {
-    width: 100%; /* Make the button take full width on mobile */
-    padding: 8px 20px; /* Reduce padding for better fit */
-    font-size: 0.8rem; /* Adjust font size for readability on small screens */
+    width: 100%;
+    padding: 8px 20px;
+    font-size: 0.8rem;
   }
 
   h2 {
@@ -104,23 +109,23 @@
 
   h1,
   p {
-    font-size: 0.9rem; /* Scale down text for smaller screens */
-    text-align: center; /* Center text for a cleaner look on mobile */
+    font-size: 0.9rem;
+    text-align: center;
   }
 
   .lp-sec1 {
-    flex-direction: column; /* Stack the content vertically */
-    gap: 1rem; /* Reduce gap between elements for mobile */
-    width: 100vw; /* Ensure full width */
+    flex-direction: column;
+    gap: 1rem;
+    width: 100vw;
   }
 
   .lp-img {
-    width: 80%; /* Adjust image width for mobile */
-    margin: 0 auto; /* Center image */
+    width: 80%;
+    margin: 0 auto;
   }
 
   .lp-content {
-    padding: 0 10px; /* Add some padding around text */
-    width: 100vw; /* Ensure full width */
+    padding: 0 10px;
+    width: 100vw;
   }
 }
