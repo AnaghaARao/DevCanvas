@@ -1,11 +1,11 @@
 import os
 from django.conf import settings
-from .python_sequence_diagram import PythonDiagramGenerator
+from .python_sequence_diagram import MultiFileSequenceDiagramGenerator
 
 def process_file(file_path, author, language, doc_id):
     # Validate the language
     if language == 'python':
-        process = PythonDiagramGenerator(file_path, author, doc_id)
+        process = MultiFileSequenceDiagramGenerator(file_path, author, doc_id)
     else:
         return {'error': f"{language} not supported for class diagram generation"}
 

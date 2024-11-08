@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import ClassDiagram
+from .models import SequenceDiagram
 from uploadMate.models import FileNest  # Import FileNest model to fetch uploaded code file
 from django.conf import settings
 from rest_framework import status
@@ -42,6 +42,7 @@ def generate_sequence_diagram_view(request, doc_id):
 
     file_url = f"{settings.MEDIA_URL}/{author}/{file_name}"
 
+    print('sequence diagram file generated')
     return Response({
         'message':'class diagram generated successfully',
         'file_url': file_url

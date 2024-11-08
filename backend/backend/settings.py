@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'uploadMate',
     'summaryGen',
     'classDiagram',
+    'sequenceDiagram',
     'corsheaders',
 ]
 
