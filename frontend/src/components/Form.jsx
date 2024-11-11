@@ -157,7 +157,7 @@ function Form({ route, method }) {
 
       <div className="form-container">
         <div className="input-div">
-          <PersonIcon />
+          <PersonIcon className="mui-icons" />
           <input
             className={`${
               errors.username
@@ -175,20 +175,20 @@ function Form({ route, method }) {
 
           {errors.username && (
             <span title={errors.username}>
-              <CancelSharpIcon />
+              <CancelSharpIcon className="mui-icons" />
             </span>
           )}
 
           {successMessages.username && (
             <span title={successMessages.username}>
-              <CheckCircleSharpIcon />
+              <CheckCircleSharpIcon className="mui-icons" />
             </span>
           )}
         </div>
 
         {method === "register" && (
           <div className="input-div">
-            <EmailIcon />
+            <EmailIcon className="mui-icons" />
             <input
               className={`${
                 errors.email
@@ -205,18 +205,18 @@ function Form({ route, method }) {
             />
             {errors.email && (
               <span title={errors.email}>
-                <CancelSharpIcon />
+                <CancelSharpIcon className="mui-icons" />
               </span>
             )}
             {successMessages.email && (
               <span title={successMessages.email}>
-                <CheckCircleSharpIcon />
+                <CheckCircleSharpIcon className="mui-icons" />
               </span>
             )}
           </div>
         )}
         <div className="input-div">
-          <LockIcon />
+          <LockIcon className="mui-icons" />
           <input
             className={`${passwordError ? "input-error" : ""}`}
             type={showPassword ? "text" : "password"}
@@ -228,11 +228,12 @@ function Form({ route, method }) {
           <span
             onClick={togglePasswordVisibility}
             style={{ cursor: "pointer" }}
+            title="Toggle password visibility."
           >
             {showPassword ? (
-              <VisibilityOffSharpIcon style={{ color: "red" }} />
+              <VisibilityOffSharpIcon className="mui-icons" />
             ) : (
-              <VisibilitySharpIcon style={{ color: "red" }} />
+              <VisibilitySharpIcon className="mui-icons" />
             )}
           </span>
         </div>
