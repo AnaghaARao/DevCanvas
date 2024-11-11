@@ -4,11 +4,10 @@ import "../styles/general.css";
 import "../styles/upload.css";
 import BoltIcon from "@mui/icons-material/Bolt";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../store/actions";
 import { showAlert, showError, showSuccess } from "../hooks/toastUtils";
 
 const Upload = () => {
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [language, setLanguage] = useState("");
   const [docType, setDocType] = useState("");
   const user = useSelector((state) => state.user);
@@ -16,7 +15,15 @@ const Upload = () => {
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFiles((prevFiles) => [...prevFiles, ...e.target.files]);
+  };
+
+  const handleFolderChange = (e) => {
+    setFiles((prevFiles) => [...prevFiles, ...e.target.files]);
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles(files.filter((_, i) => i !== index));
   };
 
   const handleLanguageChange = (e) => {
@@ -29,13 +36,13 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file || !language || !docType) {
+    if (files.length === 0 || !language || !docType) {
       showAlert("Please fill all fields and upload a file");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    files.forEach((file) => formData.append("files", file));
     formData.append("language", language);
     formData.append("docType", docType);
     formData.append("author", user);
@@ -83,20 +90,53 @@ const Upload = () => {
 
   return (
     <form onSubmit={handleSubmit} className="upload-form">
-      <h2>Upload Files</h2>
+      <h2>Upload Files or Folder</h2>
       <hr className="divider" />
       <div className="upload-section">
-        <div className="upload-files">
-          <label htmlFor="fileInput">Upload File:</label>
-          <input
-            type="file"
-            id="fileInput"
-            onChange={handleFileChange}
-            className="input-div"
-            accept=".txt, .docx, .pdf, .cpp, .java, .py"
-            required
-          />
+        <div className="left-upload">
+          <div className="upload-files">
+            <label htmlFor="fileInput">Upload File(s):</label>
+            <input
+              type="file"
+              id="fileInput"
+              onChange={handleFileChange}
+              className="input-div"
+              accept=".txt, .docx, .pdf, .cpp, .java, .py"
+              multiple
+              required
+            />
+            <label htmlFor="folderInput">Upload Folder:</label>
+            <input
+              type="file"
+              id="folderInput"
+              onChange={handleFolderChange}
+              className="input-div"
+              accept=".txt, .docx, .pdf, .cpp, .java, .py"
+              webkitdirectory="true"
+              required
+            />
+          </div>
+          {files.length > 0 && (
+            <div className="file-list">
+              <h3>Selected Files: </h3>
+              <ul>
+                {files.map((file, index) => (
+                  <li key={index}>
+                    {file.name}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(index)}
+                      className="remove-file-btn"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+
         <div className="upload-info">
           <div className="language">
             <label htmlFor="languageInput" className="label-head">
