@@ -95,30 +95,34 @@ const Upload = () => {
       <div className="upload-section">
         <div className="left-upload">
           <div className="upload-files">
-            <label htmlFor="fileInput">Upload File(s):</label>
-            <input
-              type="file"
-              id="fileInput"
-              onChange={handleFileChange}
-              className="input-div"
-              accept=".txt, .docx, .pdf, .cpp, .java, .py"
-              multiple
-              required
-            />
-            <label htmlFor="folderInput">Upload Folder:</label>
-            <input
-              type="file"
-              id="folderInput"
-              onChange={handleFolderChange}
-              className="input-div"
-              accept=".txt, .docx, .pdf, .cpp, .java, .py"
-              webkitdirectory="true"
-              required
-            />
+            <div className="input-sec">
+              <label htmlFor="fileInput">Upload File(s):</label>
+              <input
+                type="file"
+                id="fileInput"
+                onChange={handleFileChange}
+                className="input-div"
+                accept=".txt, .docx, .pdf, .cpp, .java, .py"
+                multiple
+                required
+              />
+            </div>
+            <div className="input-sec">
+              <label htmlFor="folderInput">Upload Folder:</label>
+              <input
+                type="file"
+                id="folderInput"
+                onChange={handleFolderChange}
+                className="input-div"
+                accept=".txt, .docx, .pdf, .cpp, .java, .py"
+                webkitdirectory="true"
+                required
+              />
+            </div>
           </div>
           {files.length > 0 && (
             <div className="file-list">
-              <h3>Selected Files: </h3>
+              <h3>Uploaded Files: </h3>
               <ul>
                 {files.map((file, index) => (
                   <li key={index}>
@@ -136,13 +140,12 @@ const Upload = () => {
             </div>
           )}
         </div>
+        <div className="vl"></div>
 
         <div className="upload-info">
           <div className="language">
-            <label htmlFor="languageInput" className="label-head">
-              Programming Language:
-            </label>
-            <input
+            <label htmlFor="languageInput">Programming Language:</label>
+            {/* <input
               type="text"
               id="languageInput"
               value={language}
@@ -150,33 +153,22 @@ const Upload = () => {
               placeholder="Enter programming language"
               className="input-div"
               required
-            />
+            /> */}
+            <select
+              id="languageInput"
+              value={language}
+              onChange={handleLanguageChange}
+              className="input-div"
+              required
+            >
+              <option value="">Select programming language</option>
+              <option value="java">Java</option>
+              <option value="python">Python</option>
+            </select>
           </div>
 
           <div className="documentation">
-            <label htmlFor="docTypeSelect" className="label-head">
-              Documentation Type:
-            </label>
-            {/* <div className="checkbox-inp">
-              <input
-                type="checkbox"
-                name="umlDiagrams"
-                checked={docTypes.umlDiagrams}
-                onChange={handleCheckboxChange}
-                className="checkbox"
-              />
-              <p>UML Digrams</p>
-            </div>
-            <div className="checkbox-inp">
-              <input
-                type="checkbox"
-                name="codeSummary"
-                checked={docTypes.codeSummary}
-                onChange={handleCheckboxChange}
-                className="checkbox"
-              />
-              <p>Code Summary</p>
-            </div> */}
+            <label htmlFor="docTypeSelect">Documentation Type:</label>
             <select
               id="docTypeSelect"
               value={docType}
