@@ -25,6 +25,7 @@ urlpatterns = [
     path('uploadmate/', include('uploadMate.urls')),
     path('summary/', include('summaryGen.urls')),
     path('classdiagram/', include('classDiagram.urls')),
+    path('sequencediagram/', include('sequenceDiagram.urls')),
 ]
 
 # Serve media files during development
