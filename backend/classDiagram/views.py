@@ -38,7 +38,7 @@ def generate_class_diagram_view(request, doc_id):
     file_path = diagram_result['file_path']
 
     if not isinstance(file_path, str):
-        return Response({'error': 'Summary path is not valid'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'error': 'class diagram path is not valid'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     file_url = f"{settings.MEDIA_URL}/{author}/{file_name}"
 
