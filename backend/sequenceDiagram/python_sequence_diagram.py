@@ -51,7 +51,7 @@ class MultiFileSequenceDiagramGenerator:
         
         if not python_files:
             logging.warning(f"No Python files found in {self.directory}")
-            return False
+            return {'warning':f'No Python files found in {self.directory}'}
 
         logging.info(f"Found {len(python_files)} Python files to analyze")
         for file_path in python_files:
@@ -68,12 +68,22 @@ class MultiFileSequenceDiagramGenerator:
                     self._analyze_tree(tree, file_path)
                     self.files_analyzed.add(file_path)
                     logging.info(f"Successfully analyzed: {os.path.basename(file_path)}")
+                    return {
+                        'status':'message',
+                        'message':f"Successfully analyzed: {os.path.basename(file_path)}"
+                    }
                 except SyntaxError as e:
                     logging.error(f"Syntax error in {file_path}: {e}")
-                    return {'error':f'Syntax error in {file_path}: {e}'}
+                    return {
+                        'status':'error',
+                        'error':f'Syntax error in {file_path}: {e}'
+                    }
         except Exception as e:
             logging.error(f"Error reading file {file_path}: {e}")
-            return {'error':f'Error reading file {file_path}: {e}'}
+            return {
+                'status':'error',
+                'error':f'Error reading file {file_path}: {e}'
+            }
 
     def _analyze_tree(self, tree, file_path):
         class MethodVisitor(ast.NodeVisitor):
@@ -103,6 +113,7 @@ class MultiFileSequenceDiagramGenerator:
                     from_participant = self.current_class or "System"
                     to_participant = call.func.value.id
                     message = call.func.attr
+                    logging.info(f"Adding message from {from_participant} to {to_participant} with message '{message}'")
                     
                     message_type = 'dashed' if any(word in message.lower() 
                                                  for word in ['return', 'get', 'fetch', 'retrieve']) else 'solid'
@@ -126,6 +137,7 @@ class MultiFileSequenceDiagramGenerator:
 
         visitor = MethodVisitor(self, file_path)
         visitor.visit(tree)
+        
 
     def generate_plantuml(self) -> str:
         if not self.messages:
@@ -185,7 +197,9 @@ skinparam note {
     def generate_pdf(self, output_path: str = None):
         if not self.messages:
             logging.error("No messages to generate PDF from")
-            return False
+            return {
+                'status':'error',
+                'error':'No messages to generate PDF from'}
 
         if output_path is None:
             output_dir = os.path.join(self.directory, 'output')
@@ -196,7 +210,10 @@ skinparam note {
             # Generate diagram
             plantuml_str = self.generate_plantuml()
             if not plantuml_str:
-                return False
+                return {
+                    'status':'error',
+                    'error':'plantuml str not generated! Internal Server Error'
+                }
 
             # Generate the diagram
             diagram_path = output_path.replace('.pdf', '.png')
@@ -306,11 +323,17 @@ skinparam note {
             # Build the PDF
             doc.build(story)
             logging.info(f"Generated PDF sequence diagram: {output_path}")
-            return True
+            return {
+                'status':'message',
+                'message':f'Generated PDF sequence diagram: {output_path}'
+            }
 
         except Exception as e:
             logging.error(f"Error in generate_pdf: {e}")
-            return {'error':f'Error in generate_pdf: {e}'}
+            return {
+                'status':'error',
+                'error':f'Error in generate_pdf: {e}'
+            }
             
         finally:
             # Clean up temporary PNG file

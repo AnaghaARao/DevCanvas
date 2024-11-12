@@ -12,6 +12,7 @@ from django.urls import reverse
 
 from summaryGen.views import generate_summary_view
 from classDiagram.views import generate_class_diagram_view
+from sequenceDiagram.views import generate_sequence_diagram_view
 
 # Create your views here.
 @api_view(['POST'])
@@ -67,7 +68,12 @@ def upload_codebase(request):
                     print("file_url not found in response:", response.data)
                 return Response(response.data, status=response.status_code)
             elif doc_upload.docType == 'sequence diagram':
-                return Response({'redirect':'sequenceDiagram', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)
+                response = generate_sequence_diagram_view(raw_request, doc_upload.id)
+                if 'file_url' in response.data:
+                    print(response.data['file_url'])
+                else:
+                    print("file_url not found in response:", response.data)
+                return Response(response.data, status=response.status_code)
             elif doc_upload.docType == 'flowchart':
                 return Response({'redirect':'flowchart', 'doc_id':doc_upload.id}, status=status.HTTP_201_CREATED)            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

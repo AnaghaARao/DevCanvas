@@ -3,16 +3,19 @@ from django.conf import settings
 from .python_sequence_diagram import MultiFileSequenceDiagramGenerator
 
 def process_file(file_path, author, language, doc_id):
+    directory = os.path.join(settings.MEDIA_ROOT, author)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     # Validate the language
     if language == 'python':
-        process = MultiFileSequenceDiagramGenerator(file_path, author, doc_id)
+        process = MultiFileSequenceDiagramGenerator(directory=directory)
     else:
         return {'error': f"{language} not supported for class diagram generation"}
 
     # Analyze the file
     analysis_result = process.analyze_file(file_path)
-    if analysis_result.get('error'):
-        return analysis_result
+    if analysis_result['status'] == 'error':
+        return analysis_result['error']
     
 
     
@@ -35,11 +38,11 @@ def process_file(file_path, author, language, doc_id):
     # Generate the PDF
     pdf_result = process.generate_pdf(output_path)
     
-    if pdf_result.get('error'):  # Check for errors in PDF generation
-        return pdf_result
-    
+    if pdf_result['status']=='error':  # Check for errors in PDF generation
+        return pdf_result['error']
+    else:
     # Return the success response with file name and path
-    return {
-        'file_name': file_name,
-        'file_path': output_path
-    }
+        return {
+            'file_name': file_name,
+            'file_path': output_path
+        }

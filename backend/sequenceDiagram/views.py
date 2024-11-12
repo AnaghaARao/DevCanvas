@@ -13,13 +13,9 @@ from .utils import process_file
 
 @api_view(['POST'])
 def generate_sequence_diagram_view(request, doc_id):
-    # doc_ids = request.data.getlist('doc_ids')
     if not doc_id:
-        return Response({'error': 'doc_id are required to fetch the uploaded files'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'doc_id is required to fetch the uploaded files'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # summary_path = [] # for multiple files
-
-    # for doc_id in doc_ids: # works for folder, file ent one by one
     try:
         file_nest = FileNest.objects.get(id=doc_id)
     except FileNest.DoesNotExist:
@@ -31,8 +27,9 @@ def generate_sequence_diagram_view(request, doc_id):
 
     diagram_result = process_file(uploaded_file_path, author, language, doc_id)
 
-    if diagram_result.get('error'):
-        return diagram_result
+    # If there’s an error in the diagram_result, wrap it in a Response
+    if diagram_result is not None:
+        return Response({'error':'Unable to generate sequence diagram'}, status=status.HTTP_400_BAD_REQUEST)
     
     file_name = diagram_result['file_name']
     file_path = diagram_result['file_path']
@@ -44,6 +41,6 @@ def generate_sequence_diagram_view(request, doc_id):
 
     print('sequence diagram file generated')
     return Response({
-        'message':'class diagram generated successfully',
+        'message': 'Sequence diagram generated successfully',
         'file_url': file_url
-    }, status = status.HTTP_200_OK)
+    }, status=status.HTTP_200_OK)
