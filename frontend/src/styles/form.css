@@ -9,6 +9,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   background-color: rgba(41, 41, 41);
+  gap: 1rem;
 }
 
 .form-info {
@@ -20,12 +21,12 @@
 }
 
 .form-name {
-  color: #ffffff;
+  color: #f0f0f0;
   font-weight: bold;
 }
 
 .form-desc {
-  color: #ffffff;
+  color: #f0f0f0;
   font-weight: lighter;
   margin-top: 5px;
 }
@@ -33,6 +34,7 @@
 .input-div {
   display: flex;
   align-items: center;
+  margin: 0;
   gap: 0.5rem;
 }
 
@@ -41,10 +43,12 @@
   font-size: 1rem;
   outline: none;
   width: 100%;
+  background-color: transparent;
+  color: #f0f0f0;
 }
 
 .input-div:has(input:focus) {
-  outline: 2px solid #ffffff;
+  outline: 2px solid #f0f0f0;
 }
 
 .input-div input:active {
@@ -54,15 +58,17 @@
 .input-div span {
   display: flex;
   align-items: center;
+  background-color: transparent;
+  justify-content: center;
 }
 
 .form-button {
   width: 95%;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .mui-icons {
-  background-color: #797979;
+  background-color: transparent !important;
 }
 
 .switch-page {
@@ -70,6 +76,7 @@
   color: #f0f0f0;
   text-align: center;
   font-family: "Arial", sans-serif;
+  font-size: 0.8rem;
 }
 
 .switch-link {
@@ -89,6 +96,19 @@
   .form-container {
     margin: 20px 30px;
     padding: 15px 20px;
+    gap: 0.7rem;
+  }
+
+  .form-name {
+    font-size: medium;
+  }
+
+  .form-desc {
+    font-size: small;
+  }
+
+  .css-1umw9bq-MuiSvgIcon-root {
+    font-size: 1.2rem !important;
   }
 
   .input-div input {
@@ -101,5 +121,6 @@
 
   .switch-page {
     font-size: x-small;
+    margin-top: 0.2rem;
   }
 }
