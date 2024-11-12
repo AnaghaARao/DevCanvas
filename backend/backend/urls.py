@@ -26,6 +26,7 @@ urlpatterns = [
     path('summary/', include('summaryGen.urls')),
     path('classdiagram/', include('classDiagram.urls')),
     path('sequencediagram/', include('sequenceDiagram.urls')),
+    path('flowcharts/', include('flowchart.urls')),
 ]
 
 # Serve media files during development

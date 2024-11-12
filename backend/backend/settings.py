@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'summaryGen',
     'classDiagram',
     'sequenceDiagram',
+    'flowchart',
     'corsheaders',
 ]
 
