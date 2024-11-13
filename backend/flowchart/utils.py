@@ -1,4 +1,5 @@
 from .python_flowcharts import PythonFlowchartGenerator
+from .java_flowcharts import JavaFlowchartGenerator
 from django.conf import settings
 import os
 
@@ -6,7 +7,7 @@ def process_file(file_path, author, language, doc_id):
     if language=='python':
         process = PythonFlowchartGenerator(file_path, author, doc_id)
     elif language == 'java':
-        pass
+        process = JavaFlowchartGenerator(file_path, author, doc_id)
     else:
         return {'error': f"{language} not supported for flowchart generation"}
     

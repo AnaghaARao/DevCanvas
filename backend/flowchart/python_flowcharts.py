@@ -34,10 +34,11 @@ class PythonFlowchartGenerator:
         self.author = author
         self.doc_id = doc_id
 
-    def safe_write_png(self, graph):
+    def safe_write_png(self, graph, output_path=None):
         current_dir = f"{settings.MEDIA_URL}/{self.author}"
         filename = os.path.splitext(os.path.basename(self.file_path))[0]
-        output_path = os.path.join(current_dir, filename)
+        if output_path == None:
+            output_path = os.path.join(current_dir, filename)
         try:
             graph.write_png(output_path)
             logging.info(f"Generated: {output_path}")
