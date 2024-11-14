@@ -25,11 +25,11 @@ def process_file(directory, author, language, doc_id):
     # img_path = png_result['img_path']
     # media_root = settings.MEDIA_ROOT  # Use physical path for saving files
     file_name = f"flowchart_{directory}.pdf"
-    output_path = f"uploads/{author}/{file_name}"  # Use media root for saving the file
+    output_path = os.path.join(settings.MEDIA_ROOT, author, directory, file_name)
 
     # Generate the PDF
     process.generate_pdf(flowcharts, output_path)
-    
+    print(output_path)
     # Return the success response with file name and path
     return {
         'file_name': file_name,

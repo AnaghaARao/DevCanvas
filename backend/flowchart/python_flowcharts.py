@@ -32,11 +32,11 @@ class PythonFlowchartGenerator:
     def __init__(self, directory, author, doc_id):
         self.author = author
         self.doc_id = doc_id
-        self.directory = f"{settings.MEDIA_URL}/{self.author}/{directory}"
+        self.directory = f"{settings.MEDIA_ROOT}/{author}/{directory}"
 
     def safe_write_png(self, graph, output_path=None):
         current_dir = self.directory
-        filename = os.path.splitext(os.path.basename(self.file_path))[0]
+        filename = os.path.splitext(os.path.basename(output_path))[0]
         if output_path == None:
             output_path = os.path.join(current_dir, filename)
         try:
@@ -86,7 +86,7 @@ class PythonFlowchartGenerator:
 
     def analyze_directory(self) -> Dict[str, Union[ClassInfo, FunctionInfo]]:
         all_elements = {}
-        file_paths = self.list_python_files(self.directory)
+        file_paths = self.list_python_files()
         
         with multiprocessing.Pool() as pool:
             results = pool.map(self.analyze_python_file, file_paths)
