@@ -24,13 +24,14 @@ class ClassInfo:
         self.methods: Dict[str, MethodInfo] = {}
 
 class JavaFlowchartGenerator:
-    def __init__(self, file_path, author, doc_id):
-        self.file_path = file_path
+    def __init__(self, directory, author, doc_id):
+        # self.file_path = file_path
         self.author = author
         self.doc_id = doc_id
+        self.directory = f'{settings.MEDIA_URL}/{self.author}/{directory}'
 
     def safe_write_png(self, graph, filename):
-        current_dir = f"{settings.MEDIA_URL}/{self.author}"
+        current_dir = self.directory
         output_path = os.path.join(current_dir, filename)
         try:
             graph.write_png(output_path)
@@ -38,16 +39,16 @@ class JavaFlowchartGenerator:
         except Exception as e:
             logging.error(f"Error writing {filename}: {str(e)}")
 
-    def analyze_file(self) -> Dict[str, ClassInfo]:
+    def analyze_java_file(self, file_path: str) -> Dict[str, ClassInfo]:
         classes = {}
-        with open(self.file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
         try:
             tree = javalang.parse.parse(content)
         except javalang.parser.JavaSyntaxError:
-            logging.error(f"Syntax error in file: {self.file_path}")
-            return {'error':f"Syntax error in file: {self.file_path}"}
+            logging.error(f"Syntax error in file: {file_path}")
+            return {}
 
         for path, node in tree.filter(javalang.tree.ClassDeclaration):
             class_name = node.name
@@ -63,20 +64,20 @@ class JavaFlowchartGenerator:
         
         return classes
 
-    def list_java_files(self, directory: str) -> List[str]:
+    def list_java_files(self) -> List[str]:
         java_files = []
-        for root, _, files in os.walk(directory):
+        for root, _, files in os.walk(self.directory):
             for file in files:
                 if file.endswith('.java'):
                     java_files.append(os.path.join(root, file))
         return java_files
 
-    def analyze_directory(self, directory: str) -> Dict[str, ClassInfo]:
+    def analyze_directory(self) -> Dict[str, ClassInfo]:
         all_classes = {}
-        file_paths = self.list_java_files(directory)
+        file_paths = self.list_java_files(self.directory)
         
         with multiprocessing.Pool() as pool:
-            results = pool.map(self.analyze_file, file_paths)
+            results = pool.map(self.analyze_java_file, file_paths)
             for result in results:
                 all_classes.update(result)
         
@@ -147,7 +148,7 @@ class JavaFlowchartGenerator:
         return flowcharts
 
     def generate_pdf(self, flowcharts: Dict[str, Dict[str, Optional[pydot.Dot]]], output_path: str):
-        current_dir = f"{settings.MEDIA_URL}/{self.author}"
+        current_dir = self.directory
         doc = SimpleDocTemplate(output_path, pagesize=letter)
         styles = getSampleStyleSheet()
         story = []
