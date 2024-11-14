@@ -59,6 +59,10 @@ const Upload = () => {
       formData.append("files", file);
     });
 
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": ", pair[1]);
+    }
+
     try {
       const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {
         method: "POST",
