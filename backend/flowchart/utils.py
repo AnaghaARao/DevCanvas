@@ -3,15 +3,15 @@ from .java_flowcharts import JavaFlowchartGenerator
 from django.conf import settings
 import os
 
-def process_file(file_path, author, language, doc_id):
+def process_file(directory, author, language, doc_id):
     if language=='python':
-        process = PythonFlowchartGenerator(file_path, author, doc_id)
+        process = PythonFlowchartGenerator(directory, author, doc_id)
     elif language == 'java':
-        process = JavaFlowchartGenerator(file_path, author, doc_id)
+        process = JavaFlowchartGenerator(directory, author, doc_id)
     else:
         return {'error': f"{language} not supported for flowchart generation"}
     
-    classes = process.analyze_file()
+    classes = process.analyze_directory()
 
     if classes.get('error'):
         return classes
@@ -24,9 +24,8 @@ def process_file(file_path, author, language, doc_id):
     # # Prepare file paths and names
     # img_path = png_result['img_path']
     media_root = settings.MEDIA_ROOT  # Use physical path for saving files
-    uploaded_file_name = os.path.splitext(os.path.basename(file_path))[0]
-    file_name = f"flowchart_{uploaded_file_name}.pdf"
-    output_path = os.path.join(media_root, author, file_name)  # Use media root for saving the file
+    file_name = f"flowchart_{directory}.pdf"
+    output_path = os.path.join(media_root, author,directory, file_name)  # Use media root for saving the file
 
     # Generate the PDF
     process.generate_pdf(flowcharts, output_path)

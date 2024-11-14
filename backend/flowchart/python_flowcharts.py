@@ -29,13 +29,13 @@ class ClassInfo:
 
 
 class PythonFlowchartGenerator:
-    def __init__(self, file_path, author, doc_id):
-        self.file_path = file_path
+    def __init__(self, directory, author, doc_id):
         self.author = author
         self.doc_id = doc_id
+        self.directory = f"{settings.MEDIA_URL}/{self.author}/{directory}"
 
     def safe_write_png(self, graph, output_path=None):
-        current_dir = f"{settings.MEDIA_URL}/{self.author}"
+        current_dir = self.directory
         filename = os.path.splitext(os.path.basename(self.file_path))[0]
         if output_path == None:
             output_path = os.path.join(current_dir, filename)
@@ -47,15 +47,14 @@ class PythonFlowchartGenerator:
             logging.error(f"Error writing {filename}: {str(e)}")
             # return {'error':f'Error writing {filename}: {str(e)}'}
 
-    def analyze_file(self):
+    def analyze_python_file(self, file_path: str) -> Dict[str, Union[ClassInfo, FunctionInfo]]:
         elements = {}
-        filename = os.path.splitext(os.path.basename(self.file_path))[0]
-        with open(self.file_path, 'r') as file:
+        with open(file_path, 'r') as file:
             try:
-                tree = ast.parse(file.read(), filename)
+                tree = ast.parse(file.read(), filename=file_path)
             except SyntaxError as e:
-                logging.error(f"Syntax error in {self.file_path}: {e}")
-                return {'error':f'Syntax error in {self.file_path}: {e}'}
+                logging.error(f"Syntax error in {file_path}: {e}")
+                return {'error':f'Syntax error in {file_path}: {e}'}
 
             for node in ast.iter_child_nodes(tree):
                 if isinstance(node, ast.ClassDef):
@@ -77,17 +76,17 @@ class PythonFlowchartGenerator:
 
         return elements
 
-    def list_python_files(self, directory: str) -> List[str]:
+    def list_python_files(self) -> List[str]:
         python_files = []
-        for root, _, files in os.walk(directory):
+        for root, _, files in os.walk(self.directory):
             for file in files:
                 if file.endswith('.py'):
                     python_files.append(os.path.join(root, file))
         return python_files
 
-    def analyze_directory(self, directory: str) -> Dict[str, Union[ClassInfo, FunctionInfo]]:
+    def analyze_directory(self) -> Dict[str, Union[ClassInfo, FunctionInfo]]:
         all_elements = {}
-        file_paths = self.list_python_files(directory)
+        file_paths = self.list_python_files(self.directory)
         
         with multiprocessing.Pool() as pool:
             results = pool.map(self.analyze_python_file, file_paths)
@@ -150,7 +149,7 @@ class PythonFlowchartGenerator:
         return flowcharts
 
     def generate_pdf(self, flowcharts: Dict[str, Union[Dict[str, pydot.Dot], pydot.Dot]], output_path: str):
-        current_dir = f"{settings.MEDIA_URL}/{self.author}"
+        current_dir = self.directory
         doc = SimpleDocTemplate(output_path, pagesize=letter)
         styles = getSampleStyleSheet()
         story = []
