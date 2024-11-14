@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .models import FileNest
+from .models import FileNest, FileEntry
 from .serializers import DocumentUploadSerializer
 from django.http import JsonResponse
 import os
@@ -16,23 +16,52 @@ from sequenceDiagram.views import generate_sequence_diagram_view
 from flowchart.views import generate_flowchart_view
 
 # Create your views here.
+# Helper function to handle the upload of files
+def handle_file_uploads(files, dir_name, author, doc_type, language):
+    file_nest = FileNest.objects.create(
+        language=language,  # you can set this dynamically based on your requirement
+        author=author,
+        docType=doc_type,
+        dir_name=dir_name
+    )
+
+    for file in files:
+        FileEntry.objects.create(
+            file_nest=file_nest,
+            file=file
+        )
+
+    return file_nest
+
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def upload_codebase(request):
     if request.method == 'POST':
+        print("request: ", request.data)
+        print("Files:", request.FILES)
         # data = request.data.copy()  # Make a copy of request data
         # data['author'] = request.user.username  # Automatically assign the logged-in user's username
-
+        # print("request: ",request.data)
         serializer = DocumentUploadSerializer(data=request.data)
         if serializer.is_valid():
-            doc_upload = serializer.save()
+            serializer.save()
+            # Get the directory name and files from the request
+            dir_name = serializer.validated_data.get('dir_name')
+            author = serializer.validated_data.get('author')
+            doc_type = serializer.validated_data.get('docType')
+            language = serializer.validated_data.get('language')
 
-           # Check for the uploaded file
-            files = request.FILES.getlist('files')
+            # Get the files uploaded (the 'files[]' field contains the list of files)
+            files = request.FILES.getlist('files[]')
+            print("request: ", request.data)
+            print("Files:", request.FILES)
+
+            # Validate files are provided
             if not files:
                 return Response({'error': 'No files uploaded'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            is_dir = len(files)>1
+
+            # Process the file upload and create FileNest and FileEntry objects
+            doc_upload = handle_file_uploads(files, dir_name, author, doc_type, language)
 
             # Define allowed extensions for Python files
             allowed_extensions = ['.py', '.pyw','.java']
@@ -44,11 +73,8 @@ def upload_codebase(request):
                 # Check if the file extension is allowed
                 if file_extension not in allowed_extensions:
                     return Response({'error': f'Unsupported file type for file {file}'}, status=status.HTTP_400_BAD_REQUEST)
-                
-            if is_dir:
-                # Logic to save directory details, such as creating a unique identifier for the directory itself
-                doc_upload.doc_id = f"dir_{doc_upload.id}"  # Example identifier for directories
-                doc_upload.is_directory = True 
+            
+            doc_upload.doc_id = f"dir_{doc_upload.id}"  # Example identifier for directories
             
             raw_request = HttpRequest()
             raw_request.method = request.method
@@ -90,5 +116,8 @@ def upload_codebase(request):
                 else:
                     print("file_url not found in response:", response.data)
                 return Response(response.data, status=response.status_code)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print('Invalid serializer')
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
