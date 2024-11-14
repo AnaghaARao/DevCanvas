@@ -21,6 +21,7 @@ def call_generator_view(doc_type, request, doc_id):
 @api_view(['POST'])
 def upload_codebase(request):
     if request.method == 'POST':
+        print("request: ", request.data)
         serializer = DocumentUploadSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             doc_upload = serializer.save()  # Save FileNest and associated FileEntry instances
@@ -38,5 +39,5 @@ def upload_codebase(request):
                 print("file_url not found in response:", response.data)
 
             return Response(response.data, status=response.status_code)
-
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

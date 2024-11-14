@@ -28,11 +28,11 @@ class JavaFlowchartGenerator:
         # self.file_path = file_path
         self.author = author
         self.doc_id = doc_id
-        self.directory = f'{settings.MEDIA_URL}/{self.author}/{directory}'
+        self.directory = f'{settings.MEDIA_ROOT}/{self.author}/{directory}'
 
-    def safe_write_png(self, graph, filename):
+    def safe_write_png(self, graph, output_path):
         current_dir = self.directory
-        output_path = os.path.join(current_dir, filename)
+        filename = os.path.splitext(os.path.basename(output_path))[0]
         try:
             graph.write_png(output_path)
             logging.info(f"Generated: {output_path}")
@@ -69,12 +69,15 @@ class JavaFlowchartGenerator:
         for root, _, files in os.walk(self.directory):
             for file in files:
                 if file.endswith('.java'):
-                    java_files.append(os.path.join(root, file))
+                    file_path = os.path.join(root, file)
+                    logging.info(f"Found Java file: {file_path}")
+                    print(file_path)
+                    java_files.append(file_path)
         return java_files
 
     def analyze_directory(self) -> Dict[str, ClassInfo]:
         all_classes = {}
-        file_paths = self.list_java_files(self.directory)
+        file_paths = self.list_java_files()
         
         with multiprocessing.Pool() as pool:
             results = pool.map(self.analyze_java_file, file_paths)
