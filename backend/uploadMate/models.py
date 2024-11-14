@@ -6,7 +6,7 @@ from django.conf import settings
 # Function to handle file storage in a structured directory
 def upload_to_author(instance, filename):
     # Structure: uploads/<author>/<dir_name>/<filename>
-    return os.path.join('uploads', instance.file_nest.author, instance.file_nest.dir_name, filename)
+    return os.path.join(settings.MEDIA_ROOT, instance.file_nest.author, instance.file_nest.dir_name, filename)
 
 class FileNest(models.Model):
     language = models.CharField(max_length=100)  # Programming language
