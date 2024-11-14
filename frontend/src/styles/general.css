@@ -13,7 +13,7 @@
   padding: 0;
   box-sizing: border-box;
   background-color: #161616;
-  color: #eddfdf;
+  color: #e8e0e0;
   font-family: "Source Sans 3", system-ui;
   font-optical-sizing: auto;
   font-style: normal;
@@ -37,8 +37,21 @@
 }
 
 .navbar-logo {
-  background-color: inherit;
+  display: flex;
+  gap: 0.5rem;
+  background-color: transparent;
   margin: 0 10px;
+  align-items: center;
+}
+
+.navbar-logo h2 {
+  background-color: transparent;
+}
+
+.navbar-logo img {
+  background-color: transparent;
+  width: 35px;
+  height: 35px;
 }
 
 .btn {
