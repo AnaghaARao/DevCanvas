@@ -10,6 +10,7 @@ const Upload = () => {
   const [files, setFiles] = useState([]);
   const [language, setLanguage] = useState("");
   const [docType, setDocType] = useState("");
+  const [dirName, setDirName] = useState("");
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +20,13 @@ const Upload = () => {
   };
 
   const handleFolderChange = (e) => {
-    setFiles((prevFiles) => [...prevFiles, ...e.target.files]);
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length > 0) {
+      const firstFilePath = selectedFiles[0].webkitRelativePath;
+      const folderName = firstFilePath.split("/")[0];
+      setDirName(folderName);
+    }
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
   const handleRemoveFile = (index) => {
@@ -36,16 +43,17 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (files.length === 0 || !language || !docType) {
+    if (files.length === 0 || !language || !docType || !dirName) {
       showAlert("Please fill all fields and upload a file");
       return;
     }
 
     const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
+    files.forEach((file) => formData.append("files[]", file));
     formData.append("language", language);
     formData.append("docType", docType);
     formData.append("author", user);
+    formData.append("dir_name", dirName);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {
@@ -96,18 +104,6 @@ const Upload = () => {
         <div className="left-upload">
           <div className="upload-files">
             <div className="input-sec">
-              <label htmlFor="fileInput">Upload File(s):</label>
-              <input
-                type="file"
-                id="fileInput"
-                onChange={handleFileChange}
-                className="input-div"
-                accept=".txt, .docx, .pdf, .cpp, .java, .py"
-                multiple
-                required
-              />
-            </div>
-            <div className="input-sec">
               <label htmlFor="folderInput">Upload Folder:</label>
               <input
                 type="file"
@@ -145,15 +141,6 @@ const Upload = () => {
         <div className="upload-info">
           <div className="language">
             <label htmlFor="languageInput">Programming Language:</label>
-            {/* <input
-              type="text"
-              id="languageInput"
-              value={language}
-              onChange={handleLanguageChange}
-              placeholder="Enter programming language"
-              className="input-div"
-              required
-            /> */}
             <select
               id="languageInput"
               value={language}
