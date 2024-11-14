@@ -16,7 +16,7 @@ const Upload = () => {
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFiles((prevFiles) => [...prevFiles, ...e.target.files]);
+    setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
   };
 
   const handleFolderChange = (e) => {
@@ -43,17 +43,21 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (files.length === 0 || !language || !docType || !dirName) {
       showAlert("Please fill all fields and upload a file");
       return;
     }
 
     const formData = new FormData();
-    files.forEach((file) => formData.append("files[]", file));
     formData.append("language", language);
     formData.append("docType", docType);
     formData.append("author", user);
     formData.append("dir_name", dirName);
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
 
     try {
       const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {
@@ -66,8 +70,6 @@ const Upload = () => {
         if (data.message) {
           showSuccess(data.message);
           const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
-          console.log(fileUrl);
-
           navigate("/documentation", {
             state: { fileUrl },
           });
