@@ -42,7 +42,7 @@ const Upload = () => {
     }
 
     const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
+    files.forEach((file) => formData.append("files[]", file));
     formData.append("language", language);
     formData.append("docType", docType);
     formData.append("author", user);
@@ -103,7 +103,6 @@ const Upload = () => {
                 onChange={handleFileChange}
                 className="input-div"
                 accept=".txt, .docx, .pdf, .cpp, .java, .py"
-                multiple
                 required
               />
             </div>
