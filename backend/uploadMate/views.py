@@ -28,19 +28,27 @@ def upload_codebase(request):
             doc_upload = serializer.save()
 
            # Check for the uploaded file
-            file = request.FILES.get('file')
-            if not file:
-                return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+            files = request.FILES.getlist('files')
+            if not files:
+                return Response({'error': 'No files uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            is_dir = len(files)>1
 
             # Define allowed extensions for Python files
             allowed_extensions = ['.py', '.pyw','.java']
 
-            # Get the file extension
-            file_extension = os.path.splitext(file.name)[1]  # Use os.path.splitext to get the extension
+            for file in files:
+                # Get the file extension
+                file_extension = os.path.splitext(file.name)[1]  # Use os.path.splitext to get the extension
 
-            # Check if the file extension is allowed
-            if file_extension not in allowed_extensions:
-                return Response({'error': 'Unsupported file type'}, status=status.HTTP_400_BAD_REQUEST)
+                # Check if the file extension is allowed
+                if file_extension not in allowed_extensions:
+                    return Response({'error': f'Unsupported file type for file {file}'}, status=status.HTTP_400_BAD_REQUEST)
+                
+            if is_dir:
+                # Logic to save directory details, such as creating a unique identifier for the directory itself
+                doc_upload.doc_id = f"dir_{doc_upload.id}"  # Example identifier for directories
+                doc_upload.is_directory = True 
             
             raw_request = HttpRequest()
             raw_request.method = request.method
