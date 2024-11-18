@@ -13,3 +13,57 @@
 .history-container * {
   background-color: inherit;
 }
+
+.divider {
+  background-color: #3a3a3a;
+  width: 100%;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.history-item {
+  background-color: #3a3a3a;
+  padding: 15px 30px;
+  margin: 10px 0;
+  border-radius: 5px;
+  display: flex;
+  font-size: large;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.history-item p {
+  margin: 5px 0;
+}
+
+.file-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-date {
+  font-size: small;
+  color: #e0e0e0;
+}
+
+.history-item a {
+  text-decoration: none;
+}
+
+/* .btn {
+  background-color: transparent;
+  color: #eddfdf;
+  font-size: medium;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  transition: color 0.2s ease-in-out;
+}
+
+.btn:hover {
+  color: #9f16a9;
+  background-color: transparent;
+} */
