@@ -39,7 +39,7 @@ def generate_flowchart_view(request, doc_id):
     diagram_result = process_file(directory, author, language, doc_id)
 
     if diagram_result.get('error'):
-        return diagram_result
+        return Response({'error':diagram_result['error']})
     
     file_name = diagram_result['file_name']
     file_path = diagram_result['file_path']
