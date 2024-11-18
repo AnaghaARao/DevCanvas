@@ -5,8 +5,8 @@ import os
 
 # Define a function to dynamically set the upload path based on the author
 def upload_to_author(instance, filename):
-    # Structure: uploads/<author>/flowcharts/<dir_name>/<filename>
-    return os.path.join(settings.MEDIA_ROOT, instance.flowchart_nest.author, 'flowcharts', instance.flowchart_nest.dir_name, filename)
+    # Structure: uploads/<author>/<dir_name>/<filename>
+    return os.path.join(settings.MEDIA_ROOT, instance.flowchart_nest.author, instance.flowchart_nest.dir_name, filename)
 
 class FlowchartNest(models.Model):
     language = models.CharField(max_length=100)
