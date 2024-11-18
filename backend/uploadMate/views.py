@@ -22,22 +22,6 @@ def call_generator_view(doc_type, request, doc_id):
     }
     return view_mapping[doc_type](request, doc_id)
 
-def delete_folders_except_results(author):
-    """Delete all folders in /settings.MEDIA_ROOT/{author} except the 'results' folder."""
-    author_dir = os.path.join(settings.MEDIA_ROOT, author)
-    results_dir = os.path.join(author_dir, 'results')
-
-    # Ensure the results folder exists
-    os.makedirs(results_dir, exist_ok=True)
-
-    # Iterate over all subdirectories in the author directory
-    for folder_name in os.listdir(author_dir):
-        folder_path = os.path.join(author_dir, folder_name)
-
-        # Check if it's a directory and not the 'results' directory
-        if os.path.isdir(folder_path) and folder_path != results_dir:
-            shutil.rmtree(folder_path)  # Delete the folder
-
 @api_view(['POST'])
 def upload_codebase(request):
     if request.method == 'POST':
