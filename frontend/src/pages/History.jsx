@@ -45,32 +45,28 @@ const History = () => {
     <div className="history-container">
       <h2>User File History</h2>
       <hr className="divider" />
-      {history.length > 0 ? (
-        <ul>
-          {history.map((item, index) => (
-            <li key={index} className="history-item">
-              <p>{index + 1}.</p>
-              <div>
-                <div className="file-details">
-                  <p>
-                    <span>{item.file_name}</span>
-                  </p>
-                  <p className="file-date">{item.dateOfGeneration}</p>
-                </div>
-                <a
-                  href={item.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button className="btn">Click here to view the file</button>
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No history available.</p>
-      )}
+      {history.map((item, index) => (
+        <li key={index} className="history-item">
+          <p>{index + 1}.</p>
+          <div>
+            <div className="file-details">
+              <p>
+                <span>{item.file_name || "No file name"}</span>
+              </p>
+              <p className="file-date">
+                {item.dateOfGeneration || "No date available"}
+              </p>
+            </div>
+            {item.file_url ? (
+              <a href={item.file_url} target="_blank" rel="noopener noreferrer">
+                <button className="btn">Click here to view the file</button>
+              </a>
+            ) : (
+              <p>No file available</p>
+            )}
+          </div>
+        </li>
+      ))}
     </div>
   );
 };
