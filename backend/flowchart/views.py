@@ -39,7 +39,7 @@ def generate_flowchart_view(request, doc_id):
     diagram_result = process_file(directory, author, language, doc_id)
 
     if diagram_result.get('error'):
-        return diagram_result
+        return Response({'error':diagram_result['error']})
     
     file_name = diagram_result['file_name']
     file_path = diagram_result['file_path']
@@ -47,7 +47,7 @@ def generate_flowchart_view(request, doc_id):
     if not isinstance(file_path, str):
         return Response({'error': 'flowchart path is not valid'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    file_url = f"{settings.MEDIA_URL}{author}/{directory}/{file_name}"
+    file_url = f"{settings.MEDIA_URL}{author}/results/{file_name}"
 
     return Response({
         'message':'flowchart generated successfully',

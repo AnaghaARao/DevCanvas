@@ -1,17 +1,22 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 import os
 
 # Define a function to dynamically set the upload path based on the author
 def upload_to_author(instance, filename):
-    # Create the path uploads/<author>/<filename>
-    return os.path.join('uploads', instance.author, filename)
+    # Structure: uploads/<author>/<dir_name>/<filename>
+    return os.path.join(settings.MEDIA_ROOT, instance.summary_nest.author, instance.summary_nest.dir_name, filename)
 
-class SummaryDoc(models.Model):
+class SummaryNest(models.Model):
     language = models.CharField(max_length=100)
     author = models.CharField(max_length=100)
     file = models.FileField(upload_to=upload_to_author)  # Use the function for dynamic path
     generated_at = models.DateTimeField(default=timezone.now)
-
+    dir_name = models.CharField(max_length=100, default='default_summary_directory')
     def __str__(self):
-        return f'Summary Document for {self.language} by {self.author}'
+        return f'Summary for {self.language} by {self.author}'
+    
+class SummaryEntry(models.Model):
+    sequence_diagram_nest = models.ForeignKey(SummaryNest, on_delete=models.CASCADE, related_name='sequence_diagram_files')
+    file = models.FileField(upload_to=upload_to_author)

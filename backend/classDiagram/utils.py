@@ -31,7 +31,7 @@ def process_file(directory, author, language, doc_id):
     media_root = settings.MEDIA_ROOT  # Use physical path for saving files
     # uploaded_file_name = os.path.splitext(os.path.basename(file_path))[0]
     file_name = f"class_diagram_{directory}.pdf"
-    output_path = os.path.join(media_root, author, directory, file_name)  # Use media root for saving the file
+    output_path = os.path.join(media_root, author, "results", file_name)  # Use media root for saving the file
 
     # Generate the PDF
     pdf_result = process.generate_pdf(img_path, output_path, classes)

@@ -12,9 +12,9 @@ def read_code_file(file_path):
     with open(file_path, 'r') as file:
         return file.read()
 
-# Generate a PDF file with the summary content
-def generate_pdf(content, output_file):
-    """Generate a PDF from the given content."""
+# Generate a single PDF with the combined summary content
+def generate_combined_pdf(contents, output_file):
+    """Generate a PDF with combined summaries."""
     c = canvas.Canvas(output_file, pagesize=letter)
     width, height = letter
     left_margin = 72  # 1-inch margin
@@ -22,97 +22,78 @@ def generate_pdf(content, output_file):
     usable_width = width - left_margin - right_margin
     text_y = height - left_margin  # Start position for text
 
-    lines = content.splitlines()
-    for line in lines:
-        words = line.split(" ")
-        current_line = ""
+    for content in contents:
+        lines = content.splitlines()
+        for line in lines:
+            words = line.split(" ")
+            current_line = ""
 
-        for word in words:
-            test_line = f"{current_line} {word}".strip()
-            if c.stringWidth(test_line, "Helvetica", 12) <= usable_width:
-                current_line = test_line
-            else:
+            for word in words:
+                test_line = f"{current_line} {word}".strip()
+                if c.stringWidth(test_line, "Helvetica", 12) <= usable_width:
+                    current_line = test_line
+                else:
+                    c.drawString(left_margin, text_y, current_line)
+                    text_y -= 20
+                    current_line = word
+
+            if current_line:
                 c.drawString(left_margin, text_y, current_line)
                 text_y -= 20
-                current_line = word
 
-        if current_line:
-            c.drawString(left_margin, text_y, current_line)
-            text_y -= 20
+            if text_y < left_margin:
+                c.showPage()
+                text_y = height - left_margin
 
-        if text_y < left_margin:  
-            c.showPage()
-            text_y = height - left_margin
+        # Add a page break between summaries
+        c.showPage()
 
     c.save()
 
-# Generate a summary for any programming language
-def generate_summary(file_path, author, doc_id):
-    """Generate a summary based on the file content and language."""
+# Generate a summary for a single file
+def generate_file_summary(file_path):
+    """Generate a summary for a single file."""
     try:
         code_content = read_code_file(file_path)
-        
-        # Generating summary based on the programming language
-        original_prompt = f"Summarize the code:"
-        combined_prompt = f"{original_prompt}\n\n{code_content}"
+        combined_prompt = f"Summarize the code:\n\n{code_content}"
         
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(combined_prompt)
 
-        # Ensure response has text content
         if hasattr(response, 'text'):
-            summary_dir = os.path.dirname(file_path)
-            # summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
-            # Get the base filename without the extension
-            base_name = os.path.splitext(os.path.basename(file_path))[0]
-            summary_file_name = f"summary_{base_name}.pdf"
-            summary_file_path = os.path.join(summary_dir, summary_file_name)
-
-            # Save the summary to the PDF file
-            generate_pdf(response.text, summary_file_path)
-            return summary_file_path, summary_file_name
+            return response.text
         else:
-            print("Response does not have text attribute")
-            return None
+            return f"Summary not generated for {file_path}"
     except Exception as e:
-        print(f"Error generating summary for {doc_id}: {str(e)}")
-        return None
+        return f"Error summarizing {file_path}: {str(e)}"
 
-# def generate_summary(file_path, author, doc_id):
-#     """Generate a summary based on the file content and language."""
-#     # Reading the file contents
-#     code_content = read_code_file(file_path)
-    
-#     # Generating summary based on the programming language
-#     original_prompt = f"Summarize the code:"
-#     combined_prompt = f"{original_prompt}\n\n{code_content}"
-    
-#     try:
-#         model = genai.GenerativeModel("gemini-1.5-flash")
-#         response = model.generate_content(combined_prompt)
+# Process a directory of files
+def process_directory(directory, author):
+    dir_path = f"{settings.MEDIA_ROOT}/{author}/{directory}"
+    """Process a directory and generate a combined summary PDF."""
+    summaries = []
+    for root, _, files in os.walk(dir_path):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            summary = generate_file_summary(file_path)
+            summaries.append(f"File: {file_name}\n\n{summary}")
 
-#         # Get the directory of the uploaded file and set the summary file path
-#         summary_dir = os.path.dirname(file_path)
-#         summary_file_name = f"summary_{os.path.basename(file_path)}.pdf"
-#         summary_file_path = os.path.join(summary_dir, summary_file_name)
+    output_dir = os.path.join(settings.MEDIA_ROOT, author, "results")
+    os.makedirs(output_dir, exist_ok=True)
 
-#         # Save the summary to the PDF file
-#         generate_pdf(response.text, summary_file_path)
-        
-#         return summary_file_path
-#     except Exception as e:
-#         print(f"Error generating summary for {doc_id}: {str(e)}")
-#         return None
+    output_file_name = f"summary_{directory}.pdf"
+    output_file_path = os.path.join(output_dir, output_file_name)
+    generate_combined_pdf(summaries, output_file_path)
 
-# Process file for summary generation
-def process_file(file_path, language, author, doc_id):
-    """Process the file and generate a summary."""
-    summary_pdf_path, summary_file_name = generate_summary(file_path, author, doc_id)
-    
-    if summary_pdf_path:
-        return {'summary_path':summary_pdf_path,
-                'summary_file_name': summary_file_name}
-    else:
+    return output_file_path,output_file_name
+
+# Example function to handle a request
+def process_file(directory, author):
+    """Handle a directory upload and generate a combined summary."""
+    try:
+        output_path, output_file_name = process_directory(directory, author)
         return {
-            'error': f"Failed to generate summary for {doc_id}"
-        }
+            'summary_path': output_path,
+            'summary_file_name': output_file_name}
+    except Exception as e:
+        return {'error': str(e)}

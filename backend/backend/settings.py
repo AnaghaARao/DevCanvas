@@ -165,3 +165,4 @@ GENERATIVE_AI_API_KEY = config('GENERATIVE_AI_API_KEY')
 # to access the stored files:
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_LOGO = os.path.join(BASE_DIR, 'media', 'logo.png')

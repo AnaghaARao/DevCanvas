@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import SummaryDoc
-from uploadMate.models import FileNest  # Import FileNest model to fetch uploaded code file
+from .models import SummaryNest, SummaryEntry
+from uploadMate.models import FileNest, FileEntry  # Import FileNest model to fetch uploaded code file
 from django.conf import settings
 from rest_framework import status
 from django.core.files import File  # Import Django's File object
@@ -20,18 +20,21 @@ def generate_summary_view(request, doc_id):
 
     # for doc_id in doc_ids: # works for folder, file ent one by one
     try:
-        file_nest = FileNest.objects.get(id=doc_id)
+        file_nest = FileNest.objects.get(id=doc_id) # Get the directory-level record from FileNest
     except FileNest.DoesNotExist:
-        return Response({'error': f'Uploaded file with id {doc_id} not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Uploaded directory with id {doc_id} not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    uploaded_file_path = file_nest.file.path
+    # Get all files in the directory associated with the given doc_id
+    file_entries = FileEntry.objects.filter(file_nest=file_nest)
+    
+    if not file_entries.exists():
+        return Response({'error': 'No files found in the specified directory'}, status=status.HTTP_404_NOT_FOUND)
+
     author = file_nest.author
     language = file_nest.language
+    directory = file_nest.dir_name
 
-    # # Call process_file to handle generation and file management
-    # summary_path = process_file(uploaded_file_path, language, author, doc_id)
-
-    summary_result = process_file(uploaded_file_path, language, author, doc_id)
+    summary_result = process_file(directory, author)
 
     if 'error' in summary_result:
         return Response({'error':summary_result['error']}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -56,7 +59,7 @@ def generate_summary_view(request, doc_id):
 
     # Return the file path or URL in the response
     file_name = summary_result['summary_file_name']
-    file_url = f"{settings.MEDIA_URL}/{author}/{file_name}"
+    file_url = f"{settings.MEDIA_URL}{author}/results/{file_name}"
 
     print('summary generated successfully')
     return Response({
