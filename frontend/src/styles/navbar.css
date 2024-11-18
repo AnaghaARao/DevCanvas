@@ -140,7 +140,7 @@
   }
 
   .notMobile {
-    display: none; /* Hide desktop links */
+    display: none;
   }
 
   .hamburger {
@@ -156,8 +156,14 @@
   }
 
   .mobile-menu {
+    background-color: transparent;
+    border-radius: 5px;
     display: block; /* Show mobile menu when open */
     animation: slideIn 0.3s ease-in-out; /* Optional animation */
+  }
+
+  .mobile-menu-item {
+    border-radius: 5px;
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import "../styles/history.css";
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -10,9 +11,26 @@ const History = () => {
     if (user) {
       const fetchHistory = async () => {
         try {
-          const response = await axios.post("uploadMate/history/", {
-            author: user,
-          });
+          if (user) {
+            if (typeof user === "string") {
+              console.log("User is a string:", user);
+            } else if (typeof user === "object") {
+              if (Array.isArray(user)) {
+                console.log("User is an array:", user);
+              } else {
+                console.log("User is an object:", user);
+              }
+            } else {
+              console.log("User type is unknown:", typeof user);
+            }
+          }
+
+          const response = await axios.post(
+            "http://127.0.0.1:8000/uploadmate/history/",
+            {
+              author: user,
+            }
+          );
           setHistory(response.data);
         } catch (error) {
           console.error("Error fetching history:", error);
@@ -26,22 +44,27 @@ const History = () => {
   return (
     <div className="history-container">
       <h2>User File History</h2>
+      <hr className="divider" />
       {history.length > 0 ? (
         <ul>
           {history.map((item, index) => (
-            <li key={index}>
-              <p>File Name: {item.file_name}</p>
-              <p>Date of Generation: {item.dateOfGeneration}</p>
-              <p>
-                File URL:{" "}
+            <li key={index} className="history-item">
+              <p>{index + 1}.</p>
+              <div>
+                <div className="file-details">
+                  <p>
+                    <span>{item.file_name}</span>
+                  </p>
+                  <p className="file-date">{item.dateOfGeneration}</p>
+                </div>
                 <a
                   href={item.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {item.file_url}
+                  <button className="btn">Click here to view the file</button>
                 </a>
-              </p>
+              </div>
             </li>
           ))}
         </ul>

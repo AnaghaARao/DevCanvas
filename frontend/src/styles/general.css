@@ -63,6 +63,22 @@
   background-color: #161616;
 }
 
+.notfound-container {
+  flex-grow: 1;
+  background-color: #292929;
+  margin: 0 15px 15px 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.notfound-container * {
+  background-color: inherit;
+}
+
 @media only screen and (max-width: 600px) {
   .maindiv {
     width: 100vw;
