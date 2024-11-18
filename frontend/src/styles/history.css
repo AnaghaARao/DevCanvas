@@ -38,10 +38,20 @@ ul {
   margin: 5px 0;
 }
 
+.main-file {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start; /* Keep items aligned to the start */
+  flex-wrap: wrap;
+  width: 100%; /* Ensure the main file takes up the full width */
+}
+
 .file-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10rem;
 }
 
 .file-date {
@@ -53,17 +63,58 @@ ul {
   text-decoration: none;
 }
 
-/* .btn {
+.history-btn {
   background-color: transparent;
   color: #eddfdf;
   font-size: medium;
   cursor: pointer;
-  padding: 0;
-  width: 100%;
+  padding: 10px 0;
   transition: color 0.2s ease-in-out;
+  align-self: flex-start;
+  width: max-content;
 }
 
-.btn:hover {
+.history-btn:hover {
   color: #9f16a9;
   background-color: transparent;
-} */
+}
+
+.main-file.align-end .history-btn {
+  align-self: flex-end;
+}
+
+@media screen and (max-width: 426px) {
+  .history-container {
+    padding: 15px;
+  }
+
+  .history-item {
+    flex-direction: column;
+    padding: 10px 15px;
+    font-size: medium;
+    gap: 10px;
+  }
+
+  .file-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .file-date {
+    font-size: small;
+    color: #e0e0e0;
+    margin-top: 5px;
+  }
+
+  .history-btn {
+    width: 100%;
+    align-self: stretch; /* Make button full-width */
+    padding: 12px;
+    text-align: center;
+  }
+
+  .main-file.align-end .history-btn {
+    align-self: stretch;
+  }
+}
