@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from uploadMate.models import FileNest, FileEntry
 from .models import FlowchartNest, FlowchartEntry
-from uploadMate.models import FileNest  # Import FileNest model to fetch uploaded code file
+from uploadMate.models import FileNest, FileEntry  # Import FileNest model to fetch uploaded code file
 from django.conf import settings
 from rest_framework import status
 from django.core.files import File  # Import Django's File object

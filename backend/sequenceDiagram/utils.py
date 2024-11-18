@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from .python_sequence_diagram import MultiFileSequenceDiagramGenerator
-from 
+from .java_sequence_diagram import JavaSequenceDiagramGenerator
 
 def process_file(directory, author, language, doc_id):
     # Validate the language
@@ -17,23 +17,8 @@ def process_file(directory, author, language, doc_id):
     if analysis_result['status'] == 'error':
         return analysis_result
     
-
-    
-    # # Process the results
-    # classes = analysis_result
-
-    # # Generate the class diagram
-    # png_result = process.generate_sequence_diagram(classes)
-    
-    # if png_result.get('error'):  # Check for errors in diagram generation
-    #     return png_result
-
-    # Prepare file paths and names
-    # img_path = png_result['img_path']
-    # media_root = settings.MEDIA_ROOT  # Use physical path for saving files
-    # uploaded_file_name = os.path.splitext(os.path.basename(file_path))[0]
     file_name = f"sequence_diagram_{directory}.pdf"
-    output_path = os.path.join(settings.MEDIA_ROOT, author, directory, file_name)
+    output_path = os.path.join(settings.MEDIA_ROOT, author, 'results', file_name)
 
     # Generate the PDF
     pdf_result = process.generate_pdf(output_path)
