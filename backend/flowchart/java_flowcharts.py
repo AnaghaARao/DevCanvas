@@ -243,7 +243,7 @@ class JavaFlowchartGenerator:
         method_info.statement_types = statement_types
         return complexity
 
-    def generate_metrics_data(classes: Dict[str, ClassInfo]) -> List[List[str]]:
+    def generate_metrics_data(self, classes: Dict[str, ClassInfo]) -> List[List[str]]:
         """Generate comprehensive project metrics"""
         total_classes = len(classes)
         total_methods = sum(class_info.method_count for class_info in classes.values())
@@ -337,6 +337,7 @@ class JavaFlowchartGenerator:
 
             doc.build(story, onFirstPage=self.create_header_footer, onLaterPages=self.create_header_footer)
             print('pdf successfully generated')
+            print('output path: ', output_path)
             return {'message':'pdf successfully generated'}
         except Exception as e:
             return {'error':'error in generating pdf'}
