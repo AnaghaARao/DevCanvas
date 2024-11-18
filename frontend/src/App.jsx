@@ -11,6 +11,7 @@ import "./styles/general.css";
 import "./styles/landing.css";
 import ActivateAccount from "./pages/ActivateAccount";
 import OutputPage from "./pages/OutputPage";
+import History from "./pages/History";
 
 function Logout() {
   localStorage.clear();
@@ -25,8 +26,8 @@ function RegisterAndLogout() {
 function App() {
   return (
     <div className="maindiv">
-      <Navbar />
       <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route
@@ -34,6 +35,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Upload />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload-history"
+            element={
+              <ProtectedRoute>
+                <History />
               </ProtectedRoute>
             }
           />

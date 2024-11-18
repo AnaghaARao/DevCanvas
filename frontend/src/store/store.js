@@ -1,8 +1,17 @@
 import { createStore } from "redux";
 
-const savedUser = localStorage.getItem("user");
+const getStoredUser = () => {
+  const savedUser = localStorage.getItem("user");
+  try {
+    return savedUser ? JSON.parse(savedUser) : null;
+  } catch (error) {
+    localStorage.removeItem("user");
+    return null;
+  }
+};
+
 const initialState = {
-  user: savedUser ? JSON.parse(savedUser) : null,
+  user: getStoredUser(),
 };
 
 const reducer = (state = initialState, action) => {

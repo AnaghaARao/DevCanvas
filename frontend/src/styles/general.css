@@ -25,35 +25,6 @@
   height: 100vh;
 }
 
-.navbar {
-  background: linear-gradient(to right, #252525, #3c3c3c, #252525);
-  height: 10vh;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  border-radius: 5px;
-  padding: 20px;
-  margin: 15px;
-}
-
-.navbar-logo {
-  display: flex;
-  gap: 0.5rem;
-  background-color: transparent;
-  margin: 0 10px;
-  align-items: center;
-}
-
-.navbar-logo h2 {
-  background-color: transparent;
-}
-
-.navbar-logo img {
-  background-color: transparent;
-  width: 35px;
-  height: 35px;
-}
-
 .btn {
   background-color: #83158b;
   color: #eddfdf;
@@ -95,19 +66,6 @@
 @media only screen and (max-width: 600px) {
   .maindiv {
     width: 100vw;
-  }
-
-  .navbar {
-    height: auto;
-    padding: 10px;
-    width: 94vw;
-    margin: 10px;
-    font-size: 0.7rem;
-  }
-
-  .navbar-logo {
-    font-size: medium;
-    margin: 0 5px;
   }
 
   .btn {
