@@ -50,6 +50,7 @@ const History = () => {
   }, [user]);
 
   const handleViewFile = (fileUrl) => {
+    fileUrl = `${import.meta.env.VITE_API_URL}${fileUrl}`;
     navigate("/documentation", { state: { fileUrl } });
   };
 
