@@ -1,18 +1,21 @@
 import os
 from django.conf import settings
 from .python_sequence_diagram import MultiFileSequenceDiagramGenerator
+from 
 
 def process_file(directory, author, language, doc_id):
     # Validate the language
     if language == 'python':
         process = MultiFileSequenceDiagramGenerator(directory, author, doc_id)
+    elif language == 'java':
+        process = JavaSequenceDiagramGenerator(directory, author, doc_id)
     else:
         return {'error': f"{language} not supported for class diagram generation"}
 
     # Analyze the file
     analysis_result = process.analyze_directory()
     if analysis_result['status'] == 'error':
-        return analysis_result['error']
+        return analysis_result
     
 
     
@@ -36,7 +39,7 @@ def process_file(directory, author, language, doc_id):
     pdf_result = process.generate_pdf(output_path)
     
     if pdf_result['status']=='error':  # Check for errors in PDF generation
-        return pdf_result['error']
+        return pdf_result
     else:
     # Return the success response with file name and path
         return {

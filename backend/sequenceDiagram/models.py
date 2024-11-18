@@ -15,7 +15,7 @@ class SequenceDiagramNest(models.Model):
     generated_at = models.DateTimeField(default=timezone.now)
     dir_name = models.CharField(max_length=100, default='default_sequence_directory')
     def __str__(self):
-        return f'Flowchart for {self.language} by {self.author}'
+        return f'Sequence Diagram for {self.language} by {self.author}'
     
 class SequenceDiagramEntry(models.Model):
     sequence_diagram_nest = models.ForeignKey(SequenceDiagramNest, on_delete=models.CASCADE, related_name='sequence_diagram_files')
