@@ -9,6 +9,7 @@ import glob
 import sys
 import requests
 import io
+from django.conf import settings
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -28,18 +29,21 @@ class Message:
     file_source: str = ""
 
 class MultiFileSequenceDiagramGenerator:
-    def __init__(self, directory: str = None):
+    def __init__(self, directory, author, doc_id):
         if directory is None:
             current_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(current_dir)
             self.directory = os.path.join(project_root, 'testing', 'python_seq')
         else:
-            self.directory = directory
+            self.directory = f'{settings.MEDIA_ROOT}/{author}/{directory}'
             
         self.messages = []
         self.participants = set()
         self.sequence_number = 1
         self.files_analyzed = set()
+        self.author = author
+        self.doc_id = doc_id
+
         
         if not os.path.exists(self.directory):
             raise ValueError(f"Directory does not exist: {self.directory}")
@@ -51,14 +55,20 @@ class MultiFileSequenceDiagramGenerator:
         
         if not python_files:
             logging.warning(f"No Python files found in {self.directory}")
-            return {'warning':f'No Python files found in {self.directory}'}
+            return {
+                'status':'error',
+                'error':f'No Python files found in {self.directory}'}
 
         logging.info(f"Found {len(python_files)} Python files to analyze")
         for file_path in python_files:
             logging.info(f"Analyzing file: {os.path.basename(file_path)}")
             self.analyze_file(file_path)
         
-        return len(self.files_analyzed) > 0
+        if len(self.files_analyzed) > 0:
+            return {'status':'success'}
+        else:
+            return {'status':'error',
+                    'error':'no python files analyzed'}
 
     def analyze_file(self, file_path: str):
         try:
