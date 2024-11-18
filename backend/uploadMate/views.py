@@ -7,6 +7,10 @@ from classDiagram.views import generate_class_diagram_view
 from sequenceDiagram.views import generate_sequence_diagram_view
 from flowchart.views import generate_flowchart_view
 from django.http import HttpRequest
+import os
+import shutil
+from django.conf import settings
+from datetime import datetime
 
 # Helper to call appropriate generator view
 def call_generator_view(doc_type, request, doc_id):
@@ -17,6 +21,22 @@ def call_generator_view(doc_type, request, doc_id):
         'flowchart': generate_flowchart_view
     }
     return view_mapping[doc_type](request, doc_id)
+
+def delete_folders_except_results(author):
+    """Delete all folders in /settings.MEDIA_ROOT/{author} except the 'results' folder."""
+    author_dir = os.path.join(settings.MEDIA_ROOT, author)
+    results_dir = os.path.join(author_dir, 'results')
+
+    # Ensure the results folder exists
+    os.makedirs(results_dir, exist_ok=True)
+
+    # Iterate over all subdirectories in the author directory
+    for folder_name in os.listdir(author_dir):
+        folder_path = os.path.join(author_dir, folder_name)
+
+        # Check if it's a directory and not the 'results' directory
+        if os.path.isdir(folder_path) and folder_path != results_dir:
+            shutil.rmtree(folder_path)  # Delete the folder
 
 @api_view(['POST'])
 def upload_codebase(request):
@@ -38,6 +58,36 @@ def upload_codebase(request):
             else:
                 print("file_url not found in response:", response.data)
 
+            delete_folders_except_results(doc_upload.author)
+
             return Response(response.data, status=response.status_code)
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+def history(request):
+    if request.method == 'POST':
+        author = request.data.get('author', None)
+        if not author:
+            return Response({'error': 'Author is required'}, status=400)
+
+        results_dir = os.path.join(settings.MEDIA_ROOT, author, 'results')
+
+        if not os.path.exists(results_dir):
+            return Response({'error': 'No results found for this author'}, status=404)
+
+        files = []
+        for file_name in os.listdir(results_dir):
+            file_path = os.path.join(results_dir, file_name)
+            if os.path.isfile(file_path):
+                # Get the file's last modification time
+                date_of_generation = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
+                files.append({
+                    'file_url': f"{settings.MEDIA_URL}{author}/results/{file_name}",
+                    'file_name': file_name,
+                    'dateOfGeneration': date_of_generation,
+                })
+
+        return Response({'files': files}, status=200)
+
+
