@@ -27,22 +27,23 @@ class ClassInfo:
         return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_class={self.base_class}, interfaces={self.interfaces})"
     
 class JavaClassDiagramGenerator:
-    def __init__(self, file_path, author, doc_id):
-        self.file_path = file_path
+    def __init__(self, directory, author, doc_id):
+        self.directory = f"{settings.MEDIA_ROOT}/{author}/{directory}"
         self.author = author
         self.doc_id = doc_id
+        self.dir_name = directory
 
-    def analyze_file(self):
-        uploaded_file_path = self.file_path
+    def analyze_file(self, file_path):
+        # uploaded_file_path = self.file_path
         classes = {}
-        with open(uploaded_file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
         try:
             tree = javalang.parse.parse(content)
         except javalang.parser.JavaSyntaxError:
-            logging.error(f"Syntax error in file: {uploaded_file_path}")
-            return {'error':f'syntax error in file {uploaded_file_path}'}
+            logging.error(f"Syntax error in file: {file_path}")
+            return {'error':f'syntax error in file {file_path}'}
 
         for path, node in tree.filter(javalang.tree.ClassDeclaration):
             class_name = node.name
@@ -59,6 +60,38 @@ class JavaClassDiagramGenerator:
             classes[class_name] = class_info
         
         return classes
+    
+    def list_java_files(self) -> List[str]:
+        java_files = []
+        logging.info(f"Checking files in directory: {self.directory}")
+        for root, _, files in os.walk(self.directory):
+            for file in files:
+                full_path = os.path.join(root, file)
+                logging.info(f"Found file: {full_path}")
+                if file.endswith('.java'):
+                    java_files.append(full_path)
+                    logging.info(f"Identified Java file: {full_path}")
+        return java_files
+
+    def analyze_directory(self) -> Dict[str, ClassInfo]:
+        all_classes = {}
+        file_paths = self.list_java_files()
+        
+        if not file_paths:
+            logging.error(f"No Java files found in directory: {self.directory}")
+            return all_classes
+
+        with multiprocessing.Pool() as pool:
+            results = pool.map(self.analyze_file, file_paths)
+            for result in results:
+                all_classes.update(result)
+        
+        if not all_classes:
+            logging.error(f"No classes found in any of the {len(file_paths)} Java files analyzed.")
+        else:
+            logging.info(f"Found {len(all_classes)} classes in {len(file_paths)} Java files.")
+        
+        return all_classes
     
     def generate_class_diagram(self, classes):
         graph = pydot.Dot(graph_type='digraph')
@@ -87,9 +120,9 @@ class JavaClassDiagramGenerator:
                 edge = pydot.Edge(interface, class_name, label='implements', style='dashed')
                 graph.add_edge(edge)
 
-        uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        # uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
 
-        file_name = f"class_diagram_{uploaded_file_name}"
+        file_name = f"class_diagram_{self.dir_name}"
         result = self.safe_write_png(graph, file_name)
         return result
 

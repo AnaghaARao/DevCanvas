@@ -3,17 +3,17 @@ from django.conf import settings
 from .java_class_diagram import JavaClassDiagramGenerator
 from .python_class_diagram import PythonDiagramGenerator
 
-def process_file(file_path, author, language, doc_id):
+def process_file(directory, author, language, doc_id):
     # Validate the language
     if language == 'java':
-        process = JavaClassDiagramGenerator(file_path, author, doc_id)
+        process = JavaClassDiagramGenerator(directory, author, doc_id)
     elif language == 'python':  # Fix typo
-        process = PythonDiagramGenerator(file_path, author, doc_id)
+        process = PythonDiagramGenerator(directory, author, doc_id)
     else:
         return {'error': f"{language} not supported for class diagram generation"}
 
     # Analyze the file
-    analysis_result = process.analyze_file()
+    analysis_result = process.analyze_directory()
     if analysis_result.get('error'):
         return analysis_result
     
@@ -29,9 +29,9 @@ def process_file(file_path, author, language, doc_id):
     # Prepare file paths and names
     img_path = png_result['img_path']
     media_root = settings.MEDIA_ROOT  # Use physical path for saving files
-    uploaded_file_name = os.path.splitext(os.path.basename(file_path))[0]
-    file_name = f"class_diagram_{uploaded_file_name}.pdf"
-    output_path = os.path.join(media_root, author, file_name)  # Use media root for saving the file
+    # uploaded_file_name = os.path.splitext(os.path.basename(file_path))[0]
+    file_name = f"class_diagram_{directory}.pdf"
+    output_path = os.path.join(media_root, author, directory, file_name)  # Use media root for saving the file
 
     # Generate the PDF
     pdf_result = process.generate_pdf(img_path, output_path, classes)

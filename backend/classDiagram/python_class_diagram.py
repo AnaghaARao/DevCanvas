@@ -26,20 +26,21 @@ class ClassInfo:
         return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_classes={self.base_classes}, compositions={self.compositions})"
     
 class PythonDiagramGenerator:
-    def __init__(self, file_path, author, doc_id):
-        self.file_path = file_path
+    def __init__(self, directory, author, doc_id):
+        self.directory = f"{settings.MEDIA_ROOT}/{author}/{directory}"
         self.author = author
         self.doc_id = doc_id
+        self.dir_name = directory
 
-    def analyze_file(self):
+    def analyze_file(self, file_path):
         classes = {}
-        uploaded_file_path = self.file_path
-        with open(uploaded_file_path, 'r') as file:
+        # uploaded_file_path = self.file_path
+        with open(file_path, 'r') as file:
             try:
-                tree = ast.parse(file.read(), filename=uploaded_file_path)
+                tree = ast.parse(file.read(), filename=file_path)
             except SyntaxError as e:
-                logging.error(f"Syntax error in {uploaded_file_path}: {e}")
-                return {'error':f'syntax error in {uploaded_file_path}: {e}'}
+                logging.error(f"Syntax error in {file_path}: {e}")
+                return {'error':f'syntax error in {file_path}: {e}'}
 
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef):
@@ -72,6 +73,38 @@ class PythonDiagramGenerator:
 
         return classes
     
+    def list_python_files(self) -> List[str]:
+        python_files = []
+        logging.info(f"Checking files in directory: {self.directory}")
+        for root, _, files in os.walk(self.directory):
+            for file in files:
+                full_path = os.path.join(root, file)
+                logging.info(f"Found file: {full_path}")
+                if file.endswith('.py'):
+                    python_files.append(full_path)
+                    logging.info(f"Identified Python file: {full_path}")
+        return python_files
+
+    def analyze_directory(self) -> Dict[str, ClassInfo]:
+        all_classes = {}
+        file_paths = self.list_python_files()
+        
+        if not file_paths:
+            logging.error(f"No Python files found in directory: {self.directory}")
+            return all_classes
+
+        with multiprocessing.Pool() as pool:
+            results = pool.map(self.analyze_file, file_paths)
+            for result in results:
+                all_classes.update(result)
+        
+        if not all_classes:
+            logging.error(f"No classes found in any of the {len(file_paths)} Python files analyzed.")
+        else:
+            logging.info(f"Found {len(all_classes)} classes in {len(file_paths)} Python files.")
+        
+        return all_classes
+    
     def generate_class_diagram(self, classes):
         graph = pydot.Dot(graph_type='digraph')
         graph.set_rankdir('TB')
@@ -101,8 +134,8 @@ class PythonDiagramGenerator:
                     edge = pydot.Edge(class_name, comp_class, label=f'has {attr}', style='dashed')
                     graph.add_edge(edge)
 
-        uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
-        file_name = f"class_diagram_{uploaded_file_name}"
+        # uploaded_file_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        file_name = f"class_diagram_{self.dir_name}"
         result = self.safe_write_png(graph, file_name)
         return result
     
