@@ -6,8 +6,11 @@ import logging
 import multiprocessing
 from typing import Dict, List, Tuple
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib import colors
+from datetime import datetime
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -129,50 +132,205 @@ def generate_class_diagram(classes: Dict[str, ClassInfo]) -> pydot.Dot:
 
     return graph
 
-def generate_pdf(diagram_path: str, output_path: str, classes: Dict[str, ClassInfo]):
-    doc = SimpleDocTemplate(output_path, pagesize=letter)
+def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str, ClassInfo], is_java: bool = True):
+    """
+    Generate a continuous PDF report with class diagram and detailed analysis.
+    """
+    doc = SimpleDocTemplate(
+        output_path,
+        pagesize=letter,
+        rightMargin=72,
+        leftMargin=72,
+        topMargin=72,
+        bottomMargin=72
+    )
+    
+    # Create custom styles
     styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(
+        name='CustomHeading1',
+        parent=styles['Heading1'],
+        fontSize=24,
+        spaceAfter=30
+    ))
+    styles.add(ParagraphStyle(
+        name='CustomHeading2',
+        parent=styles['Heading2'],
+        fontSize=16,
+        spaceBefore=20,
+        spaceAfter=12
+    ))
+    styles.add(ParagraphStyle(
+        name='CustomBody',
+        parent=styles['Normal'],
+        fontSize=11,
+        leading=14,
+        spaceBefore=8,
+        spaceAfter=8
+    ))
+    styles.add(ParagraphStyle(
+        name='Caption',
+        parent=styles['Normal'],
+        fontSize=10,
+        leading=12,
+        alignment=1
+    ))
+    
     story = []
-
-    # Add title
-    title = Paragraph("Java Class Diagram", styles['Title'])
-    story.append(title)
-    story.append(Spacer(1, 12))
-
-    # Add description
-    description = Paragraph("This is a UML class diagram representing the structure of the analyzed Java code. "
-                            "It shows classes, their attributes, methods, and relationships.", styles['Normal'])
-    story.append(description)
-    story.append(Spacer(1, 12))
-
-    # Add the diagram image
-    img = Image(diagram_path, width=500, height=500)
-    story.append(img)
-    story.append(Spacer(1, 12))
-
-    # Add class information
+    
+    # Title and Executive Summary
+    title = Paragraph("Java Class Diagram Analysis Report", styles['CustomHeading1'])
+    date = Paragraph(f"Generated on: {datetime.now().strftime('%B %d, %Y')}", styles['CustomBody'])
+    
+    story.extend([
+        title,
+        Spacer(1, 20),
+        date,
+        Spacer(1, 30),
+        Paragraph("Executive Summary", styles['CustomHeading2']),
+        Paragraph(
+            f"This report presents a comprehensive analysis of the Java codebase structure "
+            f"through class diagrams and detailed documentation. The analysis covers {len(classes)} "
+            f"classes and their relationships, providing insights into the system's architecture "
+            "and design patterns.",
+            styles['CustomBody']
+        ),
+        Spacer(1, 20)
+    ])
+    
+    # Table of Contents
+    story.extend([
+        Paragraph("Table of Contents", styles['CustomHeading2']),
+        Paragraph("1. Introduction", styles['CustomBody']),
+        Paragraph("2. Class Diagram", styles['CustomBody']),
+        Paragraph("3. Detailed Class Analysis", styles['CustomBody']),
+        Paragraph("4. Relationships and Dependencies", styles['CustomBody']),
+        Paragraph("5. Metrics and Statistics", styles['CustomBody']),
+        Spacer(1, 20)
+    ])
+    
+    # Introduction
+    story.extend([
+        Paragraph("1. Introduction", styles['CustomHeading2']),
+        Paragraph(
+            "This report analyzes the structure and relationships of Java classes in the "
+            "codebase. The analysis includes class hierarchies, relationships, methods, and attributes. "
+            "The visualization is presented through a UML class diagram, followed by detailed "
+            "documentation of each component.",
+            styles['CustomBody']
+        ),
+        Spacer(1, 20)
+    ])
+    
+    # Class Diagram Section
+    story.extend([
+        Paragraph("2. Class Diagram", styles['CustomHeading2']),
+        Paragraph(
+            "The following UML class diagram illustrates the relationships between classes "
+            "in the codebase. The diagram uses standard UML notation:",
+            styles['CustomBody']
+        ),
+        Paragraph(
+            "• Solid lines with arrows indicate inheritance relationships<br/>"
+            "• Dashed lines indicate implementation relationships<br/>"
+            "• Boxes show class names, attributes, and methods",
+            styles['CustomBody']
+        ),
+        Spacer(1, 20),
+        Image(diagram_path, width=7*inch, height=7*inch),
+        Paragraph("Figure 1: UML Class Diagram", styles['Caption']),
+        Spacer(1, 20)
+    ])
+    
+    # Detailed Class Analysis
+    story.extend([
+        Paragraph("3. Detailed Class Analysis", styles['CustomHeading2']),
+        Paragraph(
+            "This section provides a detailed analysis of each class in the system, "
+            "including their responsibilities, relationships, and components.",
+            styles['CustomBody']
+        )
+    ])
+    
     for class_name, class_info in classes.items():
-        class_title = Paragraph(f"Class: {class_name}", styles['Heading2'])
-        story.append(class_title)
+        story.extend([
+            Paragraph(f"Class: {class_name}", styles['CustomHeading2']),
+            Paragraph("Description:", styles['CustomBody'])
+        ])
         
-        if class_info.attributes:
-            attributes = Paragraph(f"Attributes: {', '.join(class_info.attributes)}", styles['Normal'])
-            story.append(attributes)
+        data = [
+            ["Attributes", "Methods", "Base Class", "Interfaces"],
+            [
+                "\n".join(class_info.attributes) if class_info.attributes else "None",
+                "\n".join(class_info.methods) if class_info.methods else "None",
+                class_info.base_class if class_info.base_class else "None",
+                "\n".join(class_info.interfaces) if class_info.interfaces else "None"
+            ]
+        ]
         
-        if class_info.methods:
-            methods = Paragraph(f"Methods: {', '.join(class_info.methods)}", styles['Normal'])
-            story.append(methods)
+        table = Table(data, colWidths=[1.5*inch, 1.5*inch, 1.5*inch, 1.5*inch])
+        table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BOX', (0, 0), (-1, -1), 2, colors.black),
+        ]))
         
+        story.extend([
+            table,
+            Spacer(1, 20)
+        ])
+    
+    # Relationships and Dependencies
+    story.extend([
+        Paragraph("4. Relationships and Dependencies", styles['CustomHeading2']),
+        Paragraph(
+            "This section outlines the key relationships and dependencies between classes:",
+            styles['CustomBody']
+        )
+    ])
+    
+    for class_name, class_info in classes.items():
+        relationships = []
         if class_info.base_class:
-            base_class = Paragraph(f"Base Class: {class_info.base_class}", styles['Normal'])
-            story.append(base_class)
-        
+            relationships.append(f"• Inherits from {class_info.base_class}")
         if class_info.interfaces:
-            interfaces = Paragraph(f"Interfaces: {', '.join(class_info.interfaces)}", styles['Normal'])
-            story.append(interfaces)
+            relationships.append(f"• Implements interfaces: {', '.join(class_info.interfaces)}")
         
-        story.append(Spacer(1, 12))
-
+        if relationships:
+            story.extend([
+                Paragraph(f"{class_name} Relationships:", styles['CustomBody']),
+                Paragraph("<br/>".join(relationships), styles['CustomBody']),
+                Spacer(1, 10)
+            ])
+    
+    # Metrics and Statistics
+    story.extend([
+        Paragraph("5. Metrics and Statistics", styles['CustomHeading2']),
+        Paragraph(
+            f"Summary of codebase metrics:<br/>"
+            f"• Total number of classes: {len(classes)}<br/>"
+            f"• Average methods per class: {sum(len(c.methods) for c in classes.values()) / len(classes):.1f}<br/>"
+            f"• Average attributes per class: {sum(len(c.attributes) for c in classes.values()) / len(classes):.1f}<br/>"
+            f"• Classes with inheritance: {sum(1 for c in classes.values() if c.base_class)}<br/>"
+            f"• Classes with interfaces: {sum(1 for c in classes.values() if c.interfaces)}",
+            styles['CustomBody']
+        )
+    ])
+    
+    # Build the PDF
     doc.build(story)
 
 def main():
@@ -190,7 +348,7 @@ def main():
     safe_write_png(diagram, png_path)
 
     pdf_path = os.path.join(current_dir, 'Java_Class_Diagram_Report.pdf')
-    generate_pdf(png_path, pdf_path, classes)
+    generate_enhanced_pdf(png_path, pdf_path, classes)
     logging.info(f"PDF report generated: {pdf_path}")
 
 if __name__ == "__main__":
