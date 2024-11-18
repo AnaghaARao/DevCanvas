@@ -1,0 +1,15 @@
+.history-container {
+  flex-grow: 1;
+  background-color: #292929;
+  margin: 0 15px 15px 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.history-container * {
+  background-color: inherit;
+}

@@ -2,9 +2,21 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import lp from "../../src/landing.png";
 import "../styles/landing.css";
+import { useSelector } from "react-redux";
 
 function LandingPage() {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+
+  console.log("User in LandingPage:", user);
+
+  const handleStartNow = () => {
+    if (user != null) {
+      navigate("/main");
+    } else {
+      navigate("authentication/register");
+    }
+  };
 
   return (
     <div className="lp-container">
@@ -12,12 +24,7 @@ function LandingPage() {
         <div className="lp-content">
           <h1>Organize your code and visualize its structure!</h1>
           <p>Generate UML diagrams and summary for code files.</p>
-          <button
-            className="btn"
-            onClick={() => {
-              navigate("/authentication/register");
-            }}
-          >
+          <button className="btn" onClick={handleStartNow}>
             Start Now
           </button>
         </div>
