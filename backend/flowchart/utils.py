@@ -28,7 +28,7 @@ def process_file(directory, author, language, doc_id):
     output_path = os.path.join(settings.MEDIA_ROOT, author, "results", file_name)
 
     # Generate the PDF
-    process.generate_pdf(flowcharts, output_path)
+    process.generate_pdf(flowcharts, output_path, classes)
     print(output_path)
     # Return the success response with file name and path
     return {
