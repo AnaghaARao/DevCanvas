@@ -1,14 +1,14 @@
-import ast
-import pydot
 import os
 import sys
+import javalang
+import pydot
 import logging
 import multiprocessing
 from typing import Dict, List, Tuple
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, KeepTogether, Frame, PageTemplate
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, KeepTogether
 from reportlab.lib import colors
 from datetime import datetime
 from reportlab.lib.utils import ImageReader
@@ -21,16 +21,12 @@ class ClassInfo:
         self.name = name
         self.methods: List[str] = []
         self.attributes: List[str] = []
-        self.base_classes: List[str] = []
-        self.compositions: List[Tuple[str, str]] = []  # (attribute_name, class_name)
+        self.base_class: str = None
+        self.interfaces: List[str] = []
+        self.dependencies: List[str] = []  # New attribute to track dependencies
 
     def __str__(self):
-        return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_classes={self.base_classes}, compositions={self.compositions})"
-
-# Get the current script's directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(current_dir)
-input_dir = os.path.join(project_root, 'testing', 'python')
+        return f"ClassInfo(name={self.name}, methods={self.methods}, attributes={self.attributes}, base_class={self.base_class}, interfaces={self.interfaces}, dependencies={self.dependencies})"
 
 def create_header_footer(canvas, doc):
     """Create a minimalist header and footer with separating lines"""
@@ -40,9 +36,8 @@ def create_header_footer(canvas, doc):
     header_top = doc.pagesize[1] - 40
     
     # Add logo
-    logo_path = os.path.join(current_dir, 'logo.png')
+    logo_path = os.path.join(current_dir, 'logo_with_white_bg.png')
     if os.path.exists(logo_path):
-       
         img = ImageReader(logo_path)
         canvas.drawImage(logo_path, 
                         doc.leftMargin - 20,
@@ -94,82 +89,73 @@ def create_header_footer(canvas, doc):
     
     canvas.restoreState()
 
-def safe_write_png(graph, filename):
-    output_path = os.path.join(current_dir, filename)
-    try:
-        graph.write_png(output_path)
-        logging.info(f"Generated: {output_path}")
-    except Exception as e:
-        logging.error(f"Error writing {filename}: {str(e)}")
-        logging.error(f"Make sure you have write permissions in {current_dir}")
+# Get the current script's directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+input_dir = os.path.join(project_root, 'testing', 'java')
 
-def analyze_file(file_path: str) -> Dict[str, ClassInfo]:
+def analyze_java_file(file_path: str) -> Dict[str, ClassInfo]:
     classes = {}
-    with open(file_path, 'r') as file:
-        try:
-            tree = ast.parse(file.read(), filename=file_path)
-        except SyntaxError as e:
-            logging.error(f"Syntax error in {file_path}: {e}")
-            return {}
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+    
+    try:
+        tree = javalang.parse.parse(content)
+    except javalang.parser.JavaSyntaxError:
+        logging.error(f"Syntax error in file: {file_path}")
+        return {}
 
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
-                class_name = node.name
-                class_info = ClassInfo(class_name)
-                
-                for item in node.body:
-                    if isinstance(item, ast.FunctionDef):
-                        class_info.methods.append(item.name)
-                    elif isinstance(item, ast.Assign):
-                        for target in item.targets:
-                            if isinstance(target, ast.Name):
-                                class_info.attributes.append(target.id)
-                
-                class_info.base_classes = [
-                    base.id if isinstance(base, ast.Name) else ast.unparse(base) 
-                    for base in node.bases
-                ]
-                
-                for item in node.body:
-                    if isinstance(item, ast.Assign):
-                        for target in item.targets:
-                            if isinstance(target, ast.Name) and isinstance(item.value, ast.Call):
-                                if isinstance(item.value.func, ast.Name):
-                                    class_info.compositions.append((target.id, item.value.func.id))
-                
-                classes[class_name] = class_info
-
+    for path, node in tree.filter(javalang.tree.ClassDeclaration):
+        class_name = node.name
+        class_info = ClassInfo(class_name)
+        
+        class_info.methods = [m.name for m in node.methods]
+        class_info.base_class = node.extends.name if node.extends else None
+        class_info.interfaces = [i.name for i in node.implements] if node.implements else []
+        
+        for field in node.fields:
+            for declarator in field.declarators:
+                class_info.attributes.append(f"{field.type.name} {declarator.name}")
+        
+        # Track method calls and type references as potential dependencies
+        for method in node.methods:
+            for path, type_node in method.filter(javalang.tree.ClassReference):
+                if type_node.type.name != class_name and type_node.type.name not in class_info.dependencies:
+                    class_info.dependencies.append(type_node.type.name)
+        
+        classes[class_name] = class_info
+    
     return classes
 
-def list_python_files(directory: str) -> List[str]:
-    python_files = []
+def list_java_files(directory: str) -> List[str]:
+    java_files = []
     logging.info(f"Checking files in directory: {directory}")
     for root, _, files in os.walk(directory):
         for file in files:
             full_path = os.path.join(root, file)
             logging.info(f"Found file: {full_path}")
-            if file.endswith('.py'):
-                python_files.append(full_path)
-                logging.info(f"Identified Python file: {full_path}")
-    return python_files
+            if file.endswith('.java'):
+                java_files.append(full_path)
+                logging.info(f"Identified Java file: {full_path}")
+    return java_files
 
 def analyze_directory(directory: str) -> Dict[str, ClassInfo]:
     all_classes = {}
-    file_paths = list_python_files(directory)
+    file_paths = list_java_files(directory)
     
     if not file_paths:
-        logging.error(f"No Python files found in directory: {directory}")
+        logging.error(f"No Java files found in directory: {directory}")
         return all_classes
 
     with multiprocessing.Pool() as pool:
-        results = pool.map(analyze_file, file_paths)
+        results = pool.map(analyze_java_file, file_paths)
         for result in results:
             all_classes.update(result)
     
     if not all_classes:
-        logging.error(f"No classes found in any of the {len(file_paths)} Python files analyzed.")
+        logging.error(f"No classes found in any of the {len(file_paths)} Java files analyzed.")
     else:
-        logging.info(f"Found {len(all_classes)} classes in {len(file_paths)} Python files.")
+        logging.info(f"Found {len(all_classes)} classes in {len(file_paths)} Java files.")
     
     return all_classes
 
@@ -192,17 +178,30 @@ def generate_class_diagram(classes: Dict[str, ClassInfo]) -> pydot.Dot:
         node = pydot.Node(class_name, label=label, shape='record')
         graph.add_node(node)
 
-        for base_class in class_info.base_classes:
-            if base_class in classes:
-                edge = pydot.Edge(base_class, class_name, label='inherits')
-                graph.add_edge(edge)
+        if class_info.base_class:
+            edge = pydot.Edge(class_info.base_class, class_name, label='extends')
+            graph.add_edge(edge)
 
-        for attr, comp_class in class_info.compositions:
-            if comp_class in classes:
-                edge = pydot.Edge(class_name, comp_class, label=f'has {attr}', style='dashed')
+        for interface in class_info.interfaces:
+            edge = pydot.Edge(interface, class_name, label='implements', style='dashed')
+            graph.add_edge(edge)
+        
+        # Add dependency edges
+        for dependency in class_info.dependencies:
+            if dependency in classes:
+                edge = pydot.Edge(class_name, dependency, label='uses', style='dotted', color='gray')
                 graph.add_edge(edge)
 
     return graph
+
+def safe_write_png(graph, filename):
+    output_path = os.path.join(current_dir, filename)
+    try:
+        graph.write_png(output_path)
+        logging.info(f"Generated: {output_path}")
+    except Exception as e:
+        logging.error(f"Error writing {filename}: {str(e)}")
+        logging.error(f"Make sure you have write permissions in {current_dir}")
 
 def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str, ClassInfo]):
     """Generate a comprehensive PDF report with class diagram and detailed analysis."""
@@ -245,14 +244,14 @@ def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str
     story = []
     
     # Title
-    title = Paragraph("Python Class Diagram Analysis Report", styles['CustomHeading1'])
+    title = Paragraph("Java Class Diagram Analysis Report", styles['CustomHeading1'])
     story.append(title)
     story.append(Spacer(1, 20))
     
     # Executive Summary
     story.append(Paragraph("Executive Summary", styles['CustomHeading2']))
     summary_text = Paragraph(
-        f"This report presents a comprehensive analysis of the Python codebase structure "
+        f"This report presents a comprehensive analysis of the Java codebase structure "
         f"through class diagrams and detailed documentation. The analysis covers {len(classes)} "
         f"classes and their relationships.",
         styles['CustomBody']
@@ -289,12 +288,12 @@ def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str
         
         # Create class details table
         data = [
-            ["Attributes", "Methods", "Base Classes", "Compositions"],
+            ["Attributes", "Methods", "Base Class", "Interfaces"],
             [
                 "\n".join(class_info.attributes) if class_info.attributes else "None",
                 "\n".join(class_info.methods) if class_info.methods else "None",
-                "\n".join(class_info.base_classes) if class_info.base_classes else "None",
-                "\n".join([f"{attr} ({cls})" for attr, cls in class_info.compositions]) if class_info.compositions else "None"
+                class_info.base_class if class_info.base_class else "None",
+                "\n".join(class_info.interfaces) if class_info.interfaces else "None"
             ]
         ]
         
@@ -328,8 +327,8 @@ def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str
         ['Total Classes', str(len(classes))],
         ['Average Methods per Class', f"{sum(len(c.methods) for c in classes.values()) / len(classes):.1f}"],
         ['Average Attributes per Class', f"{sum(len(c.attributes) for c in classes.values()) / len(classes):.1f}"],
-        ['Classes with Inheritance', str(sum(1 for c in classes.values() if c.base_classes))],
-        ['Classes with Compositions', str(sum(1 for c in classes.values() if c.compositions))]
+        ['Classes with Inheritance', str(sum(1 for c in classes.values() if c.base_class))],
+        ['Classes with Interfaces', str(sum(1 for c in classes.values() if c.interfaces))]
     ]
     
     metrics_table = Table(metrics_data, colWidths=[3*inch, 3*inch])
@@ -346,6 +345,7 @@ def generate_enhanced_pdf(diagram_path: str, output_path: str, classes: Dict[str
     # Build the PDF
     doc.build(story, onFirstPage=create_header_footer, onLaterPages=create_header_footer)
 
+
 def main():
     logging.info(f"Analyzing directory: {input_dir}")
     classes = analyze_directory(input_dir)
@@ -357,12 +357,13 @@ def main():
     
     diagram = generate_class_diagram(classes)
     
-    png_path = os.path.join(current_dir, 'Combined_Class_Diagram.png')
+    png_path = os.path.join(current_dir, 'Java_Class_Diagram.png')
     safe_write_png(diagram, png_path)
 
-    pdf_path = os.path.join(current_dir, 'Class_Diagram_Report.pdf')
+    pdf_path = os.path.join(current_dir, 'Java_Class_Diagram_Report.pdf')
     generate_enhanced_pdf(png_path, pdf_path, classes)
     logging.info(f"PDF report generated: {pdf_path}")
+
 
 if __name__ == "__main__":
     main()
