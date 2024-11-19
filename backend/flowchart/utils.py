@@ -1,6 +1,7 @@
 from .python_flowcharts import PythonFlowchartGenerator
 from .java_flowcharts import JavaFlowchartGenerator
 from django.conf import settings
+from django.utils.text import slugify
 import os
 
 def process_file(directory, author, language, doc_id):
@@ -24,11 +25,14 @@ def process_file(directory, author, language, doc_id):
     # # Prepare file paths and names
     # img_path = png_result['img_path']
     # media_root = settings.MEDIA_ROOT  # Use physical path for saving files
-    file_name = f"flowchart_{directory}.pdf"
-    output_path = os.path.join(settings.MEDIA_ROOT, author, "results", file_name)
+    safe_directory = slugify(directory)  # Converts "my directory" -> "my-directory"
+    file_name = f"flowchart_{safe_directory}.pdf"
+    output_dir = os.path.join(settings.MEDIA_ROOT, author, "results")
+    os.makedirs(output_dir, exist_ok=True)  # Creates the directory if it doesn't exist
+    output_path = os.path.join(output_dir, file_name)
 
     # Generate the PDF
-    process.generate_pdf(flowcharts, output_path, classes)
+    process.generate_pdf(flowcharts, output_path)
     print(output_path)
     # Return the success response with file name and path
     return {
