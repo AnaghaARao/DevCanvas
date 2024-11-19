@@ -17,8 +17,11 @@ def process_file(directory, author, language, doc_id):
     if analysis_result['status'] == 'error':
         return analysis_result
     
-    file_name = f"sequence_diagram_{directory}.pdf"
-    output_path = os.path.join(settings.MEDIA_ROOT, author, 'results', file_name)
+    output_dir = os.path.join(settings.MEDIA_ROOT, author, "results")
+    os.makedirs(output_dir, exist_ok=True)
+
+    file_name = f"summary_{directory}.pdf"
+    output_path = os.path.join(output_dir, file_name)
 
     # Generate the PDF
     pdf_result = process.generate_pdf(output_path)
