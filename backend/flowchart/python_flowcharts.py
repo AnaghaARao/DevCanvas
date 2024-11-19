@@ -248,106 +248,43 @@ class PythonFlowchartGenerator:
                 flowcharts[name] = self.generate_flowchart(element)
         return flowcharts
 
-    def generate_pdf(self, flowcharts, output_path, elements):
+    def generate_pdf(self, flowcharts, output_path):
         try:
-            doc = SimpleDocTemplate(
-                output_path,
-                pagesize=letter,
-                rightMargin=72,
-                leftMargin=72,
-                topMargin=110,  # Adjusted for better spacing
-                bottomMargin=72
-            )
-            
+            current_dir = f"{settings.MEDIA_URL}/{self.author}"
+            current_dir = self.directory
+            doc = SimpleDocTemplate(output_path, pagesize=letter)
             styles = getSampleStyleSheet()
-            styles.add(ParagraphStyle(
-                name='CustomHeading1',
-                parent=styles['Heading1'],
-                fontSize=24,
-                spaceAfter=20,  # Reduced spacing
-                textColor=colors.Color(0.2, 0.2, 0.2)
-            ))
-            styles.add(ParagraphStyle(
-                name='CustomHeading2',
-                parent=styles['Heading2'],
-                fontSize=16,
-                spaceBefore=15,  # Reduced spacing
-                spaceAfter=10,   # Reduced spacing
-                textColor=colors.Color(0.3, 0.3, 0.3)
-            ))
-            styles.add(ParagraphStyle(
-                name='CustomBody',
-                parent=styles['Normal'],
-                fontSize=11,
-                leading=14,
-                spaceBefore=6,   # Reduced spacing
-                spaceAfter=6,    # Reduced spacing
-                textColor=colors.Color(0.3, 0.3, 0.3)
-            ))
-            
             story = []
-            
-            # Title
-            title = Paragraph("Python Code Analysis and Flowcharts Report", styles['CustomHeading1'])
-            story.extend([
-                title,
-                Spacer(1, 20)  # Reduced spacing
-            ])
-            
-            # Executive Summary
-            story.append(Paragraph("Executive Summary", styles['CustomHeading2']))
-            
-            summary_data = [
-                ['Total Elements', str(len(elements))],
-                ['Total Functions/Methods', str(sum(1 for e in elements.values() if isinstance(e, FunctionInfo)) + 
-                                            sum(len(e.methods) for e in elements.values() if isinstance(e, ClassInfo)))],
-                ['Average Complexity', f"{sum(e.complexity for e in elements.values() if isinstance(e, FunctionInfo)) + sum(e.total_complexity for e in elements.values() if isinstance(e, ClassInfo)) / len(elements):.2f}"]
-            ]
-            
-            summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
-            summary_table.setStyle(TableStyle([
-                ('GRID', (0, 0), (-1, -1), 1, colors.Color(0.8, 0.8, 0.8)),
-                ('BACKGROUND', (0, 0), (0, -1), colors.Color(0.95, 0.95, 0.95)),
-                ('TEXTCOLOR', (0, 0), (-1, -1), colors.Color(0.3, 0.3, 0.3)),
-                ('PADDING', (0, 0), (-1, -1), 12),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ]))
-            
-            story.extend([
-                summary_table,
-                Spacer(1, 20)  # Reduced spacing
-            ])
 
-            # Flowcharts
+            title = Paragraph("Python Flowcharts", styles['Title'])
+            story.append(title)
+            story.append(Spacer(1, 12))
+
             for name, item in flowcharts.items():
                 if isinstance(item, dict):  # Class
-                    class_title = Paragraph(f"Class: {name}", styles['CustomHeading2'])
+                    class_title = Paragraph(f"Class: {name}", styles['Heading2'])
                     story.append(class_title)
-                    
+
                     for method_name, flowchart in item.items():
-                        method_title = Paragraph(f"Method: {method_name}", styles['CustomBody'])
+                        method_title = Paragraph(f"Method: {method_name}", styles['Heading3'])
                         story.append(method_title)
-                        story.append(Spacer(1, 10))  # Reduced spacing
-                        
-                        png_path = os.path.join(self.directory, f"{name}_{method_name}_flowchart.png")
+
+                        png_path = os.path.join(current_dir, f"{name}_{method_name}_flowchart.png")
                         self.safe_write_png(flowchart, png_path)
-                        
-                        img = Image(png_path, width=5.5*inch, height=3.5*inch)
-                        frame = KeepInFrame(6*inch, 4*inch, [img], mode='shrink')
-                        story.append(frame)
-                        story.append(Spacer(1, 15))  # Reduced spacing
+
+                        img = Image(png_path, width=6*inch, height=4*inch)
+                        story.append(img)
+                        story.append(Spacer(1, 12))
                 else:  # Function
-                    function_title = Paragraph(f"Function: {name}", styles['CustomHeading2'])
+                    function_title = Paragraph(f"Function: {name}", styles['Heading2'])
                     story.append(function_title)
-                    story.append(Spacer(1, 10))  # Reduced spacing
-                    
-                    png_path = os.path.join(self.directory, f"{name}_flowchart.png")
+
+                    png_path = os.path.join(current_dir, f"{name}_flowchart.png")
                     self.safe_write_png(item, png_path)
-                    
-                    img = Image(png_path, width=5.5*inch, height=3.5*inch)
-                    frame = KeepInFrame(6*inch, 4*inch, [img], mode='shrink')
-                    story.append(frame)
-                    story.append(Spacer(1, 15))  # Reduced spacing
+
+                    img = Image(png_path, width=6*inch, height=4*inch)
+                    story.append(img)
+                    story.append(Spacer(1, 12))
 
             # Build the PDF with header and footer
             doc.build(story, onFirstPage=self.create_header_footer, onLaterPages=self.create_header_footer)

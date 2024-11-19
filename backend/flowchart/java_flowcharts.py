@@ -16,6 +16,7 @@ from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from datetime import datetime
+import tempfile
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -92,69 +93,180 @@ class JavaFlowchartGenerator:
         
         return all_classes
 
-    def generate_method_flowchart(self, method_info: MethodInfo) -> Optional[pydot.Dot]:
+    def generate_method_flowchart(self, method_info: MethodInfo, method_name: str):
         if not method_info.statements:
             return None
 
         graph = pydot.Dot(graph_type='digraph', rankdir='TB', ratio='compress', size='8,8')
         graph.set_node_defaults(shape='rectangle', style='rounded', height='0.4', width='2')
 
-        start = pydot.Node("start", label="Start", shape="ellipse")
+        # Create start and end nodes
+        start = pydot.Node("start", label="Start", shape="ellipse", style="filled", fillcolor="lightgreen")
         graph.add_node(start)
 
-        end = pydot.Node("end", label="End", shape="ellipse")
-
-        prev_node = start
-        for i, stmt in enumerate(method_info.statements):
-            if isinstance(stmt, javalang.tree.IfStatement):
-                if_node = pydot.Node(f"if_{i}", label=f"If\n{stmt.condition}", shape="diamond")
-                graph.add_node(if_node)
-                graph.add_edge(pydot.Edge(prev_node, if_node))
-                
-                true_node = pydot.Node(f"true_{i}", label="True")
-                false_node = pydot.Node(f"false_{i}", label="False")
-                graph.add_node(true_node)
-                graph.add_node(false_node)
-                
-                graph.add_edge(pydot.Edge(if_node, true_node, label="Yes"))
-                graph.add_edge(pydot.Edge(if_node, false_node, label="No"))
-                
-                prev_node = if_node
-            elif isinstance(stmt, (javalang.tree.ForStatement, javalang.tree.WhileStatement)):
-                loop_node = pydot.Node(f"loop_{i}", label=f"{type(stmt).__name__[:-9]} loop", shape="diamond")
-                graph.add_node(loop_node)
-                graph.add_edge(pydot.Edge(prev_node, loop_node))
-                prev_node = loop_node
-            elif isinstance(stmt, javalang.tree.TryStatement):
-                try_node = pydot.Node(f"try_{i}", label="Try", shape="rectangle")
-                graph.add_node(try_node)
-                graph.add_edge(pydot.Edge(prev_node, try_node))
-                prev_node = try_node
-            elif isinstance(stmt, javalang.tree.CatchClause):
-                catch_node = pydot.Node(f"catch_{i}", label=f"Catch {stmt.parameter.name}", shape="rectangle")
-                graph.add_node(catch_node)
-                graph.add_edge(pydot.Edge(prev_node, catch_node))
-                prev_node = catch_node
-            else:
-                node = pydot.Node(f"stmt_{i}", label=type(stmt).__name__[:-9])
-                graph.add_node(node)
-                graph.add_edge(pydot.Edge(prev_node, node))
-                prev_node = node
-
+        end = pydot.Node("end", label="End", shape="ellipse", style="filled", fillcolor="lightcoral")
         graph.add_node(end)
-        graph.add_edge(pydot.Edge(prev_node, end))
+
+        # Track the previous node to create connections
+        prev_node = start
+        final_node = start
+
+        def add_node_with_connection(self, node, connection_node=None):
+            nonlocal prev_node, final_node
+            graph.add_node(node)
+            if connection_node:
+                graph.add_edge(pydot.Edge(connection_node, node))
+            else:
+                graph.add_edge(pydot.Edge(prev_node, node))
+            prev_node = node
+            final_node = node
+
+        def process_block(statements, parent_node=None):
+            nonlocal prev_node, final_node
+            for i, stmt in enumerate(statements):
+                if isinstance(stmt, javalang.tree.IfStatement):
+                    # Create if-else diamond node
+                    if_node = pydot.Node(f"if_{method_name}_{i}", 
+                                        label=f"If\n{stmt.condition}", 
+                                        shape="diamond", 
+                                        style="filled", 
+                                        fillcolor="lightyellow")
+                    
+                    # Connect to previous node
+                    if parent_node:
+                        graph.add_edge(pydot.Edge(parent_node, if_node))
+                    else:
+                        graph.add_edge(pydot.Edge(prev_node, if_node))
+
+                    # True branch
+                    true_block_node = pydot.Node(f"true_block_{method_name}_{i}", 
+                                                label="True Block", 
+                                                shape="rectangle")
+                    graph.add_node(true_block_node)
+                    graph.add_edge(pydot.Edge(if_node, true_block_node, label="Yes"))
+
+                    # Process true block
+                    if stmt.then_statement:
+                        process_block([stmt.then_statement], true_block_node)
+
+                    # False branch
+                    false_block_node = pydot.Node(f"false_block_{method_name}_{i}", 
+                                                label="False Block", 
+                                                shape="rectangle")
+                    graph.add_node(false_block_node)
+                    graph.add_edge(pydot.Edge(if_node, false_block_node, label="No"))
+
+                    # Process false block if exists
+                    if stmt.else_statement:
+                        process_block([stmt.else_statement], false_block_node)
+
+                    prev_node = if_node
+
+                elif isinstance(stmt, (javalang.tree.ForStatement, javalang.tree.WhileStatement)):
+                    # Create loop node
+                    loop_node = pydot.Node(f"loop_{method_name}_{i}", 
+                                        label=f"{type(stmt).__name__[:-9]} Loop\n{stmt.condition or ''}", 
+                                        shape="diamond", 
+                                        style="filled", 
+                                        fillcolor="lightblue")
+                    
+                    # Connect to previous node
+                    if parent_node:
+                        graph.add_edge(pydot.Edge(parent_node, loop_node))
+                    else:
+                        graph.add_edge(pydot.Edge(prev_node, loop_node))
+
+                    # Loop body
+                    loop_body_node = pydot.Node(f"loop_body_{method_name}_{i}", 
+                                                label="Loop Body", 
+                                                shape="rectangle")
+                    graph.add_node(loop_body_node)
+                    graph.add_edge(pydot.Edge(loop_node, loop_body_node, label="Iterate"))
+
+                    # Process loop body
+                    if stmt.body:
+                        process_block([stmt.body], loop_body_node)
+
+                    # Connect back to loop
+                    graph.add_edge(pydot.Edge(loop_body_node, loop_node, style="dashed"))
+
+                    prev_node = loop_node
+
+                elif isinstance(stmt, javalang.tree.TryStatement):
+                    # Try block
+                    try_node = pydot.Node(f"try_{method_name}_{i}", 
+                                        label="Try Block", 
+                                        shape="rectangle", 
+                                        style="filled", 
+                                        fillcolor="lightcyan")
+                    
+                    # Connect to previous node
+                    if parent_node:
+                        graph.add_edge(pydot.Edge(parent_node, try_node))
+                    else:
+                        graph.add_edge(pydot.Edge(prev_node, try_node))
+
+                    # Process try block
+                    if stmt.block:
+                        process_block(stmt.block, try_node)
+
+                    # Process catch blocks
+                    for catch in stmt.catches:
+                        catch_node = pydot.Node(f"catch_{method_name}_{i}", 
+                                                label=f"Catch {catch.parameter.type.name}", 
+                                                shape="rectangle", 
+                                                style="filled", 
+                                                fillcolor="lightsalmon")
+                        graph.add_node(catch_node)
+                        graph.add_edge(pydot.Edge(try_node, catch_node))
+
+                        # Process catch block
+                        if catch.block:
+                            process_block(catch.block, catch_node)
+
+                    prev_node = try_node
+
+                elif isinstance(stmt, javalang.tree.ReturnStatement):
+                    return_node = pydot.Node(f"return_{method_name}_{i}", 
+                                            label=f"Return\n{stmt.expression}", 
+                                            shape="parallelogram", 
+                                            style="filled", 
+                                            fillcolor="lightpink")
+                    
+                    # Connect to previous node
+                    if parent_node:
+                        graph.add_edge(pydot.Edge(parent_node, return_node))
+                    else:
+                        graph.add_edge(pydot.Edge(prev_node, return_node))
+
+                    # Connect to end
+                    graph.add_edge(pydot.Edge(return_node, end))
+
+                    prev_node = return_node
+
+                else:
+                    # Generic statement node
+                    stmt_node = pydot.Node(f"stmt_{method_name}_{i}", 
+                                        label=type(stmt).__name__[:-9], 
+                                        shape="rectangle")
+                    
+                    # Connect to previous node
+                    if parent_node:
+                        graph.add_edge(pydot.Edge(parent_node, stmt_node))
+                    else:
+                        graph.add_edge(pydot.Edge(prev_node, stmt_node))
+
+                    prev_node = stmt_node
+
+        # Process all statements
+        process_block(method_info.statements)
+
+        # Connect last node to end if not already connected
+        graph.add_node(end)
+        graph.add_edge(pydot.Edge(final_node, end))
 
         return graph
 
-    def generate_flowcharts(self, classes: Dict[str, ClassInfo]) -> Dict[str, Dict[str, Optional[pydot.Dot]]]:
-        flowcharts = {}
-        for class_name, class_info in classes.items():
-            flowcharts[class_name] = {}
-            for method_name, method_info in class_info.methods.items():
-                flowchart = self.generate_method_flowchart(method_info)
-                if flowchart:
-                    flowcharts[class_name][method_name] = flowchart
-        return flowcharts
     
     def create_header_footer(self, canvas, doc):
         """Create a minimalist header and footer with separating lines"""
@@ -218,126 +330,102 @@ class JavaFlowchartGenerator:
         
         canvas.restoreState()
 
-    def calculate_method_complexity(method_info: MethodInfo):
-        """Advanced method complexity calculation"""
-        complexity = 1  # Base complexity
-        statement_types = {}
+    # def calculate_method_complexity(method_info: MethodInfo):
+    #     """Advanced method complexity calculation"""
+    #     complexity = 1  # Base complexity
+    #     statement_types = {}
         
-        for stmt in method_info.statements or []:
-            # Increment complexity for control flow statements
-            if isinstance(stmt, (javalang.tree.IfStatement, 
-                                javalang.tree.WhileStatement, 
-                                javalang.tree.ForStatement, 
-                                javalang.tree.TryStatement,
-                                javalang.tree.SwitchStatement)):
-                complexity += 1
+    #     for stmt in method_info.statements or []:
+    #         # Increment complexity for control flow statements
+    #         if isinstance(stmt, (javalang.tree.IfStatement, 
+    #                             javalang.tree.WhileStatement, 
+    #                             javalang.tree.ForStatement, 
+    #                             javalang.tree.TryStatement,
+    #                             javalang.tree.SwitchStatement)):
+    #             complexity += 1
             
-            # Track statement types
-            stmt_type = type(stmt).__name__
-            statement_types[stmt_type] = statement_types.get(stmt_type, 0) + 1
+    #         # Track statement types
+    #         stmt_type = type(stmt).__name__
+    #         statement_types[stmt_type] = statement_types.get(stmt_type, 0) + 1
             
-            # Estimate lines of code (very basic)
-            method_info.lines_of_code += 1
+    #         # Estimate lines of code (very basic)
+    #         method_info.lines_of_code += 1
         
-        method_info.complexity = complexity
-        method_info.statement_types = statement_types
-        return complexity
+    #     method_info.complexity = complexity
+    #     method_info.statement_types = statement_types
+    #     return complexity
 
-    def generate_metrics_data(self, classes: Dict[str, ClassInfo]) -> List[List[str]]:
-        """Generate comprehensive project metrics"""
-        total_classes = len(classes)
-        total_methods = sum(class_info.method_count for class_info in classes.values())
+    # def generate_metrics_data(self, classes: Dict[str, ClassInfo]) -> List[List[str]]:
+    #     """Generate comprehensive project metrics"""
+    #     total_classes = len(classes)
+    #     total_methods = sum(class_info.method_count for class_info in classes.values())
         
-        metrics_data = [
-            ['Metric', 'Value'],
-            ['Total Classes', str(total_classes)],
-            ['Total Methods', str(total_methods)],
-            ['Avg Methods per Class', f'{total_methods/total_classes:.2f}' if total_classes else 'N/A'],
-            ['Total Complexity', str(sum(class_info.total_method_complexity for class_info in classes.values()))],
-            ['Avg Method Complexity', f'{sum(class_info.total_method_complexity for class_info in classes.values())/total_methods:.2f}' if total_methods else 'N/A']
-        ]
-        return metrics_data
+    #     metrics_data = [
+    #         ['Metric', 'Value'],
+    #         ['Total Classes', str(total_classes)],
+    #         ['Total Methods', str(total_methods)],
+    #         ['Avg Methods per Class', f'{total_methods/total_classes:.2f}' if total_classes else 'N/A'],
+    #         ['Total Complexity', str(sum(class_info.total_method_complexity for class_info in classes.values()))],
+    #         ['Avg Method Complexity', f'{sum(class_info.total_method_complexity for class_info in classes.values())/total_methods:.2f}' if total_methods else 'N/A']
+    #     ]
+    #     return metrics_data
 
-    def generate_pdf(self, flowcharts, output_path, classes):
+    def generate_flowcharts(self, classes: Dict[str, ClassInfo]) -> Dict[str, Dict[str, Optional[pydot.Dot]]]:
+        flowcharts = {}
+        for class_name, class_info in classes.items():
+            flowcharts[class_name] = {}
+            for method_name, method_info in class_info.methods.items():
+                flowchart = self.generate_method_flowchart(method_info, method_name)
+                if flowchart:
+                    flowcharts[class_name][method_name] = flowchart
+        return flowcharts
+
+    def generate_pdf(self, flowcharts, output_path):
         """Comprehensive PDF generation with improved formatting"""
+        print("generating pdf!")
         try:
-            doc = SimpleDocTemplate(
-                output_path, 
-                pagesize=letter,
-                rightMargin=72,
-                leftMargin=72,
-                topMargin=110,
-                bottomMargin=72
-            )
-            
+            print("within try block")
+            temp_dir = self.directory  # Use self.directory instead of creating a temp dir
+            if not os.path.exists(temp_dir):
+                os.makedirs(temp_dir)  # Ensure the directory exists
+
+            doc = SimpleDocTemplate(output_path, pagesize=letter)
             styles = getSampleStyleSheet()
-            
-            # Create custom style for better spacing
-            styles.add(ParagraphStyle(
-                name='TitleSpacing',
-                parent=styles['Title'],
-                spaceAfter=18,
-                spaceBefore=12
-            ))
-            
-            styles.add(ParagraphStyle(
-                name='SectionSpacing',
-                parent=styles['Heading2'],
-                spaceAfter=12,
-                spaceBefore=18
-            ))
-            
-            styles.add(ParagraphStyle(
-                name='SubsectionSpacing',
-                parent=styles['Heading3'],
-                spaceAfter=6,
-                spaceBefore=12
-            ))
-            
             story = []
 
-            # Title with improved spacing
-            story.append(Paragraph("Java Flowcharts & Analysis Report", styles['TitleSpacing']))
+            title = Paragraph("Java Method Flowcharts", styles['Title'])
+            story.append(title)
             story.append(Spacer(1, 12))
-            
-            # Metrics Section
-            metrics_data = self.generate_metrics_data(classes)
-            metrics_table = Table(metrics_data, colWidths=[3*inch, 3*inch])
-            metrics_table.setStyle(TableStyle([
-                ('GRID', (0, 0), (-1, -1), 1, colors.gray),
-                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ]))
-            
-            story.append(Paragraph("Project Metrics", styles['SectionSpacing']))
-            story.append(metrics_table)
-            story.append(PageBreak())
 
-            # Flowchart Generation
             for class_name, methods in flowcharts.items():
-                # Class level section with improved spacing
-                class_title = Paragraph(f"Class: {class_name}", styles['SectionSpacing'])
+                class_title = Paragraph(f"Class: {class_name}", styles['Heading2'])
                 story.append(class_title)
-                
+
                 for method_name, flowchart in methods.items():
-                    # Method level subsection with improved spacing
-                    method_title = Paragraph(f"Method: {method_name}", styles['SubsectionSpacing'])
+                    method_title = Paragraph(f"Method: {method_name}", styles['Heading3'])
                     story.append(method_title)
-                    
-                    if flowchart:
-                        png_path = self.safe_write_png(flowchart, f"{class_name}_{method_name}_flowchart.png")
-                        if png_path:
-                            img = Image(png_path, width=6*inch, height=4*inch)
+
+                    try:
+                        if flowchart:
+                            # Save PNG within self.directory
+                            png_path = os.path.join(temp_dir, f"{class_name}_{method_name}_flowchart.png")
+                            self.safe_write_png(flowchart, png_path)
+
+                            # Add the image to the PDF
+                            img = Image(png_path, width=6 * inch, height=4 * inch)
                             story.append(img)
-                    else:
-                        story.append(Paragraph("No flowchart available", styles['Normal']))
-                    
+                        else:
+                            story.append(Paragraph("No flowchart available (abstract method or interface)", styles['Normal']))
+                    except Exception as e:
+                        print(f"Error handling flowchart for {method_name}: {e}")
+
                     story.append(Spacer(1, 12))
 
+            # Build the PDF
             doc.build(story, onFirstPage=self.create_header_footer, onLaterPages=self.create_header_footer)
-            print('pdf successfully generated')
-            print('output path: ', output_path)
-            return {'message':'pdf successfully generated'}
+            print('PDF successfully generated')
+            print('Output path:', output_path)
+            return {'message': 'PDF successfully generated'}
         except Exception as e:
-            return {'error':'error in generating pdf'}
+            print(f"Error generating PDF: {e}")
+            return {'error': str(e)}
