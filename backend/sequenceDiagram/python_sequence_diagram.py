@@ -210,7 +210,7 @@ skinparam note {
         canvas.saveState()
         
         # Current script directory for logo
-        current_dir = self.directoryos.path.dirname(os.path.abspath(__file__))
+        current_dir = self.directory
         
         # Header positioning
         header_top = doc.pagesize[1] - 40
