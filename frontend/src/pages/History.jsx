@@ -54,6 +54,20 @@ const History = () => {
     navigate("/documentation", { state: { fileUrl } });
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "No date available";
+
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric", 
+      month: "long",   
+      day: "numeric",  
+      hour: "numeric", 
+      minute: "numeric", 
+      hour12: true,    
+    });
+  };
+
   return (
     <div className="history-container">
       <h2>User File History</h2>
@@ -64,15 +78,11 @@ const History = () => {
             <li key={index} className="history-item">
               <p>{index + 1}.</p>
               <div className="main-file">
-                <div className="file-details">
-                  <p>
+                  <p className="file-details">
                     <span>{item.file_name || "No file name"}</span>
                   </p>
-                  <p className="file-date">
-                    {item.dateOfGeneration || "No date available"}
-                  </p>
-                </div>
-                {item.file_url ? (
+                  <div className="file-details">
+                  {item.file_url ? (
                   <button
                     className="btn history-btn"
                     onClick={() => handleViewFile(item.file_url)}
@@ -82,7 +92,13 @@ const History = () => {
                 ) : (
                   <p>No file available</p>
                 )}
-              </div>
+                  <p className="file-date">
+                    {item.dateOfGeneration  ? formatDate(item.dateOfGeneration)
+                      : "No date available"}
+                  </p>
+                  </div>
+                </div>
+                
             </li>
           ))}
         </ul>
