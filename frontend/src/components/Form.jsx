@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
+import { motion } from "framer-motion";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useDispatch } from "react-redux";
@@ -145,7 +146,12 @@ function Form({ route, method }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="form-info">
+      <motion.div
+        className="form-info"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <h2 className="form-name">{name}</h2>
         {method === "register" && (
           <p className="form-desc">Welcome! Let's get you started.</p>
@@ -153,9 +159,14 @@ function Form({ route, method }) {
         {method === "login" && (
           <p className="form-desc">Welcome back, you've been missed!</p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="form-container">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+        className="form-container"
+      >
         <div className="input-div">
           <PersonIcon className="mui-icons" />
           <input
@@ -256,7 +267,7 @@ function Form({ route, method }) {
             </Link>
           </p>
         )}
-      </div>
+      </motion.div>
       <ToastContainer
         position="top-right"
         autoClose={5000}

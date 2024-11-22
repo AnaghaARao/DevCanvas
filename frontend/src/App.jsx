@@ -12,6 +12,7 @@ import "./styles/landing.css";
 import ActivateAccount from "./pages/ActivateAccount";
 import OutputPage from "./pages/OutputPage";
 import History from "./pages/History";
+import { AnimatePresence } from "framer-motion";
 
 function Logout() {
   localStorage.clear();
@@ -41,41 +42,43 @@ function App() {
     <div className="maindiv">
       <BrowserRouter>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/main"
-            element={
-              <ProtectedRoute>
-                <Upload />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/upload-history"
-            element={
-              <ProtectedRoute>
-                <History />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/documentation"
-            element={
-              <ProtectedRoute>
-                <OutputPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/authentication/activate/:uidb64/:token"
-            element={<ActivateAccount />}
-          />
-          <Route path="/authentication/login/" element={<Login />} />
-          <Route path="/authentication/register/" element={<Register />} />
-          <Route path="/authentication/logout/" element={<Logout />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/main"
+              element={
+                <ProtectedRoute>
+                  <Upload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/upload-history"
+              element={
+                <ProtectedRoute>
+                  <History />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documentation"
+              element={
+                <ProtectedRoute>
+                  <OutputPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/authentication/activate/:uidb64/:token"
+              element={<ActivateAccount />}
+            />
+            <Route path="/authentication/login/" element={<Login />} />
+            <Route path="/authentication/register/" element={<Register />} />
+            <Route path="/authentication/logout/" element={<Logout />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>{" "}
+        </AnimatePresence>
       </BrowserRouter>
     </div>
   );
