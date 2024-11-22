@@ -10,6 +10,14 @@
   letter-spacing: 1px;
 }
 
+.logo-title {
+  transition: color 0.5s ease-in-out;
+}
+
+.logo-title:hover {
+  color: #807e7e;
+}
+
 .navbar-logo {
   display: flex;
   gap: 0.5rem;
