@@ -347,4 +347,5 @@ class JavaClassDiagramGenerator:
             doc.build(story, onFirstPage=self.create_header_footer, onLaterPages=self.create_header_footer)
             return {'message':'pdf successfully generated'}
         except Exception as e:
+            print(e)
             return {'error':'error in generating pdf'}
