@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { clearUser } from "../store/actions";
 import "../styles/navbar.css";
+import LinkScaleAnimation from "./LinkScaleAnimation";
 
 function Navbar() {
   const user = useSelector((state) => state.user);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -29,33 +29,42 @@ function Navbar() {
     <div className="navbar">
       <Link to="/" className="navbar-logo">
         <img src="/logo.png" alt="Logo" />
-        <h2>DevCanvas</h2>
+        <h2 className="logo-title">DevCanvas</h2>
       </Link>
 
       <div className="notMobile">
         <div className="navbar-links">
           {isLandingPage && !user ? (
             <>
-              <Link className="navbar-item" to="/authentication/login">
+              <LinkScaleAnimation
+                className="navbar-item"
+                to="/authentication/login"
+              >
                 Login
-              </Link>
-              <Link className="navbar-item" to="/authentication/register">
+              </LinkScaleAnimation>
+              <LinkScaleAnimation
+                className="navbar-item"
+                to="/authentication/register"
+              >
                 Register
-              </Link>
+              </LinkScaleAnimation>
             </>
           ) : (
             !isLoginPage &&
             !isRegisterPage && (
               <div className="home-upload-history">
-                <Link className="navbar-item" to="/">
+                <LinkScaleAnimation className="navbar-item" to="/">
                   Home
-                </Link>
-                <Link className="navbar-item" to="/main">
+                </LinkScaleAnimation>
+                <LinkScaleAnimation className="navbar-item" to="/main">
                   Upload
-                </Link>
-                <Link className="navbar-item" to="/upload-history">
+                </LinkScaleAnimation>
+                <LinkScaleAnimation
+                  className="navbar-item"
+                  to="/upload-history"
+                >
                   History
-                </Link>
+                </LinkScaleAnimation>
               </div>
             )
           )}
@@ -73,12 +82,10 @@ function Navbar() {
         )}
       </div>
 
-      {/* Hamburger Icon */}
       <div className="hamburger" onClick={toggleMobileMenu}>
         {isMobileMenuOpen ? "✖" : "☰"}
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="mobile-menu">
           {isLandingPage && !user ? (
