@@ -4,11 +4,11 @@ import lp from "../../src/landing.png";
 import "../styles/landing.css";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import Footer from "../components/Footer";
 
 function LandingPage() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-
   console.log("User in LandingPage:", user);
 
   const handleStartNow = () => {
@@ -28,21 +28,21 @@ function LandingPage() {
       >
         <div className="lp-content">
           <motion.h1
-            initial={{ x: -100, opacity: 0 }}
+            initial={{ x: -150, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
             Organize your code and visualize its structure!
           </motion.h1>
           <motion.p
-            initial={{ x: -100, opacity: 0 }}
+            initial={{ x: -150, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Generate UML diagrams and summary for code files.
           </motion.p>
           <motion.button
-            className="btn"
+            className="btn start"
             onClick={handleStartNow}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -60,9 +60,7 @@ function LandingPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         />
       </motion.div>
-
       <hr className="divider" />
-
       <motion.div
         className="lp-sec2"
         initial="hidden"
@@ -93,6 +91,86 @@ function LandingPage() {
           ))}
         </div>
       </motion.div>
+      <hr className="divider" />
+      <div className="lp-motivation">
+        <h2>Our Motivation</h2>
+        <p>
+          Maintaining accurate and up-to-date documentation is essential, yet
+          often neglected due to the focus on coding. Our tool automates the
+          documentation process, keeping it in sync with the evolving codebase.
+          This reduces manual effort, enhances accuracy, and fosters
+          collaboration among developers and stakeholders.
+        </p>
+      </div>
+      <hr className="divider" />
+      <div className="lp-team">
+        <h2>Meet the Team</h2>
+        <div className="team-members">
+          <div className="team-member">
+            <img src="team-member1.jpg" alt="Team Member 1" />
+            <h3>Team Member 1</h3>
+            <p>Role</p>
+          </div>
+          <div className="team-member">
+            <img src="team-member2.jpg" alt="Team Member 2" />
+            <h3>Team Member 2</h3>
+            <p>Role</p>
+          </div>
+          <div className="team-member">
+            <img src="team-member3.jpg" alt="Team Member 3" />
+            <h3>Team Member 3</h3>
+            <p>Role</p>
+          </div>
+        </div>
+      </div>
+      <hr className="divider" />
+      <div className="lp-services">
+        <h2>Our Services</h2>
+        <ul>
+          <li>Automated code documentation generation</li>
+          <li>Real-time updates on software changes</li>
+          <li>Customizable documentation formats</li>
+          <li>Multi-language support (Java, Python, etc.)</li>
+        </ul>
+      </div>
+      <hr className="divider" />
+      <div className="lp-faqs">
+        <h2>Frequently Asked Questions</h2>
+        <div className="faq-item">
+          <h3>What programming languages do you support?</h3>
+          <p>
+            Currently, we support Java and Python. More languages are coming
+            soon.
+          </p>
+        </div>
+        <div className="faq-item">
+          <h3>Is my code data secure?</h3>
+          <p>
+            Yes, all code uploaded is handled securely with encryption and
+            access control.
+          </p>
+        </div>
+        <div className="faq-item">
+          <h3>How often is the documentation updated?</h3>
+          <p>
+            Documentation updates in real-time, reflecting any changes made in
+            the codebase.
+          </p>
+        </div>
+      </div>
+      <hr className="divider" />
+
+      <div className="lp-security">
+        <h2>Security</h2>
+        <p>
+          We prioritize the security of your data. Our platform uses SSL
+          encryption for data transmission, and all uploaded code is stored
+          securely with access restrictions to ensure your intellectual property
+          remains safe.
+        </p>
+      </div>
+
+      <Footer />
     </div>
   );
 }
