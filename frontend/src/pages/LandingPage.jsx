@@ -6,6 +6,7 @@ import Process from "../components/Process";
 import Motivation from "../components/Motivation";
 import Team from "../components/Team";
 import Services from "../components/Services";
+import FAQS from "../components/FAQS";
 
 function LandingPage() {
   return (
@@ -26,30 +27,7 @@ function LandingPage() {
       <Motivation />
       <Team />
       <Services />
-      <div className="lp-faqs">
-        <h2>Frequently Asked Questions</h2>
-        <div className="faq-item">
-          <h3>What programming languages do you support?</h3>
-          <p>
-            Currently, we support Java and Python. More languages are coming
-            soon.
-          </p>
-        </div>
-        <div className="faq-item">
-          <h3>Is my code data secure?</h3>
-          <p>
-            Yes, all code uploaded is handled securely with encryption and
-            access control.
-          </p>
-        </div>
-        <div className="faq-item">
-          <h3>How often is the documentation updated?</h3>
-          <p>
-            Documentation updates in real-time, reflecting any changes made in
-            the codebase.
-          </p>
-        </div>
-      </div>
+      <FAQS />
       <hr className="divider" />
 
       <div className="lp-security">

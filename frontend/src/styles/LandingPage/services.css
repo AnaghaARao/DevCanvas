@@ -7,12 +7,6 @@
   align-items: center;
 }
 
-.lp-services h2 {
-  color: #fff;
-  font-size: 2rem;
-  margin-bottom: 3rem;
-}
-
 .service-list {
   list-style: none;
   padding: 0;
@@ -45,10 +39,6 @@
 @media only screen and (max-width: 1440px) {
   .lp-services {
     padding: 4rem 6rem;
-  }
-
-  .lp-services h2 {
-    font-size: 1.8rem;
   }
 
   .service-list p {
