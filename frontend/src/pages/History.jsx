@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/history.css";
+import Footer from "../components/Footer";
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -59,52 +60,55 @@ const History = () => {
 
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
-      year: "numeric", 
-      month: "long",   
-      day: "numeric",  
-      hour: "numeric", 
-      minute: "numeric", 
-      hour12: true,    
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
     });
   };
 
   return (
-    <div className="history-container">
-      <h2>User File History</h2>
-      <hr className="divider" />
-      {Array.isArray(history) && history.length > 0 ? (
-        <ul>
-          {history.map((item, index) => (
-            <li key={index} className="history-item">
-              <p>{index + 1}.</p>
-              <div className="main-file">
+    <div>
+      <div className="history-container">
+        <h2>User File History</h2>
+        <hr className="divider" />
+        {Array.isArray(history) && history.length > 0 ? (
+          <ul>
+            {history.map((item, index) => (
+              <li key={index} className="history-item">
+                <p>{index + 1}.</p>
+                <div className="main-file">
                   <p className="file-details">
                     <span>{item.file_name || "No file name"}</span>
                   </p>
                   <div className="file-details">
-                  {item.file_url ? (
-                  <button
-                    className="btn history-btn"
-                    onClick={() => handleViewFile(item.file_url)}
-                  >
-                    Click here to view the file
-                  </button>
-                ) : (
-                  <p>No file available</p>
-                )}
-                  <p className="file-date">
-                    {item.dateOfGeneration  ? formatDate(item.dateOfGeneration)
-                      : "No date available"}
-                  </p>
+                    {item.file_url ? (
+                      <button
+                        className="btn history-btn"
+                        onClick={() => handleViewFile(item.file_url)}
+                      >
+                        Click here to view the file
+                      </button>
+                    ) : (
+                      <p>No file available</p>
+                    )}
+                    <p className="file-date">
+                      {item.dateOfGeneration
+                        ? formatDate(item.dateOfGeneration)
+                        : "No date available"}
+                    </p>
                   </div>
                 </div>
-                
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No history available.</p>
-      )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No history available.</p>
+        )}
+      </div>
+      <Footer />
     </div>
   );
 };

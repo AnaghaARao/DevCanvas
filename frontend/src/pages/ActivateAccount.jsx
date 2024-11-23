@@ -17,19 +17,23 @@ function ActivateAccount() {
         );
         setActivationMessage(response.data.message);
         showSuccess(response.data.message);
+
         const isPendingVerification = localStorage.getItem(
           "pendingVerification"
         );
-
         if (isPendingVerification) {
-          window.close();
+          localStorage.removeItem("pendingVerification");
         }
 
-        window.location.href = "/authentication/login";
+        // Redirect to login in the same tab
+        navigate("/authentication/login");
       } catch (error) {
         const errorMessage = error.response?.data?.error || "Activation failed";
         setActivationMessage(errorMessage);
         showError(errorMessage);
+
+        // Redirect to login in case of error
+        navigate("/authentication/login");
       }
     };
 

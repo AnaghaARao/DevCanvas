@@ -114,8 +114,9 @@ function Form({ route, method }) {
         } else if (res.data.message) {
           showSuccess(res.data.message);
         }
-      } else {
-        // register logic
+      } else if (method === "register") {
+        // Register logic
+        localStorage.setItem("activationPending", "true");
         localStorage.setItem("pendingVerification", true);
         showSuccess(res.data.message);
         console.log(res.data.message);

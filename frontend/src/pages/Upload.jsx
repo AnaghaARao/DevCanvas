@@ -5,6 +5,7 @@ import "../styles/upload.css";
 import BoltIcon from "@mui/icons-material/Bolt";
 import { useDispatch, useSelector } from "react-redux";
 import { showAlert, showError, showSuccess } from "../hooks/toastUtils";
+import Footer from "../components/Footer";
 
 const Upload = () => {
   const [files, setFiles] = useState([]);
@@ -107,100 +108,103 @@ const Upload = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="upload-form">
-      <h2>Upload Files or Folder</h2>
-      <hr className="divider" />
-      <div className="upload-section">
-        <div className="left-upload">
-          <div className="upload-files">
-            <div className="input-sec">
-              <label htmlFor="folderInput">Upload Folder:</label>
-              <input
-                type="file"
-                id="folderInput"
-                onChange={handleFolderChange}
-                className="input-div"
-                accept=".txt, .docx, .pdf, .cpp, .java, .py"
-                webkitdirectory="true"
-                required
-                style={{ display: "none" }}
-              />
-              <button
-                type="button"
-                onClick={() => document.getElementById("folderInput").click()}
-                className="btn"
-              >
-                {folderName}
-              </button>
+    <div>
+      <form onSubmit={handleSubmit} className="upload-form">
+        <h2>Upload Files or Folder</h2>
+        <hr className="divider" />
+        <div className="upload-section">
+          <div className="left-upload">
+            <div className="upload-files">
+              <div className="input-sec">
+                <label htmlFor="folderInput">Upload Folder:</label>
+                <input
+                  type="file"
+                  id="folderInput"
+                  onChange={handleFolderChange}
+                  className="input-div"
+                  accept=".txt, .docx, .pdf, .cpp, .java, .py"
+                  webkitdirectory="true"
+                  required
+                  style={{ display: "none" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("folderInput").click()}
+                  className="btn"
+                >
+                  {folderName}
+                </button>
+              </div>
             </div>
-          </div>
-          {files.length > 0 && (
-            <div className="file-list">
-              <h3>Uploaded Files: </h3>
-              <ul>
-                {files.map((file, index) => (
-                  <li key={index}>
-                    {file.name}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFile(index)}
-                      className="remove-file-btn"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        <div className="vl"></div>
-
-        <div className="upload-info">
-          <div className="language">
-            <label htmlFor="languageInput">Programming Language:</label>
-            <select
-              id="languageInput"
-              value={language}
-              onChange={handleLanguageChange}
-              className="input-div"
-              required
-            >
-              <option value="">Select programming language</option>
-              <option value="java">Java</option>
-              <option value="python">Python</option>
-            </select>
-          </div>
-
-          <div className="documentation">
-            <label htmlFor="docTypeSelect">Documentation Type:</label>
-            <select
-              id="docTypeSelect"
-              value={docType}
-              onChange={handleDocTypeChange}
-              className="input-div"
-              required
-            >
-              <option value="">Select documentation type</option>
-              <option value="summary">Summary</option>
-              <option value="class diagram">Class Diagram</option>
-              <option value="sequence diagram">Sequence Diagram</option>
-              <option value="flowchart">Flowchart</option>
-            </select>
-          </div>
-
-          <button type="submit" className="btn" disabled={loading}>
-            {loading ? (
-              <>
-                Please wait while its processing... <BoltIcon />
-              </>
-            ) : (
-              "Generate Now"
+            {files.length > 0 && (
+              <div className="file-list">
+                <h3>Uploaded Files: </h3>
+                <ul>
+                  {files.map((file, index) => (
+                    <li key={index}>
+                      {file.name}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(index)}
+                        className="remove-file-btn"
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
-          </button>
+          </div>
+          <div className="vl"></div>
+
+          <div className="upload-info">
+            <div className="language">
+              <label htmlFor="languageInput">Programming Language:</label>
+              <select
+                id="languageInput"
+                value={language}
+                onChange={handleLanguageChange}
+                className="input-div"
+                required
+              >
+                <option value="">Select programming language</option>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+              </select>
+            </div>
+
+            <div className="documentation">
+              <label htmlFor="docTypeSelect">Documentation Type:</label>
+              <select
+                id="docTypeSelect"
+                value={docType}
+                onChange={handleDocTypeChange}
+                className="input-div"
+                required
+              >
+                <option value="">Select documentation type</option>
+                <option value="summary">Summary</option>
+                <option value="class diagram">Class Diagram</option>
+                <option value="sequence diagram">Sequence Diagram</option>
+                <option value="flowchart">Flowchart</option>
+              </select>
+            </div>
+
+            <button type="submit" className="btn" disabled={loading}>
+              {loading ? (
+                <>
+                  Please wait while its processing... <BoltIcon />
+                </>
+              ) : (
+                "Generate Now"
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+      <Footer />
+    </div>
   );
 };
 
