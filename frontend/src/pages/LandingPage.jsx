@@ -2,43 +2,14 @@ import React from "react";
 import "../styles/landing.css";
 import Footer from "../components/Footer";
 import Intro from "../components/Intro";
-import { motion } from "framer-motion";
+import Process from "../components/Process";
 
 function LandingPage() {
   return (
     <div className="lp-container">
       <Intro />
       <hr className="divider" />
-      <motion.div
-        className="lp-sec2"
-        initial="hidden"
-        animate="visible"
-        transition={{ staggerChildren: 0.2 }}
-      >
-        <div className="item-group">
-          {[
-            "Upload",
-            "Generate URL",
-            "View Summary",
-            "Navigate",
-            "Understand",
-            "Code",
-          ].map((title, index) => (
-            <motion.div
-              key={index}
-              className="item"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <p className="item-circle">{index + 1}</p>
-              <p className="item-title">{title}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      <Process />
       <hr className="divider" />
       <div className="lp-motivation">
         <h2>Our Motivation</h2>
