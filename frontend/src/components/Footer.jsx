@@ -1,5 +1,5 @@
 import React from "react";
-// import "../styles/footer.css"; // Create a separate CSS file for footer styles
+import "../styles/footer.css";
 
 function Footer() {
   return (
@@ -8,14 +8,18 @@ function Footer() {
         <div className="footer-section">
           <h3>About Us</h3>
           <p>
-            We are committed to revolutionizing the software documentation
-            process by leveraging AI, ML, and Computer Vision to automatically
-            generate real-time, accurate, and relevant documentation for
-            software development projects.
+            At DevCanvas, we strive to transform the way software documentation
+            is created. Our goal is to simplify and automate the entire process,
+            enabling developers to focus more on coding and less on writing
+            documentation. By harnessing the power of AI, machine learning, and
+            computer vision, we create real-time, precise, and contextually
+            relevant documentation tailored to each project. We are passionate
+            about making the documentation process faster, smarter, and more
+            efficient.
           </p>
         </div>
 
-        <div className="footer-section">
+        <div className="footer-section2">
           <h3>Quick Links</h3>
           <ul>
             <li>
@@ -36,7 +40,7 @@ function Footer() {
           </ul>
         </div>
 
-        <div className="footer-section">
+        {/* <div className="footer-section">
           <h3>Follow Us</h3>
           <div className="social-links">
             <a
@@ -68,13 +72,10 @@ function Footer() {
               <i className="fab fa-github"></i>
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="footer-bottom">
-        <p>
-          &copy; {new Date().getFullYear()} Your Company Name. All Rights
-          Reserved.
-        </p>
+        <p>&copy; {new Date().getFullYear()} DevCanvas. All Rights Reserved.</p>
       </div>
     </footer>
   );
