@@ -1,0 +1,68 @@
+.lp-services {
+  background-color: rgb(33, 33, 33);
+  padding: 5rem 10rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.service-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+  background-color: transparent;
+}
+
+.service-list p {
+  background-color: rgb(49, 49, 49);
+  padding: 1.5rem;
+  height: auto;
+  min-height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: lighter;
+  border-radius: 8px;
+  color: rgb(230, 230, 230);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media only screen and (max-width: 1440px) {
+  .lp-services {
+    padding: 4rem 6rem;
+  }
+
+  .service-list p {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .lp-services {
+    padding: 3rem 4rem;
+  }
+
+  .lp-services h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .service-list {
+    grid-template-columns: 1fr;
+  }
+
+  .service-list p {
+    min-height: 50px;
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+}

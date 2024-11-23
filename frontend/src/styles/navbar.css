@@ -28,6 +28,9 @@
 
 .navbar-logo h2 {
   background-color: transparent;
+  margin-bottom: 0;
+  letter-spacing: 3px;
+  text-transform: none;
 }
 
 .navbar-logo img {

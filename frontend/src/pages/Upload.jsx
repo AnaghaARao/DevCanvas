@@ -70,8 +70,9 @@ const Upload = () => {
       });
 
       const data = await response.json();
+      console.log(data);
       if (response.ok) {
-        if (data.message) {
+        if (data.message && data.file_url != null) {
           showSuccess(data.message);
           const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
           navigate("/documentation", {
@@ -112,17 +113,6 @@ const Upload = () => {
       <div className="upload-section">
         <div className="left-upload">
           <div className="upload-files">
-            {/* <div className="input-sec">
-              <label htmlFor="fileInput">Upload File:</label>
-              <input
-                type="file"
-                id="fileInput"
-                onChange={handleFileChange}
-                className="input-div"
-                accept=".txt, .docx, .pdf, .cpp, .java, .py"
-                required
-              />
-            </div> */}
             <div className="input-sec">
               <label htmlFor="folderInput">Upload Folder:</label>
               <input
