@@ -5,6 +5,7 @@ import Intro from "../components/Intro";
 import Process from "../components/Process";
 import Motivation from "../components/Motivation";
 import Team from "../components/Team";
+import Services from "../components/Services";
 
 function LandingPage() {
   return (
@@ -24,16 +25,7 @@ function LandingPage() {
       <hr className="divider" />
       <Motivation />
       <Team />
-      <div className="lp-services">
-        <h2>Our Services</h2>
-        <ul>
-          <li>Automated code documentation generation</li>
-          <li>Real-time updates on software changes</li>
-          <li>Customizable documentation formats</li>
-          <li>Multi-language support (Java, Python, etc.)</li>
-        </ul>
-      </div>
-      <hr className="divider" />
+      <Services />
       <div className="lp-faqs">
         <h2>Frequently Asked Questions</h2>
         <div className="faq-item">

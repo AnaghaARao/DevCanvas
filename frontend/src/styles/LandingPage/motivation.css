@@ -1,6 +1,6 @@
 .lp-motivation {
   background-color: #0f0f0f;
-  padding: 5rem 10rem;
+  padding: 10rem 20rem;
   width: 100%;
 }
 
@@ -14,7 +14,7 @@
 
 @media only screen and (max-width: 1440px) {
   .lp-motivation {
-    padding: 3rem 5rem;
+    padding: 5rem 10rem;
   }
 
   .lp-motivation h2 {
