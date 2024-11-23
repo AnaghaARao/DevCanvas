@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import "../styles/LandingPage/process.css";
 
-const Process = () => {
+const Process = ({ steps }) => {
   return (
     <motion.div
       className="lp-sec2"
@@ -10,14 +11,7 @@ const Process = () => {
       transition={{ staggerChildren: 0.2 }}
     >
       <div className="item-group">
-        {[
-          "Upload",
-          "Generate URL",
-          "View Summary",
-          "Navigate",
-          "Understand",
-          "Code",
-        ].map((title, index) => (
+        {steps.map((title, index) => (
           <motion.div
             key={index}
             className="item"

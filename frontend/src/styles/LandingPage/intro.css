@@ -1,0 +1,161 @@
+.lp-sec1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #151515;
+  gap: 3rem;
+  flex-wrap: wrap;
+  padding: 10rem 0;
+  width: 100%;
+}
+
+.lp-content {
+  background-color: inherit;
+  flex: 0.7;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.lp-content h1 {
+  background-color: inherit;
+  font-weight: bold;
+  font-size: 2.5rem;
+}
+
+.lp-content p {
+  background-color: inherit;
+  font-weight: lighter;
+  font-size: larger;
+  margin-bottom: 10px;
+}
+
+.start {
+  background-color: transparent;
+  border: 2px solid #83158b;
+  display: inline-block;
+  width: auto;
+  max-width: 400px;
+  transition: transform 0.2s ease; /* Add transition for smooth scaling */
+  transform-origin: left center; /* Scale from the left side */
+}
+
+.start:hover {
+  background-color: #83158b; /* Fill background on hover */
+}
+
+.lp-img {
+  background-color: inherit;
+  flex: 0.3;
+  width: 10rem;
+  max-width: 100%;
+  /* Ensure the image scales appropriately */
+  object-fit: contain;
+}
+
+@media only screen and (max-width: 1440px) {
+  .lp-sec1 {
+    gap: 1rem;
+    width: 100%;
+    padding: 6rem 8rem;
+  }
+
+  .lp-content {
+    align-items: flex-start;
+  }
+
+  .lp-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .lp-content p {
+    font-size: 1rem;
+  }
+
+  .btn {
+    margin: 2px 0;
+    width: 70%;
+    padding: 8px 10px;
+    font-size: 1rem;
+  }
+
+  .lp-img {
+    width: 10rem;
+    margin-top: 10px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .lp-sec1 {
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 0;
+  }
+
+  .lp-content {
+    gap: 7px;
+    align-items: center;
+    padding: 0 2rem;
+  }
+
+  .lp-content h1 {
+    font-size: 1rem;
+  }
+
+  .lp-content p {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    margin: 2px 0;
+    width: 70%;
+    padding: 8px 10px;
+    font-size: 0.7rem;
+  }
+
+  .lp-img {
+    width: 8rem;
+    margin-top: 10px;
+  }
+}
+
+@media only screen and (max-width: 426px) {
+  .lp-sec1 {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    text-align: center;
+    padding: 1.5rem 1rem; /* Reduce padding for smaller screens */
+  }
+
+  .lp-content {
+    gap: 7px;
+    align-items: center;
+    padding: 0;
+  }
+
+  .lp-content h1 {
+    font-size: 1.2rem; /* Adjust font size for smaller screens */
+  }
+
+  .lp-content p {
+    font-size: 0.9rem;
+  }
+
+  .start {
+    font-size: 0.8rem; /* Adjust button font size */
+    padding: 8px 10px;
+    width: 80%; /* Make the button a bit smaller */
+  }
+
+  .lp-img {
+    width: 8rem;
+    margin-top: 10px;
+  }
+}

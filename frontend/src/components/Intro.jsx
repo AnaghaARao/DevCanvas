@@ -2,7 +2,7 @@ import React from "react";
 import lp from "../../src/landing.png";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import "../styles/landing.css";
+import "../styles/LandingPage/intro.css";
 import { motion } from "framer-motion";
 
 const Intro = () => {

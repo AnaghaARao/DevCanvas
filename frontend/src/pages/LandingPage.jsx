@@ -9,7 +9,17 @@ function LandingPage() {
     <div className="lp-container">
       <Intro />
       <hr className="divider" />
-      <Process />
+      <Process
+        steps={[
+          "Upload",
+          "Generate URL",
+          "View Summary",
+          "Navigate",
+          "Understand",
+          "Code",
+        ]}
+      />
+
       <hr className="divider" />
       <div className="lp-motivation">
         <h2>Our Motivation</h2>
