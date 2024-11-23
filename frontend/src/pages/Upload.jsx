@@ -64,7 +64,7 @@ const Upload = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:8000/uploadmate/upload/", {
+      const response = await fetch("http://127.0.0.1:8000/docify/uplink/", {
         method: "POST",
         body: formData,
       });

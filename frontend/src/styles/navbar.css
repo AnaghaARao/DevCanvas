@@ -71,9 +71,8 @@
   gap: 2rem;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  /* Removed position: absolute and transform properties */
+  margin: 0 auto; /* Center alignment */
 }
 
 .logout {

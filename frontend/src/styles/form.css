@@ -23,6 +23,8 @@
 .form-name {
   color: #f0f0f0;
   font-weight: bold;
+  letter-spacing: 0;
+  margin-bottom: 0;
 }
 
 .form-desc {
