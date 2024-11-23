@@ -4,15 +4,6 @@
   width: 100%;
 }
 
-.lp-motivation h2 {
-  text-align: center;
-  background-color: inherit;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5rem;
-  font-weight: normal;
-}
-
 .lp-motivation p {
   background-color: inherit;
   font-size: 1.1rem;

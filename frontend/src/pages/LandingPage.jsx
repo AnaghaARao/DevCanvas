@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Intro from "../components/Intro";
 import Process from "../components/Process";
 import Motivation from "../components/Motivation";
+import Team from "../components/Team";
 
 function LandingPage() {
   return (
@@ -22,28 +23,7 @@ function LandingPage() {
       />
       <hr className="divider" />
       <Motivation />
-      <hr className="divider" />
-      <div className="lp-team">
-        <h2>Meet the Team</h2>
-        <div className="team-members">
-          <div className="team-member">
-            <img src="team-member1.jpg" alt="Team Member 1" />
-            <h3>Team Member 1</h3>
-            <p>Role</p>
-          </div>
-          <div className="team-member">
-            <img src="team-member2.jpg" alt="Team Member 2" />
-            <h3>Team Member 2</h3>
-            <p>Role</p>
-          </div>
-          <div className="team-member">
-            <img src="team-member3.jpg" alt="Team Member 3" />
-            <h3>Team Member 3</h3>
-            <p>Role</p>
-          </div>
-        </div>
-      </div>
-      <hr className="divider" />
+      <Team />
       <div className="lp-services">
         <h2>Our Services</h2>
         <ul>
