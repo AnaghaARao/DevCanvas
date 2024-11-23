@@ -1,0 +1,54 @@
+.lp-motivation {
+  background-color: #0f0f0f;
+  padding: 5rem 10rem;
+  width: 100%;
+}
+
+.lp-motivation h2 {
+  text-align: center;
+  background-color: inherit;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5rem;
+  font-weight: normal;
+}
+
+.lp-motivation p {
+  background-color: inherit;
+  font-size: 1.1rem;
+  font-weight: lighter;
+  line-height: 2;
+  text-align: center;
+}
+
+@media only screen and (max-width: 1440px) {
+  .lp-motivation {
+    padding: 3rem 5rem;
+  }
+
+  .lp-motivation h2 {
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3rem;
+  }
+
+  .lp-motivation p {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .lp-motivation {
+    padding: 2rem 3rem;
+  }
+
+  .lp-motivation h2 {
+    margin-bottom: 1rem;
+    letter-spacing: 0.3rem;
+  }
+
+  .lp-motivation p {
+    font-size: 0.8rem;
+  }
+}

@@ -42,7 +42,7 @@
 
 @media only screen and (max-width: 1440px) {
   .lp-sec2 {
-    padding: 3rem 0;
+    padding: 3rem;
   }
 
   .item-group {
@@ -63,12 +63,14 @@
 
 @media only screen and (max-width: 600px) {
   .lp-sec2 {
-    padding: 2rem 0;
+    padding: 2rem 3rem;
   }
 
   .item-group {
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .item {
@@ -82,7 +84,7 @@
   }
 
   .item-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -99,6 +101,6 @@
   }
 
   .item-title {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 }

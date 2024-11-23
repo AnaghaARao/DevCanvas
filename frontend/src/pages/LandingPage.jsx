@@ -3,6 +3,7 @@ import "../styles/landing.css";
 import Footer from "../components/Footer";
 import Intro from "../components/Intro";
 import Process from "../components/Process";
+import Motivation from "../components/Motivation";
 
 function LandingPage() {
   return (
@@ -19,18 +20,8 @@ function LandingPage() {
           "Code",
         ]}
       />
-
       <hr className="divider" />
-      <div className="lp-motivation">
-        <h2>Our Motivation</h2>
-        <p>
-          Maintaining accurate and up-to-date documentation is essential, yet
-          often neglected due to the focus on coding. Our tool automates the
-          documentation process, keeping it in sync with the evolving codebase.
-          This reduces manual effort, enhances accuracy, and fosters
-          collaboration among developers and stakeholders.
-        </p>
-      </div>
+      <Motivation />
       <hr className="divider" />
       <div className="lp-team">
         <h2>Meet the Team</h2>
