@@ -8,7 +8,6 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import "./styles/general.css";
-import "./styles/landing.css";
 import ActivateAccount from "./pages/ActivateAccount";
 import OutputPage from "./pages/OutputPage";
 import History from "./pages/History";

@@ -12,21 +12,36 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #151515;
   color: #e8e0e0;
+}
+
+body {
+  background-color: #151515;
   font-family: "Source Sans 3", system-ui;
   font-optical-sizing: auto;
   font-style: normal;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .maindiv {
-  overflow-x: hidden;
   width: 100vw;
-  max-width: 100vw;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
+
+/* .gradient {
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to top, #83158b, transparent);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+} */
 
 .btn {
   background-color: #83158b;

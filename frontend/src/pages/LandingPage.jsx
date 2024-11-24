@@ -8,22 +8,33 @@ import Team from "../components/Team";
 import Services from "../components/Services";
 import FAQS from "../components/FAQS";
 import Security from "../components/Security";
+import process from "/processpic.jpg";
+import { Parallax } from "react-parallax";
 
 function LandingPage() {
   return (
     <div className="lp-container">
       <Intro />
       <hr className="divider" />
-      <Process
-        steps={[
-          "Upload",
-          "Generate URL",
-          "View Summary",
-          "Navigate",
-          "Understand",
-          "Code",
-        ]}
-      />
+      <Parallax
+        bgImage={process}
+        strength={500}
+        bgImageStyle={{ opacity: 0.7 }}
+      >
+        <div className="process-container">
+          <Process
+            steps={[
+              "Upload",
+              "Generate URL",
+              "View Summary",
+              "Navigate",
+              "Understand",
+              "Code",
+            ]}
+          />
+        </div>
+      </Parallax>
+
       <hr className="divider" />
       <Motivation />
       <Services />

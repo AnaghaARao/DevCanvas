@@ -1,5 +1,5 @@
 import React from "react";
-import lp from "../../src/landing.png";
+import lp from "/intropic.png";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage/intro.css";
@@ -18,7 +18,7 @@ const Intro = () => {
     }
   };
   return (
-    <div>
+    <div className="intro-container">
       <motion.div
         className="lp-sec1"
         initial="hidden"
