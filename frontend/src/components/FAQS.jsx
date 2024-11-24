@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/LandingPage/faqs.css";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { easeInOut, motion } from "framer-motion";
 
 const FAQS = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -60,8 +61,19 @@ const FAQS = () => {
 
   return (
     <div className="lp-faqs">
-      <h2>FAQs</h2>
-      <div className="faq-list">
+      <motion.h2
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: easeInOut }}
+      >
+        FAQs
+      </motion.h2>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: easeInOut }}
+        className="faq-list"
+      >
         {faqData.map((item, index) => (
           <div
             key={index}
@@ -81,7 +93,7 @@ const FAQS = () => {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
