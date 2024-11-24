@@ -37,7 +37,15 @@ function LandingPage() {
 
       <hr className="divider" />
       <Motivation />
-      <Services />
+      <Parallax
+        bgImage={process}
+        strength={500}
+        bgImageStyle={{ opacity: 0.7 }}
+      >
+        <div className="services-container">
+          <Services />
+        </div>
+      </Parallax>
       <FAQS />
       <hr className="divider" />
       <Team />

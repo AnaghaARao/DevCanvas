@@ -1,13 +1,14 @@
 .lp-services {
-  background-color: rgb(33, 33, 33);
-  padding: 5rem 10rem;
+  background-color: transparent;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .service-list {
+  padding: 5rem 0;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -41,19 +42,34 @@
     padding: 4rem 6rem;
   }
 
-  .service-list p {
+  .lp-services h2 {
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3rem;
+  }
+
+  .lp-services p {
     font-size: 1rem;
+    line-height: 1.8;
   }
 }
 
 @media only screen and (max-width: 600px) {
   .lp-services {
-    padding: 3rem 4rem;
+    padding: 2rem 3rem;
   }
 
   .lp-services h2 {
-    font-size: 1.5rem;
-    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 0.3rem;
+  }
+
+  .lp-services p {
+    font-size: 0.8rem;
+  }
+
+  .lp-services {
+    padding: 3rem 4rem;
   }
 
   .service-list {

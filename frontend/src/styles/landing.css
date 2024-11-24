@@ -4,7 +4,7 @@
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 0.5rem;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .lp-container {
@@ -20,6 +20,18 @@
 
 .process-container {
   height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.services-container {
+  height: 550px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,5 +60,9 @@
   .process-container {
     height: 350px;
     padding: 20px;
+  }
+
+  .services-container {
+    padding: 8rem 0;
   }
 }

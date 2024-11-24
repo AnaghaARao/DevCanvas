@@ -27,11 +27,6 @@ const FAQS = () => {
         "Documentation updates in real-time, reflecting any changes made in the codebase.",
     },
     {
-      question: "Can I integrate this tool with my existing projects?",
-      answer:
-        "Yes, our tool provides integration options that allow you to connect with your existing projects seamlessly.",
-    },
-    {
       question: "Do I need an internet connection to use this tool?",
       answer:
         "An internet connection is required for certain features, such as real-time updates and cloud storage access.",

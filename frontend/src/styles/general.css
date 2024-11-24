@@ -33,16 +33,6 @@ body {
   height: 100vh;
 }
 
-/* .gradient {
-  height: 100%;
-  width: 100%;
-  background-image: linear-gradient(to top, #83158b, transparent);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-} */
-
 .btn {
   background-color: #83158b;
   color: #eddfdf;
@@ -130,20 +120,4 @@ body {
     margin: 2px 0;
     width: 10%;
   }
-  /* 
-  .lp-sec1 {
-    flex-direction: column;
-    gap: 1rem;
-    width: 100vw;
-  }
-
-  .lp-img {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .lp-content {
-    padding: 0 10px;
-    width: 100vw;
-  } */
 }
