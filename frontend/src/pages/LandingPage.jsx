@@ -49,7 +49,15 @@ function LandingPage() {
       <FAQS />
       <hr className="divider" />
       <Team />
-      <Security />
+      <Parallax
+        bgImage={process}
+        strength={500}
+        bgImageStyle={{ opacity: 0.7 }}
+      >
+        <div className="security-container">
+          <Security />
+        </div>
+      </Parallax>
       <Footer />
     </div>
   );

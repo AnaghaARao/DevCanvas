@@ -18,7 +18,9 @@
   width: 100%;
 }
 
-.process-container {
+.process-container,
+.services-container,
+.security-container {
   height: 200px;
   display: flex;
   align-items: center;
@@ -31,15 +33,11 @@
 }
 
 .services-container {
-  height: 550px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  background-size: cover;
-  background-position: center;
+  height: 500px;
+}
+
+.security-container {
+  height: 300px;
 }
 
 .react-parallax {
@@ -64,5 +62,9 @@
 
   .services-container {
     padding: 8rem 0;
+  }
+
+  .security-container {
+    height: 400px;
   }
 }

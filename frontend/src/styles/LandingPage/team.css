@@ -1,6 +1,7 @@
 .lp-team {
   padding: 5rem 10rem;
   width: 100%;
+  background-color: rgb(14, 14, 14);
 }
 
 .team-members {
@@ -11,7 +12,7 @@
 }
 
 .team-member {
-  background-color: rgb(35, 35, 35);
+  background-color: rgb(23, 23, 23);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -79,7 +80,7 @@
 
 @media only screen and (max-width: 600px) {
   .lp-team {
-    padding: 2rem;
+    padding: 3rem 2rem;
   }
 
   .team-members {
@@ -88,11 +89,12 @@
     justify-content: center;
     align-items: center;
     justify-items: center;
+    padding: 0;
   }
 
   .team-member {
     height: 150px;
-    width: 100px;
+    width: 120px;
     gap: 0.5rem;
   }
 

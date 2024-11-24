@@ -1,5 +1,4 @@
 .lp-security {
-  background-color: rgb(30, 30, 30); /* Dark background for a secure feel */
   padding: 4rem 10rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
@@ -21,16 +20,20 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1440px) {
   .lp-security {
-    padding: 2rem 1rem;
+    padding: 0 2rem;
   }
+}
 
-  .lp-security h2 {
-    font-size: 1.8rem;
+@media only screen and (max-width: 600px) {
+  .lp-security {
+    padding: 1rem 2rem;
   }
+}
 
-  .lp-security p {
-    font-size: 1rem;
+@media only screen and (max-width: 376px) {
+  .lp-security {
+    padding: 1rem 2rem;
   }
 }
