@@ -35,7 +35,10 @@ const History = () => {
 
           console.log(response.data);
           if (response.data && Array.isArray(response.data.files)) {
-            setHistory(response.data.files);
+            const filteredFiles = response.data.files.filter(
+              (file) => !file.file_name.toLowerCase().endsWith(".png")
+            );
+            setHistory(filteredFiles);
             console.log("history has been set");
           } else {
             console.error("Received data is not an array:", response.data);
