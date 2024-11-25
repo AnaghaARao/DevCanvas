@@ -7,6 +7,10 @@ import Footer from "../components/Footer";
 
 const History = () => {
   const [history, setHistory] = useState([]);
+  const [filteredHistory, setFilteredHistory] = useState([]);
+  const [searchItem, setSearchItem] = useState("");
+  const [filterType, setFilterType] = useState("");
+
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
@@ -14,18 +18,6 @@ const History = () => {
     if (user) {
       const fetchHistory = async () => {
         try {
-          if (typeof user === "string") {
-            console.log("User is a string:", user);
-          } else if (typeof user === "object") {
-            if (Array.isArray(user)) {
-              console.log("User is an array:", user);
-            } else {
-              console.log("User is an object:", user);
-            }
-          } else {
-            console.log("User type is unknown:", typeof user);
-          }
-
           const response = await axios.post(
             "http://127.0.0.1:8000/docify/history/",
             {
@@ -33,16 +25,16 @@ const History = () => {
             }
           );
 
-          console.log(response.data);
           if (response.data && Array.isArray(response.data.files)) {
             const filteredFiles = response.data.files.filter(
               (file) => !file.file_name.toLowerCase().endsWith(".png")
             );
             setHistory(filteredFiles);
-            console.log("history has been set");
+            setFilteredHistory(filteredFiles); // Initialize filteredHistory
           } else {
             console.error("Received data is not an array:", response.data);
             setHistory([]);
+            setFilteredHistory([]);
           }
         } catch (error) {
           console.error("Error fetching history:", error);
@@ -52,6 +44,30 @@ const History = () => {
       fetchHistory();
     }
   }, [user]);
+
+  useEffect(() => {
+    const filterAndSearchFiles = () => {
+      let files = history;
+
+      // Apply type filter if selected
+      if (filterType) {
+        files = files.filter((file) =>
+          file.file_name.toLowerCase().startsWith(filterType.toLowerCase())
+        );
+      }
+
+      // Apply search filter if search item exists
+      if (searchItem) {
+        files = files.filter((file) =>
+          file.file_name.toLowerCase().includes(searchItem.toLowerCase())
+        );
+      }
+
+      setFilteredHistory(files);
+    };
+
+    filterAndSearchFiles();
+  }, [history, searchItem, filterType]);
 
   const handleViewFile = (fileUrl) => {
     fileUrl = `${import.meta.env.VITE_API_URL}${fileUrl}`;
@@ -77,9 +93,31 @@ const History = () => {
       <div className="history-container">
         <h2>User File History</h2>
         <hr className="divider" />
-        {Array.isArray(history) && history.length > 0 ? (
+
+        <div className="history-search">
+          <input
+            type="text"
+            placeholder="Search for a file"
+            value={searchItem}
+            onChange={(e) => setSearchItem(e.target.value)}
+            className="history-search"
+          />
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="history-dropdown"
+          >
+            <option value="">All</option>
+            <option value="summary">Summary</option>
+            <option value="class_diagram">Class Diagram</option>
+            <option value="flowchart">Flowchart</option>
+            <option value="sequence_diagram">Sequence Diagram</option>
+          </select>
+        </div>
+
+        {Array.isArray(filteredHistory) && filteredHistory.length > 0 ? (
           <ul>
-            {history.map((item, index) => (
+            {filteredHistory.map((item, index) => (
               <li key={index} className="history-item">
                 <p>{index + 1}.</p>
                 <div className="main-file">
