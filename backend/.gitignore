@@ -1,5 +1,3 @@
 .env 
 uploads
-**/__pycache__
-
-java_class_diagram.py
+__pycache__

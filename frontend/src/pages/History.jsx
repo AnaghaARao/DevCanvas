@@ -49,14 +49,12 @@ const History = () => {
     const filterAndSearchFiles = () => {
       let files = history;
 
-      // Apply type filter if selected
       if (filterType) {
         files = files.filter((file) =>
           file.file_name.toLowerCase().startsWith(filterType.toLowerCase())
         );
       }
 
-      // Apply search filter if search item exists
       if (searchItem) {
         files = files.filter((file) =>
           file.file_name.toLowerCase().includes(searchItem.toLowerCase())
@@ -68,6 +66,10 @@ const History = () => {
 
     filterAndSearchFiles();
   }, [history, searchItem, filterType]);
+
+  const handleFilterToggle = (type) => {
+    setFilterType((prevType) => (prevType === type ? "" : type));
+  };
 
   const handleViewFile = (fileUrl) => {
     fileUrl = `${import.meta.env.VITE_API_URL}${fileUrl}`;
@@ -94,7 +96,7 @@ const History = () => {
         <h2>User File History</h2>
         <hr className="divider" />
 
-        <div className="history-search">
+        <div className="history-filter">
           <input
             type="text"
             placeholder="Search for a file"
@@ -102,17 +104,21 @@ const History = () => {
             onChange={(e) => setSearchItem(e.target.value)}
             className="history-search"
           />
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="history-dropdown"
-          >
-            <option value="">All</option>
-            <option value="summary">Summary</option>
-            <option value="class_diagram">Class Diagram</option>
-            <option value="flowchart">Flowchart</option>
-            <option value="sequence_diagram">Sequence Diagram</option>
-          </select>
+          <div className="history-button">
+            {["Summary", "Class Diagram", "Flowchart", "Sequence Diagram"].map(
+              (type) => (
+                <button
+                  key={type}
+                  onClick={() => handleFilterToggle(type)}
+                  className={`history-btn2 ${
+                    filterType === type ? "active" : ""
+                  }`}
+                >
+                  {type.replace("_", " ")}
+                </button>
+              )
+            )}
+          </div>
         </div>
 
         {Array.isArray(filteredHistory) && filteredHistory.length > 0 ? (

@@ -1,7 +1,11 @@
 import React from "react";
 import "../styles/LandingPage/team.css";
 import { motion } from "framer-motion";
-import ScrollAnimation from "./ScrollAnimation"; // Import the reusable ScrollAnimation component
+import ScrollAnimation from "./ScrollAnimation";
+import anagha from "/anagha.jpeg";
+import anjali from "/anjali.jpg";
+import adarsh from "/adarsh.jpeg";
+import shivamani from "/shivamani.jpeg";
 
 const Team = () => {
   return (
@@ -24,9 +28,9 @@ const Team = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="team-member"
           >
-            <img src="team-member1.jpg" alt="Team Member 1" />
+            <img src={adarsh} alt="Team Member 1" className="team-img" />
             <h3>Adarsh Singh</h3>
-            <p>Role</p>
+            <p>AI Tools Expert</p>
           </motion.div>
         </ScrollAnimation>
         <ScrollAnimation
@@ -39,7 +43,7 @@ const Team = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="team-member"
           >
-            <img src="team-member2.jpg" alt="Team Member 2" />
+            <img src={anagha} alt="Team Member 2" className="team-img" />
             <h3>Anagha A Rao</h3>
             <p>Backend Developer</p>
           </motion.div>
@@ -54,7 +58,7 @@ const Team = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="team-member"
           >
-            <img src="team-member3.jpg" alt="Team Member 3" />
+            <img src={anjali} alt="Team Member 3" className="team-img" />
             <h3>Anjali Bhatkal</h3>
             <p>Frontend Developer</p>
           </motion.div>
@@ -69,9 +73,9 @@ const Team = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="team-member"
           >
-            <img src="team-member4.jpg" alt="Team Member 4" />
+            <img src={shivamani} alt="Team Member 4" className="team-img" />
             <h3>Shiva Mani K</h3>
-            <p>Role</p>
+            <p>Algorithms Engineer</p>
           </motion.div>
         </ScrollAnimation>
       </div>

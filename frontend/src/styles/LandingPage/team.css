@@ -20,17 +20,18 @@
   height: 300px;
   width: 200px;
   border-radius: 5px;
-  gap: 1rem;
 }
 
-.team-member img {
+.team-img {
   background-color: inherit;
+  width: 200px;
 }
 
 .team-member h3 {
   background-color: inherit;
   letter-spacing: 2px;
   font-weight: normal;
+  margin: 10px 0;
 }
 
 .team-member p {
@@ -65,8 +66,8 @@
     padding: 1rem;
   }
 
-  .team-member img {
-    background-color: inherit;
+  .team-img {
+    width: 130px;
   }
 
   .team-member h3 {
