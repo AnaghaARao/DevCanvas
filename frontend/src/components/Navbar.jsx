@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { clearUser } from "../store/actions";
 import "../styles/navbar.css";
-import LinkScaleAnimation from "./LinkScaleAnimation";
+import { motion } from "framer-motion";
+
+const MotionLink = motion.create(Link);
 
 function Navbar() {
   const user = useSelector((state) => state.user);
@@ -17,10 +19,6 @@ function Navbar() {
     navigate("/");
   };
 
-  const isLandingPage = location.pathname === "/";
-  const isLoginPage = location.pathname === "/authentication/login";
-  const isRegisterPage = location.pathname === "/authentication/register";
-
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -32,55 +30,69 @@ function Navbar() {
         <h2 className="logo-title">DevCanvas</h2>
       </Link>
 
-      <div className="notMobile">
-        <div className="navbar-links">
-          {isLandingPage && !user ? (
+      <div className="navbar-links">
+        {user ? (
+          <div className="home-upload-history">
+            <MotionLink
+              className={`navbar-item ${
+                location.pathname === "/" ? "active" : ""
+              }`}
+              to="/"
+              whileHover={{ scale: 1.1 }}
+            >
+              Home
+            </MotionLink>
+            <MotionLink
+              className={`navbar-item ${
+                location.pathname === "/main" ? "active" : ""
+              }`}
+              to="/main"
+              whileHover={{ scale: 1.1 }}
+            >
+              Upload
+            </MotionLink>
+            <MotionLink
+              className={`navbar-item ${
+                location.pathname === "/upload-history" ? "active" : ""
+              }`}
+              to="/upload-history"
+              whileHover={{ scale: 1.1 }}
+            >
+              History
+            </MotionLink>
+          </div>
+        ) : (
+          location.pathname === "/" && (
             <>
-              <LinkScaleAnimation
+              <MotionLink
                 className="navbar-item"
                 to="/authentication/login"
+                whileHover={{ scale: 1.1 }}
               >
                 Login
-              </LinkScaleAnimation>
-              <LinkScaleAnimation
+              </MotionLink>
+              <MotionLink
                 className="navbar-item"
                 to="/authentication/register"
+                whileHover={{ scale: 1.1 }}
               >
                 Register
-              </LinkScaleAnimation>
+              </MotionLink>
             </>
-          ) : (
-            !isLoginPage &&
-            !isRegisterPage && (
-              <div className="home-upload-history">
-                <LinkScaleAnimation className="navbar-item" to="/">
-                  Home
-                </LinkScaleAnimation>
-                <LinkScaleAnimation className="navbar-item" to="/main">
-                  Upload
-                </LinkScaleAnimation>
-                <LinkScaleAnimation
-                  className="navbar-item"
-                  to="/upload-history"
-                >
-                  History
-                </LinkScaleAnimation>
-              </div>
-            )
-          )}
-        </div>
-
-        {user && (
-          <div className="logout">
-            <p className="navbar-user">
-              Hello, <span className="navbar-name">{user}</span>
-            </p>
-            <button className="navbar-btn" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
+          )
         )}
       </div>
+
+      {user && (
+        <div className="logout">
+          <p className="navbar-user">
+            Hello, <span className="navbar-name">{user}</span>
+          </p>
+          <button className="navbar-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      )}
 
       <div className="hamburger" onClick={toggleMobileMenu}>
         {isMobileMenuOpen ? "✖" : "☰"}
@@ -88,7 +100,34 @@ function Navbar() {
 
       {isMobileMenuOpen && (
         <div className="mobile-menu">
-          {isLandingPage && !user ? (
+          {user ? (
+            <>
+              <Link
+                className="mobile-menu-item"
+                to="/"
+                onClick={toggleMobileMenu}
+              >
+                Home
+              </Link>
+              <Link
+                className="mobile-menu-item"
+                to="/main"
+                onClick={toggleMobileMenu}
+              >
+                Upload
+              </Link>
+              <Link
+                className="mobile-menu-item"
+                to="/upload-history"
+                onClick={toggleMobileMenu}
+              >
+                History
+              </Link>
+              <Link className="mobile-menu-item" to="/" onClick={handleLogout}>
+                Logout
+              </Link>
+            </>
+          ) : (
             <>
               <Link
                 className="mobile-menu-item"
@@ -105,40 +144,6 @@ function Navbar() {
                 Register
               </Link>
             </>
-          ) : (
-            !isLoginPage &&
-            !isRegisterPage && (
-              <>
-                <Link
-                  className="mobile-menu-item"
-                  to="/"
-                  onClick={toggleMobileMenu}
-                >
-                  Home
-                </Link>
-                <Link
-                  className="mobile-menu-item"
-                  to="/main"
-                  onClick={toggleMobileMenu}
-                >
-                  Upload
-                </Link>
-                <Link
-                  className="mobile-menu-item"
-                  to="/upload-history"
-                  onClick={toggleMobileMenu}
-                >
-                  History
-                </Link>
-                <Link
-                  className="mobile-menu-item"
-                  to="/"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Link>
-              </>
-            )
           )}
         </div>
       )}

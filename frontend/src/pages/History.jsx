@@ -14,6 +14,13 @@ const History = () => {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
+  const filterMap = {
+    Summary: "summary",
+    "Class Diagram": "class_diagram",
+    Flowchart: "flowchart",
+    "Sequence Diagram": "sequence_diagram",
+  };
+
   useEffect(() => {
     if (user) {
       const fetchHistory = async () => {
@@ -30,7 +37,7 @@ const History = () => {
               (file) => !file.file_name.toLowerCase().endsWith(".png")
             );
             setHistory(filteredFiles);
-            setFilteredHistory(filteredFiles); // Initialize filteredHistory
+            setFilteredHistory(filteredFiles);
           } else {
             console.error("Received data is not an array:", response.data);
             setHistory([]);
@@ -51,7 +58,7 @@ const History = () => {
 
       if (filterType) {
         files = files.filter((file) =>
-          file.file_name.toLowerCase().startsWith(filterType.toLowerCase())
+          file.file_name.toLowerCase().includes(filterType)
         );
       }
 
@@ -68,7 +75,10 @@ const History = () => {
   }, [history, searchItem, filterType]);
 
   const handleFilterToggle = (type) => {
-    setFilterType((prevType) => (prevType === type ? "" : type));
+    const newFilterType = filterMap[type];
+    setFilterType((prevType) =>
+      prevType === newFilterType ? "" : newFilterType
+    );
   };
 
   const handleViewFile = (fileUrl) => {
@@ -105,19 +115,17 @@ const History = () => {
             className="history-search"
           />
           <div className="history-button">
-            {["Summary", "Class Diagram", "Flowchart", "Sequence Diagram"].map(
-              (type) => (
-                <button
-                  key={type}
-                  onClick={() => handleFilterToggle(type)}
-                  className={`history-btn2 ${
-                    filterType === type ? "active" : ""
-                  }`}
-                >
-                  {type.replace("_", " ")}
-                </button>
-              )
-            )}
+            {Object.keys(filterMap).map((type) => (
+              <button
+                key={type}
+                onClick={() => handleFilterToggle(type)}
+                className={`history-btn2 ${
+                  filterType === filterMap[type] ? "active" : ""
+                }`}
+              >
+                {type}
+              </button>
+            ))}
           </div>
         </div>
 

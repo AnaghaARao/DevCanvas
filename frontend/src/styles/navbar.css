@@ -65,6 +65,10 @@
   transition: color 0.2s ease-in-out;
 }
 
+.navbar-item.active {
+  color: #c005ce;
+}
+
 .home-upload-history {
   background-color: transparent;
   display: flex;

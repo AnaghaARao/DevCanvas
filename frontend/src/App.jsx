@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -24,19 +24,6 @@ function RegisterAndLogout() {
 }
 
 function App() {
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("user");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
   return (
     <div className="maindiv">
       <BrowserRouter>
@@ -76,7 +63,7 @@ function App() {
             <Route path="/authentication/register/" element={<Register />} />
             <Route path="/authentication/logout/" element={<Logout />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>{" "}
+          </Routes>
         </AnimatePresence>
       </BrowserRouter>
     </div>
