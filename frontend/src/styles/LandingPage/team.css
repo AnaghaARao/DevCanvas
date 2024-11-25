@@ -22,19 +22,32 @@
   border-radius: 5px;
 }
 
+.team-member:hover {
+  cursor: pointer;
+}
+
 .team-img {
   background-color: inherit;
   width: 200px;
+  height: 70%;
+  object-fit: cover;
 }
 
-.team-member h3 {
+.member-deets {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin: 1rem auto 2rem auto;
+}
+
+.member-deets h3 {
   background-color: inherit;
   letter-spacing: 2px;
   font-weight: normal;
   margin: 10px 0;
 }
 
-.team-member p {
+.member-deets p {
   background-color: inherit;
   font-weight: lighter;
   font-size: small;
