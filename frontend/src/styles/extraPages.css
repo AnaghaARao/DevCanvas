@@ -61,6 +61,7 @@
 
   .page-container p {
     font-size: 0.9rem;
+    text-align: left;
   }
 }
 
@@ -72,10 +73,11 @@
 
   .page-container h1,
   .page-container h2 {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   .page-container p {
     font-size: 0.85rem;
+    text-align: left;
   }
 }

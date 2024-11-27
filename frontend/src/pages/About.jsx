@@ -4,7 +4,7 @@ import "../styles/extraPages.css";
 const About = () => {
   return (
     <section className="page-container about">
-      <h1>About Us</h1>
+      <h1 className="main-heading">About Us</h1>
       <hr className="divider" />
       <p>
         Welcome to our platform!
@@ -18,21 +18,22 @@ const About = () => {
         Join us on our journey to make code documentation a seamless and
         integral part of software development.
       </p>
-      <h2>Our Vision</h2>
+      <div>
+        <h2>Our Vision</h2>
+        <p>
+          To revolutionize software development by ensuring every line of code
+          has context, clarity, and purpose.
+        </p>
+      </div>
+      <div>
+        <h2>Our Team</h2>
+        <p>
+          Our team comprises talented engineers, designers, and industry experts
+          committed to creating powerful tools that help developers focus on
+          building rather than documenting.
+        </p>
+      </div>
       <hr className="divider" />
-
-      <p>
-        To revolutionize software development by ensuring every line of code has
-        context, clarity, and purpose.
-      </p>
-      <h2>Our Team</h2>
-      <hr className="divider" />
-
-      <p>
-        Our team comprises talented engineers, designers, and industry experts
-        committed to creating powerful tools that help developers focus on
-        building rather than documenting.
-      </p>
     </section>
   );
 };
