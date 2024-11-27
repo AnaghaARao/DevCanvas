@@ -75,8 +75,7 @@
   gap: 2rem;
   align-items: center;
   justify-content: center;
-  /* Removed position: absolute and transform properties */
-  margin: 0 auto; /* Center alignment */
+  margin: 0 auto;
 }
 
 .logout {
@@ -153,7 +152,8 @@
     margin: 0 5px;
   }
 
-  .notMobile {
+  .navbar-links,
+  .logout {
     display: none;
   }
 
