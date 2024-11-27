@@ -188,6 +188,72 @@
   background-color: #9f16a9;
 }
 
+@media only screen and (max-width: 1024px) {
+  .upload-form {
+    margin: 0 10px 10px 10px;
+    width: 97vw;
+    padding: 20px;
+  }
+
+  .upload-form h2 {
+    font-size: large;
+  }
+
+  .upload-section {
+    margin: 1rem;
+    font-size: 1rem;
+  }
+
+  .upload-files {
+    padding: 2rem;
+    gap: 1rem;
+  }
+
+  .upload-files label {
+    font-size: 0.9rem;
+  }
+
+  .upload-info {
+    padding: 1.5rem 0;
+    gap: 1rem;
+  }
+
+  .language,
+  .documentation {
+    gap: 10px;
+  }
+
+  .input-div {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 10px 5px;
+    font-size: 0.9rem !important;
+  }
+
+  .file-list {
+    padding: 1rem;
+    max-height: 200px;
+  }
+
+  .file-list h3 {
+    font-size: 0.9rem;
+  }
+
+  .file-list li {
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .remove-file-btn {
+    padding: 6px 20px;
+    font-size: 0.7rem !important;
+  }
+}
+
 @media only screen and (max-width: 600px) {
   .upload-form {
     margin: 0 10px 10px 10px;
@@ -268,71 +334,5 @@
   .remove-file-btn {
     padding: 4px 10px;
     font-size: 0.6rem !important;
-  }
-}
-
-@media only screen and (max-width: 1024px) {
-  .upload-form {
-    margin: 0 10px 10px 10px;
-    width: 97vw;
-    padding: 20px;
-  }
-
-  .upload-form h2 {
-    font-size: large;
-  }
-
-  .upload-section {
-    margin: 1rem;
-    font-size: 1rem;
-  }
-
-  .upload-files {
-    padding: 2rem;
-    gap: 1rem;
-  }
-
-  .upload-files label {
-    font-size: 0.9rem;
-  }
-
-  .upload-info {
-    padding: 1.5rem 0;
-    gap: 1rem;
-  }
-
-  .language,
-  .documentation {
-    gap: 10px;
-  }
-
-  .input-div {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-
-  .btn {
-    padding: 10px 5px;
-    font-size: 0.9rem !important;
-  }
-
-  .file-list {
-    padding: 1rem;
-    max-height: 200px;
-  }
-
-  .file-list h3 {
-    font-size: 0.9rem;
-  }
-
-  .file-list li {
-    padding: 0.8rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  .remove-file-btn {
-    padding: 6px 20px;
-    font-size: 0.7rem !important;
   }
 }

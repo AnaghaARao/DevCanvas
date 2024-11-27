@@ -137,6 +137,116 @@ ul {
   align-self: flex-end;
 }
 
+/* Responsive for devices 1024px and below */
+@media screen and (max-width: 1024px) {
+  .history-container {
+    padding: 20px;
+  }
+
+  .history-filter {
+    flex-direction: column;
+    gap: 1.5rem; /* Adjust gap for better spacing */
+  }
+
+  .history-button {
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    gap: 0.5rem; /* Reduce button gap for smaller screens */
+    justify-content: space-between; /* Distribute buttons evenly */
+  }
+
+  .history-btn2 {
+    flex-grow: 1;
+    text-align: center;
+    padding: 8px 15px; /* Adjust padding for compact design */
+  }
+
+  .history-item {
+    font-size: medium; /* Slightly smaller text */
+    gap: 1rem; /* Adjust item gap */
+  }
+
+  .file-details {
+    flex-direction: column; /* Stack details */
+    align-items: flex-start; /* Align text to start */
+    gap: 0.5rem; /* Adjust gap between elements */
+  }
+
+  .history-search {
+    width: 100%; /* Ensure search bar spans full width */
+  }
+}
+
+/* Responsive for devices 600px and below */
+@media screen and (max-width: 600px) {
+  .history-container {
+    padding: 15px;
+  }
+
+  .history-filter {
+    flex-direction: column; /* Stack search and buttons */
+    gap: 1rem; /* Smaller gap for compact layout */
+  }
+
+  .history-button {
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 0.5rem;
+    justify-content: center; /* Center align buttons */
+  }
+
+  .history-btn2 {
+    flex-grow: 1;
+    padding: 10px; /* Compact padding for small screens */
+    font-size: small; /* Smaller font size for buttons */
+  }
+
+  .history-item {
+    flex-direction: column; /* Stack items */
+    padding: 10px;
+    font-size: small; /* Smaller font size */
+    gap: 0.5rem; /* Smaller gap */
+  }
+
+  .file-details {
+    gap: 0.5rem; /* Smaller gap between details */
+  }
+
+  .history-search {
+    width: 100%; /* Full width for search bar */
+    font-size: small; /* Adjust font size */
+  }
+
+  .history-btn {
+    width: 100%; /* Full-width buttons */
+    text-align: center; /* Center-align button text */
+    padding: 12px; /* Adjust padding */
+    font-size: small; /* Smaller font for buttons */
+  }
+
+  .main-file.align-end .history-btn {
+    align-self: stretch; /* Ensure button spans full width */
+  }
+}
+
+/* Handle Overflow */
+.history-search,
+.history-btn2 {
+  overflow: hidden; /* Prevent content overflow */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.history-item {
+  word-wrap: break-word; /* Break long words if necessary */
+  overflow-wrap: break-word; /* Ensures wrapping for all browsers */
+}
+
+.file-details span {
+  overflow: hidden;
+  text-overflow: ellipsis; /* Ellipsis for truncated file names */
+  white-space: nowrap; /* Prevent wrapping */
+  max-width: 100%; /* Ensure it fits within the container */
+}
+
 @media screen and (max-width: 426px) {
   .history-container {
     padding: 15px;
