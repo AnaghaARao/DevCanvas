@@ -1,0 +1,81 @@
+.page-container {
+  flex-grow: 1;
+  background-color: #1e1e1e;
+  margin: 0 15px 15px 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px;
+  gap: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  line-height: 1.8rem;
+}
+
+.page-container .main-heading {
+  color: #e8e0e0;
+  margin-bottom: 0;
+  font-size: x-large;
+}
+
+.page-container h1,
+.page-container h2 {
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #9f16a9;
+  margin-bottom: 5px;
+  font-size: large;
+}
+
+.page-container p {
+  font-weight: 300;
+  font-size: 1rem;
+  text-align: justify;
+}
+
+.page-container ul {
+  list-style: square;
+  padding-left: 20px;
+}
+
+.page-container ul li {
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+@media only screen and (max-width: 768px) {
+  .page-container {
+    padding: 20px 30px;
+    gap: 1rem;
+  }
+
+  .page-container .main-heading {
+    color: #e8e0e0;
+    font-size: large;
+  }
+
+  .page-container h1,
+  .page-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .page-container p {
+    font-size: 0.9rem;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .page-container {
+    padding: 15px 20px;
+    gap: 0.8rem;
+  }
+
+  .page-container h1,
+  .page-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .page-container p {
+    font-size: 0.85rem;
+  }
+}
