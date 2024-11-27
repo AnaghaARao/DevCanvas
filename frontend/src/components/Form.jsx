@@ -109,8 +109,13 @@ function Form({ route, method }) {
           localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
 
           dispatch(setUser(username));
+          console.log(username);
           showSuccess(`Welcome ${username}, you are now logged in`);
-          navigate("/main");
+
+          // Add a delay before navigating
+          setTimeout(() => {
+            navigate("/main");
+          }, 2000); // 2-second delay before navigation
         } else if (res.data.message) {
           showSuccess(res.data.message);
         }

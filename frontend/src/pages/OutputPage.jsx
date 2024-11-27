@@ -3,18 +3,15 @@ import { useParams, useLocation } from "react-router-dom";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { getFilePlugin } from "@react-pdf-viewer/get-file";
-import { RenderDownloadProps } from "@react-pdf-viewer/get-file";
-import {
-  propertiesPlugin,
-  RenderShowPropertiesProps,
-} from "@react-pdf-viewer/properties";
+import { propertiesPlugin } from "@react-pdf-viewer/properties";
 import "../styles/output.css";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
-import { showSuccess } from "../hooks/toastUtils";
+import { showSuccess } from "../hooks/toastUtils"; // make sure this is correctly imported
 import Footer from "../components/Footer";
+import { ToastContainer, Zoom } from "react-toastify"; // Import ToastContainer
 
 const Output = () => {
   const location = useLocation();
@@ -22,6 +19,7 @@ const Output = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [rating, setRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+
   const getFilePluginInstance = getFilePlugin();
   const propertiesPluginInstance = propertiesPlugin();
   const { Download } = getFilePluginInstance;
@@ -37,7 +35,10 @@ const Output = () => {
 
   const handleSubmit = () => {
     setSubmitted(true);
-    showSuccess("Thank you for the feedback!");
+    // Trigger success message using Toastify
+    setTimeout(() => {
+      showSuccess("Thank you for the feedback!"); // This triggers the success toast
+    }, 100);
   };
 
   useEffect(() => {
@@ -47,7 +48,6 @@ const Output = () => {
     } else {
       console.error("No file URL provided in state");
     }
-    console.log("File URL:", fileUrl);
   }, [location.state]);
 
   return (
@@ -118,7 +118,7 @@ const Output = () => {
                     )
                   )}
                 </div>
-                {rating > 0 && (
+                {rating > 0 && !submitted && (
                   <button className="btn" onClick={handleSubmit}>
                     Submit
                   </button>
@@ -131,6 +131,21 @@ const Output = () => {
         )}
       </div>
       <Footer />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        transition={Zoom}
+        closeOnClick={true}
+        limit={2}
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "#161616",
+        }}
+        style={{
+          backgroundColor: "transparent",
+        }}
+      />
     </div>
   );
 };

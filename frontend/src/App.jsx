@@ -69,7 +69,7 @@ function App() {
             <Route path="/authentication/logout/" element={<Logout />} />
             <Route path="/about" element={<About />} />
             <Route path="/services/" element={<Services />} />
-            <Route path="/contact/" element={<Contact />} />
+            {/* <Route path="/contact/" element={<Contact />} /> */}
             <Route path="/privacy-policy/" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service/" element={<TermsOfServices />} />
             <Route path="*" element={<NotFound />} />

@@ -6,6 +6,7 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import { useDispatch, useSelector } from "react-redux";
 import { showAlert, showError, showSuccess } from "../hooks/toastUtils";
 import Footer from "../components/Footer";
+import { ToastContainer, Zoom } from "react-toastify";
 
 const Upload = () => {
   const [files, setFiles] = useState([]);
@@ -75,13 +76,17 @@ const Upload = () => {
       if (response.ok) {
         if (data.message && data.file_url != null) {
           showSuccess(data.message);
-          const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
-          navigate("/documentation", {
-            state: { fileUrl },
-          });
+          setTimeout(() => {
+            const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
+            navigate("/documentation", {
+              state: { fileUrl },
+            });
+          }, 1500); // Delay navigation by 2 seconds
         } else {
           showSuccess("File Upload successfully");
-          navigate("/documentation");
+          setTimeout(() => {
+            navigate("/documentation");
+          }, 1500); // Delay navigation by 2 seconds
         }
       } else {
         switch (response.status) {
@@ -204,6 +209,20 @@ const Upload = () => {
         </div>
       </form>
       <Footer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        transition={Zoom}
+        closeOnClick={true}
+        limit={2}
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "#161616",
+        }}
+        style={{
+          backgroundColor: "transparent",
+        }}
+      />
     </div>
   );
 };
