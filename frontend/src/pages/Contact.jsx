@@ -18,7 +18,6 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add logic to send feedback data to your backend or an email API.
     console.log("Feedback submitted:", formData);
     alert("Thank you for your feedback!");
     setFormData({ name: "", email: "", message: "" }); // Reset form
