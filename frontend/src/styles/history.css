@@ -8,6 +8,7 @@
   padding: 20px 40px;
   gap: 1rem;
   align-items: flex-start;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .history-container * {
