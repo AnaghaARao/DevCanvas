@@ -30,6 +30,9 @@
   .lp-security {
     padding: 1rem 2rem;
   }
+  .lp-security p {
+    font-size: 0.9rem;
+  }
 }
 
 @media only screen and (max-width: 376px) {

@@ -18,7 +18,7 @@ function Footer() {
             efficient.
           </p>
         </div>
-
+        
         <div className="footer-section2">
           <h3>Quick Links</h3>
           <ul>

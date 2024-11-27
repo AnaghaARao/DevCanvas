@@ -8,6 +8,33 @@ import adarsh from "/adarsh.jpeg";
 import shivamani from "/shivamani.jpeg";
 
 const Team = () => {
+  const teamMembers = [
+    {
+      name: "Adarsh Singh",
+      role: "AI Tools Expert",
+      image: adarsh,
+      linkedin: "https://www.linkedin.com/in/scoder17/",
+    },
+    {
+      name: "Anagha A Rao",
+      role: "Backend Developer",
+      image: anagha,
+      linkedin: "https://www.linkedin.com/in/anaghaarao/",
+    },
+    {
+      name: "Anjali Bhatkal",
+      role: "Frontend Developer",
+      image: anjali,
+      linkedin: "https://www.linkedin.com/in/anjali-bhatkal-5802801b7/",
+    },
+    {
+      name: "Shiva Mani K",
+      role: "Algorithms Engineer",
+      image: shivamani,
+      linkedin: "https://www.linkedin.com/in/shivamanik/",
+    },
+  ];
+
   return (
     <div className="lp-team">
       <ScrollAnimation
@@ -18,82 +45,33 @@ const Team = () => {
         <motion.h2>Meet the Team</motion.h2>
       </ScrollAnimation>
       <div className="team-members">
-        <ScrollAnimation
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.07 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="team-member"
-            href="https://www.linkedin.com/in/scoder17/"
-            target="_blank"
+        {teamMembers.map((member, index) => (
+          <ScrollAnimation
+            key={index}
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            <img src={adarsh} alt="Team Member 1" className="team-img" />
-            <div className="member-deets">
-              <h3>Adarsh Singh</h3>
-              <p>AI Tools Expert</p>
-            </div>
-          </motion.div>
-        </ScrollAnimation>
-        <ScrollAnimation
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.07 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="team-member"
-            href="https://www.linkedin.com/in/anaghaarao/"
-            target="_blank"
-          >
-            <img src={anagha} alt="Team Member 2" className="team-img" />
-            <div className="member-deets">
-              <h3>Anagha A Rao</h3>
-              <p>Backend Developer</p>
-            </div>
-          </motion.div>
-        </ScrollAnimation>
-        <ScrollAnimation
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.07 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="team-member"
-            href="https://www.linkedin.com/in/anjali-bhatkal-5802801b7/"
-            target="_blank"
-          >
-            <img src={anjali} alt="Team Member 3" className="team-img" />
-            <div className="member-deets">
-              <h3>Anjali Bhatkal</h3>
-              <p>Frontend Developer</p>
-            </div>
-          </motion.div>
-        </ScrollAnimation>
-        <ScrollAnimation
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.07 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="team-member"
-            href="https://www.linkedin.com/in/shivamanik/"
-            target="_blank"
-          >
-            <img src={shivamani} alt="Team Member 4" className="team-img" />
-            <div className="member-deets">
-              <h3>Shiva Mani K</h3>
-              <p>Algorithms Engineer</p>
-            </div>
-          </motion.div>
-        </ScrollAnimation>
+            <motion.a
+              whileHover={{ scale: 1.07 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="team-member"
+              href={member.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={member.image}
+                alt={`${member.name}`}
+                className="team-img"
+              />
+              <div className="member-deets">
+                <h3>{member.name}</h3>
+                <p>{member.role}</p>
+              </div>
+            </motion.a>
+          </ScrollAnimation>
+        ))}
       </div>
     </div>
   );
