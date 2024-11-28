@@ -19,10 +19,12 @@ const Security = () => {
         transition={{ duration: 0.8, delay: 0.2, ease: "easeInOut" }}
       >
         <motion.p>
-          We prioritize the security of your data. Our platform uses SSL
-          encryption for data transmission, and all uploaded code is stored
-          securely with access restrictions to ensure your intellectual property
-          remains safe.
+          We prioritize the security of your data. <br />
+          Our platform uses SSL encryption for data transmission, and all
+          uploaded code is stored securely with access restrictions to ensure
+          your intellectual property remains safe. <br />
+          We automatically delete your codebase 10 seconds after you click the
+          "Generate Now" button.
         </motion.p>
       </ScrollAnimation>
     </div>
