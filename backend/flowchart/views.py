@@ -50,6 +50,6 @@ def generate_flowchart_view(request, doc_id):
     file_url = f"{settings.MEDIA_URL}{author}/results/{file_name}"
 
     return Response({
-        'message':'flowchart generated successfully',
+        'message':'Flowchart generated successfully',
         'file_url': file_url
     }, status = status.HTTP_200_OK)

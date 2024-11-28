@@ -50,6 +50,6 @@ def generate_sequence_diagram_view(request, doc_id):
 
     print('sequence diagram file generated')
     return Response({
-        'message': 'Sequence diagram generated successfully',
+        'message': 'Sequence Diagram generated successfully',
         'file_url': file_url
     }, status=status.HTTP_200_OK)

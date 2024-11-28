@@ -49,6 +49,6 @@ def generate_class_diagram_view(request, doc_id):
     file_url = f"{settings.MEDIA_URL}{author}/results/{file_name}"
 
     return Response({
-        'message':'class diagram generated successfully',
+        'message':'Class Diagram generated successfully',
         'file_url': file_url
     }, status = status.HTTP_200_OK)
