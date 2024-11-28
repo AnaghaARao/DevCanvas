@@ -416,6 +416,11 @@ skinparam sequence {
             logging.error(f"Error generating PDF: {e}")
             return {'status':'error',
                     'error':f"Error generating PDF: {e}"}
+        
+        finally:
+            # Clean up temporary PNG file
+            if os.path.exists(sequence_png_path):
+                os.remove(sequence_png_path)
 
 # def main():
 #     try:
