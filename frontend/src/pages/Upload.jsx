@@ -73,8 +73,9 @@ const Upload = () => {
 
       const data = await response.json();
       console.log(data);
+
       if (response.ok) {
-        if (data.message && data.file_url != null) {
+        if (data.message && data.file_url) {
           showSuccess(data.message);
           setTimeout(() => {
             const fileUrl = `${import.meta.env.VITE_API_URL}${data.file_url}`;
@@ -83,26 +84,12 @@ const Upload = () => {
             });
           }, 1500); // Delay navigation by 2 seconds
         } else {
-          showSuccess("File Upload successfully");
-          setTimeout(() => {
-            navigate("/documentation");
-          }, 1500); // Delay navigation by 2 seconds
+          const errorMessage = data.error || "Unexpected error occurred";
+          showError(`Error: ${errorMessage}`);
         }
       } else {
-        switch (response.status) {
-          case 400:
-            showError(`Error: ${data.error || "Bad Request"}`);
-            break;
-          case 404:
-            showError(`Error: ${data.error || "File not found"}`);
-            break;
-          case 500:
-            showError(`Error: ${data.error || "Internal server error"}`);
-            break;
-          default:
-            showError(`Error: ${data.error || "Unexpected error"}`);
-            break;
-        }
+        const errorMessage = data.error || "Unexpected error occurred";
+        showError(`Error: ${errorMessage}`);
       }
     } catch (error) {
       console.error("Error during file upload:", error);
