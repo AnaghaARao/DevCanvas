@@ -153,6 +153,7 @@ class MultiFileSequenceDiagramGenerator:
     def generate_plantuml(self) -> str:
         if not self.messages:
             logging.warning("No messages to generate diagram from")
+            print("No messages to generate diagram from")
             return ""
 
         plantuml_str = """
@@ -272,6 +273,7 @@ skinparam note {
     def generate_pdf(self, output_path: str = None):
         if not self.messages:
             logging.error("No messages to generate PDF from")
+            print(self.messages)
             return {
                 'status':'error',
                 'error':'No messages to generate PDF from'}
