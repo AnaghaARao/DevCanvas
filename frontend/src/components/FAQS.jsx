@@ -33,11 +33,6 @@ const FAQS = () => {
         "An internet connection is required for certain features, such as real-time updates and cloud storage access.",
     },
     {
-      question: "Is there a mobile version available?",
-      answer:
-        "We currently support a desktop version, but a mobile app is in development and will be released soon.",
-    },
-    {
       question: "How can I report bugs or request new features?",
       answer:
         "You can reach out to us through the feedback form on our website or via email. We welcome all feedback and suggestions!",
