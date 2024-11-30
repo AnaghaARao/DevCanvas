@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import ScrollAnimation from "./ScrollAnimation";
 import anagha from "/anagha.jpeg";
 import anjali from "/anjali.jpg";
-import adarsh from "/adarsh.jpeg";
+import adarsh from "/adarsh.jpg";
 import shivamani from "/shivamani.jpeg";
 
 const Team = () => {
   const teamMembers = [
     {
       name: "Adarsh Singh",
-      role: "AI Tools Expert",
+      role: "Lead Researcher & Engineer",
       image: adarsh,
       linkedin: "https://www.linkedin.com/in/scoder17/",
     },
