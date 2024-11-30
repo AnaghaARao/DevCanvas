@@ -11,14 +11,13 @@ function Footer() {
             At DevCanvas, we strive to transform the way software documentation
             is created. Our goal is to simplify and automate the entire process,
             enabling developers to focus more on coding and less on writing
-            documentation. By harnessing the power of AI, machine learning, and
-            computer vision, we create real-time, precise, and contextually
-            relevant documentation tailored to each project. We are passionate
-            about making the documentation process faster, smarter, and more
-            efficient.
+            documentation. By harnessing the power of AI, we create real-time,
+            precise, and contextually relevant documentation tailored to each
+            project. We are passionate about making the documentation process
+            faster, smarter, and more efficient.
           </p>
         </div>
-        
+
         <div className="footer-section2">
           <h3>Quick Links</h3>
           <ul>
