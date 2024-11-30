@@ -25,7 +25,7 @@ function LandingPage() {
           <Process
             steps={[
               "Upload",
-              "Generate URL",
+              "Generate UML",
               "View Summary",
               "Navigate",
               "Understand",
