@@ -74,7 +74,6 @@ Follow these steps to set up and run the backend server:
 3. **Run the Server**
    Start the Django development server:
    ```bash
-   Copy code
    python manage.py runserver
 
 ### Frontend Setup
